@@ -1,154 +1,169 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>斗罗大陆转盘 - 随机人生模拟</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>斗罗大陆转盘 - 随机人生模拟</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-<!-- Particles Background -->
-<div class="particles" id="particles"></div>
+  <!-- Particles Background -->
+  <div class="particles" id="particles"></div>
 
-<!-- ===== Title Screen ===== -->
-<div class="screen active" id="screen-title">
-  <div class="title-logo">斗罗大陆转盘</div>
-  <div class="title-sub">随机人生模拟游戏</div>
-  <div class="title-buttons">
-    <button class="btn" onclick="startNewGame()">开始转世</button>
-    <button class="btn btn-blue" onclick="startQuickRandom()">⚡ 快速随机（魂师+魂兽）</button>
-    <button class="btn btn-blue" onclick="showScreen('screen-saves');renderSaves()">回忆往生</button>
-    <button class="btn btn-green" onclick="showScreen('screen-achievements');renderAchievements()">成就系统</button>
-  </div>
-  <div class="title-ver">V3.0 前后端分离版 | 基于斗罗大陆原著世界观</div>
-</div>
-
-<!-- ===== Quick Random Preview ===== -->
-<div class="screen" id="screen-quick-random">
-  <div style="max-width:800px;margin:0 auto;width:90%;">
-    <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
-    <div id="quick-random-content"></div>
-  </div>
-</div>
-
-<!-- ===== Wheel Screen ===== -->
-<div class="screen" id="screen-wheel">
-  <div class="wheel-step" id="wheel-step"></div>
-  <div class="wheel-label" id="wheel-label"></div>
-  <div class="wheel-stage">
-    <div class="wheel-pointer"></div>
-    <canvas class="wheel-canvas" id="wheel-canvas" width="720" height="720"></canvas>
-    <div class="wheel-center" id="wheel-center">转</div>
-  </div>
-  <button class="btn" id="wheel-spin-btn" onclick="spinWheel()">旋转转盘</button>
-  <button class="btn" id="wheel-next-btn" onclick="nextWheelStep()" style="display:none;margin-top:10px;">下一步</button>
-  <div id="wheel-result-area"></div>
-  <div class="wheel-hint" id="wheel-hint"></div>
-</div>
-
-<!-- ===== Awakening Screen ===== -->
-<div class="screen" id="screen-awakening">
-  <div class="awakening-card" id="awakening-card">
-    <div class="awakening-title">武魂觉醒</div>
-    <div id="awakening-content"></div>
-  </div>
-  <div style="display:flex;gap:12px;margin-top:10px;">
-    <button class="btn" onclick="enterLife()">踏入斗罗大陆</button>
-    <button class="btn btn-sm btn-red" onclick="rerollAll()">重新转世</button>
-  </div>
-</div>
-
-<!-- ===== Life Screen ===== -->
-<div class="screen" id="screen-life">
-  <div class="life-sidebar" id="life-sidebar"></div>
-  <div class="life-main">
-    <div class="event-log" id="event-log"></div>
-    <div class="life-controls" id="life-controls"></div>
-    <!-- Godhood Choice Panel -->
-    <div id="godhood-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);">
-      <h2 style="color:var(--gold);text-align:center;margin-bottom:20px;">🌟 成神之路</h2>
-      <p style="color:var(--gray);text-align:center;margin-bottom:20px;">你的修为已达到位面极限，感应到了神界的召唤...</p>
-      <div style="display:flex;flex-direction:column;gap:15px;">
-        <button class="btn" onclick="chooseGodhood('inherit')" style="text-align:left;padding:15px;">
-          <div style="font-size:16px;color:var(--gold);font-weight:bold;">🏛️ 继承神位</div>
-          <div style="font-size:12px;color:var(--gray);margin-top:4px;">成功率较高（70%），继承一位陨落神祇的神位，稳妥成神。</div>
-        </button>
-        <button class="btn" onclick="chooseGodhood('create')" style="text-align:left;padding:15px;">
-          <div style="font-size:16px;color:var(--cyan);font-weight:bold;">⚡ 自创神位</div>
-          <div style="font-size:12px;color:var(--gray);margin-top:4px;">成功率较低（40%），以自身为根基创造全新神位，风险与机遇并存。</div>
-        </button>
-      </div>
-      <div id="godhood-result" style="margin-top:15px;text-align:center;display:none;"></div>
+  <!-- ===== Title Screen ===== -->
+  <div class="screen active" id="screen-title">
+    <div class="title-logo">斗罗大陆转盘</div>
+    <div class="title-sub">随机人生模拟游戏</div>
+    <div class="title-buttons">
+      <button class="btn" onclick="startNewGame()">开始转世</button>
+      <button class="btn btn-blue" onclick="startQuickRandom()">⚡ 快速随机（魂师+魂兽）</button>
+      <button class="btn btn-blue" onclick="showScreen('screen-saves');renderSaves()">回忆往生</button>
+      <button class="btn btn-green" onclick="showScreen('screen-achievements');renderAchievements()">成就系统</button>
     </div>
-    <!-- Douluo Path Choice Panel -->
-    <div id="douluo-path-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);">
-      <h2 style="color:var(--gold);text-align:center;margin-bottom:10px;">🎖️ 封号斗罗</h2>
-      <p style="color:var(--gray);text-align:center;margin-bottom:15px;font-size:13px;">你的修为突破90级，成为封号斗罗！请选择你的道路...</p>
-      <div style="margin-bottom:15px;">
-        <label style="color:var(--gray);font-size:12px;">你的封号（2字）：</label>
-        <input type="text" id="custom-title-input" maxlength="2" style="width:60px;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.3);border-radius:6px;color:var(--gold);padding:6px;font-size:16px;margin-left:8px;" placeholder="如：昊天">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <button class="btn" onclick="chooseDouluoPath('family')" style="text-align:left;padding:12px;">
-          <div style="font-size:15px;color:#ff66aa;font-weight:bold;">💕 成家立业</div>
-          <div style="font-size:11px;color:var(--gray);margin-top:3px;">与心爱之人共度余生，解锁恋爱系统，体验人间烟火。</div>
-        </button>
-        <button class="btn" onclick="chooseDouluoPath('god')" style="text-align:left;padding:12px;">
-          <div style="font-size:15px;color:var(--gold);font-weight:bold;">✨ 追求神位</div>
-          <div style="font-size:11px;color:var(--gray);margin-top:3px;">继续修炼，追求更高的境界，当达到极限时可选择成神。</div>
-        </button>
-        <button class="btn" id="btn-godrealm-path" onclick="chooseDouluoPath('godrealm')" style="text-align:left;padding:12px;display:none;">
-          <div style="font-size:15px;color:#ffdd44;font-weight:bold;">🌟 飞升神界</div>
-          <div style="font-size:11px;color:var(--gray);margin-top:3px;">绝世唐门百级魂力突破位面界限，飞升神界，进入神界传说时间线！</div>
-        </button>
-      </div>
+    <div class="title-ver">V3.0 前后端分离版 | 基于斗罗大陆原著世界观</div>
+  </div>
+
+  <!-- ===== Quick Random Preview ===== -->
+  <div class="screen" id="screen-quick-random">
+    <div style="max-width:800px;margin:0 auto;width:90%;">
+      <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
+      <div id="quick-random-content"></div>
     </div>
   </div>
-</div>
 
-<!-- ===== Event Modal / Save Detail ===== -->
-<div class="modal-overlay" id="modal-event" onclick="if(event.target===this)this.classList.remove('active')">
-  <div class="modal-box" id="modal-event-box"></div>
-</div>
-
-<!-- ===== Mini Wheel Overlay (soul ring hunt) ===== -->
-<div class="mini-wheel-overlay" id="mini-wheel-overlay">
-  <div class="mini-wheel-label" id="mini-wheel-label"></div>
-  <div class="mini-wheel-wrap">
-    <div class="mini-wheel-pointer"></div>
-    <canvas class="mini-wheel-canvas" id="mini-wheel-canvas" width="600" height="600"></canvas>
+  <!-- ===== Wheel Screen ===== -->
+  <div class="screen" id="screen-wheel">
+    <div class="wheel-step" id="wheel-step"></div>
+    <div class="wheel-label" id="wheel-label"></div>
+    <div class="wheel-stage">
+      <div class="wheel-pointer"></div>
+      <canvas class="wheel-canvas" id="wheel-canvas" width="720" height="720"></canvas>
+      <div class="wheel-center" id="wheel-center">转</div>
+    </div>
+    <button class="btn" id="wheel-spin-btn" onclick="spinWheel()">旋转转盘</button>
+    <button class="btn" id="wheel-next-btn" onclick="nextWheelStep()" style="display:none;margin-top:10px;">下一步</button>
+    <div id="wheel-result-area"></div>
+    <div class="wheel-hint" id="wheel-hint"></div>
   </div>
-  <button class="btn" id="mini-wheel-spin-btn" onclick="spinMiniWheel()">旋转转盘</button>
-  <div class="mini-wheel-hint" id="mini-wheel-hint"></div>
-  <div id="mini-wheel-result-area"></div>
-  <button id="mini-auto-stop-btn" class="btn btn-sm btn-red" style="position:fixed;top:12px;right:12px;z-index:120;display:none;" onclick="toggleAuto()">⏹ 停止自动推演</button>
-</div>
 
-<!-- ===== Review Screen ===== -->
-<div class="screen" id="screen-review">
-  <div class="review-container" id="review-container"></div>
-</div>
-
-<!-- ===== Achievement Screen ===== -->
-<div class="screen" id="screen-achievements">
-  <div class="ach-container">
-    <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
-    <div class="ach-title">成就殿堂</div>
-    <div class="ach-grid" id="ach-grid"></div>
+  <!-- ===== Awakening Screen ===== -->
+  <div class="screen" id="screen-awakening">
+    <div class="awakening-card" id="awakening-card">
+      <div class="awakening-title">武魂觉醒</div>
+      <div id="awakening-content"></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:10px;">
+      <button class="btn" onclick="enterLife()">踏入斗罗大陆</button>
+      <button class="btn btn-sm btn-red" onclick="rerollAll()">重新转世</button>
+    </div>
   </div>
-</div>
 
-<!-- ===== Save Screen ===== -->
-<div class="screen" id="screen-saves">
-  <div class="save-container">
-    <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
-    <div class="save-title">往生回忆</div>
-    <div class="save-slots" id="save-slots"></div>
+  <!-- ===== Life Screen ===== -->
+  <div class="screen" id="screen-life">
+    <div class="life-sidebar" id="life-sidebar"></div>
+    <div class="life-main">
+      <div class="event-log" id="event-log"></div>
+      <div class="life-controls" id="life-controls"></div>
+      <!-- Godhood Choice Panel -->
+      <div id="godhood-panel"
+        style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);">
+        <h2 style="color:var(--gold);text-align:center;margin-bottom:20px;">🌟 成神之路</h2>
+        <p style="color:var(--gray);text-align:center;margin-bottom:20px;">你的修为已达到位面极限，感应到了神界的召唤...</p>
+        <div style="display:flex;flex-direction:column;gap:15px;">
+          <button class="btn" onclick="chooseGodhood('inherit')" style="text-align:left;padding:15px;">
+            <div style="font-size:16px;color:var(--gold);font-weight:bold;">🏛️ 继承神位</div>
+            <div style="font-size:12px;color:var(--gray);margin-top:4px;">成功率较高（70%），继承一位陨落神祇的神位，稳妥成神。</div>
+          </button>
+          <button class="btn" onclick="chooseGodhood('create')" style="text-align:left;padding:15px;">
+            <div style="font-size:16px;color:var(--cyan);font-weight:bold;">⚡ 自创神位</div>
+            <div style="font-size:12px;color:var(--gray);margin-top:4px;">成功率较低（40%），以自身为根基创造全新神位，风险与机遇并存。</div>
+          </button>
+        </div>
+        <div id="godhood-result" style="margin-top:15px;text-align:center;display:none;"></div>
+      </div>
+      <!-- Douluo Path Choice Panel -->
+      <div id="douluo-path-panel"
+        style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);">
+        <h2 style="color:var(--gold);text-align:center;margin-bottom:10px;">🎖️ 封号斗罗</h2>
+        <p style="color:var(--gray);text-align:center;margin-bottom:15px;font-size:13px;">你的修为突破90级，成为封号斗罗！请选择你的道路...
+        </p>
+        <div style="margin-bottom:15px;">
+          <label style="color:var(--gray);font-size:12px;">你的封号（2字）：</label>
+          <input type="text" id="custom-title-input" maxlength="2"
+            style="width:60px;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.3);border-radius:6px;color:var(--gold);padding:6px;font-size:16px;margin-left:8px;"
+            placeholder="如：昊天">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <button class="btn" onclick="chooseDouluoPath('family')" style="text-align:left;padding:12px;">
+            <div style="font-size:15px;color:#ff66aa;font-weight:bold;">💕 成家立业</div>
+            <div style="font-size:11px;color:var(--gray);margin-top:3px;">与心爱之人共度余生，解锁恋爱系统，体验人间烟火。</div>
+          </button>
+          <button class="btn" onclick="chooseDouluoPath('god')" style="text-align:left;padding:12px;">
+            <div style="font-size:15px;color:var(--gold);font-weight:bold;">✨ 追求神位</div>
+            <div style="font-size:11px;color:var(--gray);margin-top:3px;">继续修炼，追求更高的境界，当达到极限时可选择成神。</div>
+          </button>
+          <button class="btn" id="btn-godrealm-path" onclick="chooseDouluoPath('godrealm')"
+            style="text-align:left;padding:12px;display:none;">
+            <div style="font-size:15px;color:#ffdd44;font-weight:bold;">🌟 飞升神界</div>
+            <div style="font-size:11px;color:var(--gray);margin-top:3px;">绝世唐门百级魂力突破位面界限，飞升神界，进入神界传说时间线！</div>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-<script src="js/api.js"></script>
-<script src="js/app.js"></script>
+  <!-- ===== Event Modal / Save Detail ===== -->
+  <div class="modal-overlay" id="modal-event" onclick="if(event.target===this)this.classList.remove('active')">
+    <div class="modal-box" id="modal-event-box"></div>
+  </div>
+
+  <!-- ===== Mini Wheel Overlay (soul ring hunt) ===== -->
+  <div class="mini-wheel-overlay" id="mini-wheel-overlay">
+    <div class="mini-wheel-label" id="mini-wheel-label"></div>
+    <div class="mini-wheel-wrap">
+      <div class="mini-wheel-pointer"></div>
+      <canvas class="mini-wheel-canvas" id="mini-wheel-canvas" width="600" height="600"></canvas>
+    </div>
+    <button class="btn" id="mini-wheel-spin-btn" onclick="spinMiniWheel()">旋转转盘</button>
+    <div class="mini-wheel-hint" id="mini-wheel-hint"></div>
+    <div id="mini-wheel-result-area"></div>
+    <button id="mini-auto-stop-btn" class="btn btn-sm btn-red"
+      style="position:fixed;top:12px;right:12px;z-index:120;display:none;" onclick="toggleAuto()">⏹ 停止自动推演</button>
+  </div>
+
+  <!-- ===== Review Screen ===== -->
+  <div class="screen" id="screen-review">
+    <div class="review-container" id="review-container"></div>
+  </div>
+
+  <!-- ===== Achievement Screen ===== -->
+  <div class="screen" id="screen-achievements">
+    <div class="ach-container">
+      <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
+      <div class="ach-title">成就殿堂</div>
+      <div class="ach-grid" id="ach-grid"></div>
+    </div>
+  </div>
+
+  <!-- ===== Save Screen ===== -->
+  <div class="screen" id="screen-saves">
+    <div class="save-container">
+      <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
+      <div class="save-title">往生回忆</div>
+      <div class="save-slots" id="save-slots"></div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/game-utils.js"></script>
+  <script src="js/data/game-core-data.js"></script>
+  <script src="js/data/game-events-data.js"></script>
+  <script src="js/game-wheels.js"></script>
+  <script src="js/game-renderers.js"></script>
+  <script src="js/app.js"></script>
 </body>
+
 </html>
