@@ -231,6 +231,146 @@ const AWAKENING_COUNT = [
   { id: 'four', name: '觉醒4个武魂', weight: 3, desc: '四武魂觉醒，万中无一的奇迹！', count: 4, color: '#ff4444' }
 ];
 
+const TEN_FEROCIOUS = [
+  { rank: 1, name: '帝天', title: '金眼黑龙王', age: 89, attr: '极致黑暗' },
+  { rank: 2, name: '邪帝', title: '邪眼暴君主宰', age: 79, attr: '极致之恶' },
+  { rank: 3, name: '雪帝', title: '冰天雪女', age: 70, attr: '极致之冰' },
+  { rank: 4, name: '碧姬', title: '翡翠天鹅', age: 58, attr: '治愈之王' },
+  { rank: 5, name: '万妖王', title: '妖眼魔树', age: 55, attr: '植物系之王' },
+  { rank: 6, name: '熊君', title: '暗金恐爪熊', age: 48, attr: '强攻系之王' },
+  { rank: 7, name: '冰帝', title: '冰碧帝皇蝎', age: 40, attr: '极致之冰' },
+  { rank: 8, name: '赤王', title: '三头赤魔獒', age: 35, attr: '帝天部下' },
+  { rank: 9, name: '妖灵', title: '邪眼暴君', age: 30, attr: '邪帝之子' },
+  { rank: 10, name: '泰坦雪魔王', title: '泰坦雪魔', age: 25, attr: '极北天王之三' }
+];
+
+const SOUL_CORE_ATTRS = ['力量', '速度', '精神', '魂力', '防御', '攻击'];
+
+const SOUL_LEVELS = [
+  { min: 1, max: 10, name: '魂士' }, { min: 11, max: 20, name: '魂师' }, { min: 21, max: 30, name: '大魂师' },
+  { min: 31, max: 40, name: '魂尊' }, { min: 41, max: 50, name: '魂宗' }, { min: 51, max: 60, name: '魂王' },
+  { min: 61, max: 70, name: '魂帝' }, { min: 71, max: 80, name: '魂圣' }, { min: 81, max: 90, name: '魂斗罗' },
+  { min: 91, max: 95, name: '封号斗罗' }, { min: 96, max: 98, name: '超级斗罗' }, { min: 99, max: 99, name: '极限斗罗' },
+  { min: 100, max: 109, name: '神阶' }, { min: 110, max: 119, name: '真神级' }, { min: 120, max: 149, name: '超神级' },
+  { min: 150, max: 200, name: '神王级' }
+];
+
+const QUICK_RANDOM_INNATE_POOLS = [
+  { name: '先天魂力0级', min: 0, max: 0, weight: 20, ratingColor: '#888' },
+  { name: '先天魂力1~5级', min: 1, max: 5, weight: 50, ratingColor: '#4488ff' },
+  { name: '先天魂力6~9级', min: 6, max: 9, weight: 25, ratingColor: '#ffdd44' },
+  { name: '先天满魂力（10级）', min: 10, max: 10, weight: 5, ratingColor: '#ff4444' }
+];
+
+const BASE_RING_LIMITS = [423, 764, 1760, 5000, 12000, 20000, 30000, 50000, 100000];
+
+const RING_QUALITY_MULTIPLIERS = { 普通: 1.0, 优秀: 1.3, 变异: 1.6, 顶级: 2.0, 双生: 3.0, '优秀~顶级': 1.8 };
+
+const SOUL_RING_COLORS = [
+  { max: 9, color: 'white', cn: '白色', css: 'w', bg: '#cccccc' },
+  { max: 999, color: 'yellow', cn: '黄色', css: 'y', bg: '#dddd00' },
+  { max: 9999, color: 'purple', cn: '紫色', css: 'p', bg: '#aa00ff' },
+  { max: 99999, color: 'black', cn: '黑色', css: 'b', bg: '#333333' },
+  { max: 999999, color: 'red', cn: '红色', css: 'r', bg: '#ff0000' },
+  { max: Infinity, color: 'gold', cn: '橙金色', css: 'g', bg: '#ffaa00' }
+];
+
+const GODHOOD_INHERIT_GODS = ['海神', '火神', '水神', '风神', '雷神', '战神', '速度之神', '食神'];
+
+const GODHOOD_CUSTOM_TITLES = ['毁灭与创造之神', '时空主宰', '命运编织者', '元素帝君', '灵魂至高神'];
+
+const ROMANCE_CHARACTER_NAME_POOLS = {
+  malePlayerTargets: ['小舞', '宁荣荣', '朱竹清', '千仞雪', '唐舞桐', '古月娜', '白秀秀', '冻千秋', '生命女神', '圣灵斗罗雅莉'],
+  femalePlayerTargets: ['唐三', '戴沐白', '奥斯卡', '马红俊', '唐昊', '独孤博', '比比东', '霍雨浩', '贝贝', '和菜头', '玄老', '穆老', '唐舞麟', '谢邂', '蓝轩宇', '唐乐', '钱磊', '海神唐三', '情绪之神霍雨浩', '唐舞麟（金龙王）', '毁灭之神', '善良之神', '邪恶之神', '七原罪神·贪食之神', '七元素神·火神']
+};
+
+const EVENT_TYPE_LABELS = { cultivate: '修炼', social: '社交', battle: '战斗', fortune: '机缘', crisis: '危机' };
+
+const SAVE_RATING_COLORS = { SS: '#ffdd44', S: '#ff8844', A: '#44dd88', B: '#4488ff', C: '#aaaaaa', D: '#888888' };
+
+const PROTAGONIST_STATUS_MAP = {
+  douluo1: {
+    name: '唐三', birthOffset: 0, milestones: [
+      { age: 6, status: '武魂觉醒，先天满魂力' },
+      { age: 12, status: '进入诺丁学院，结识小舞' },
+      { age: 14, status: '进入史莱克学院' },
+      { age: 16, status: '魂师大赛夺冠，武魂殿初现敌意' },
+      { age: 20, status: '建立唐门，准备对抗武魂殿' },
+      { age: 25, status: '海神岛传承，成为海神' },
+      { age: 30, status: '击败比比东，升入神界' }
+    ]
+  },
+  douluo2: {
+    name: '霍雨浩', birthOffset: -10, milestones: [
+      { age: 6, status: '觉醒灵眸武魂' },
+      { age: 11, status: '进入史莱克学院' },
+      { age: 14, status: '魂导师修炼，结识唐舞桐' },
+      { age: 17, status: '极限单兵计划' },
+      { age: 20, status: '继承情绪之神神位' },
+      { age: 26, status: '升入神界' }
+    ]
+  },
+  douluo3: {
+    name: '唐舞麟', birthOffset: -20, milestones: [
+      { age: 6, status: '觉醒蓝银草武魂' },
+      { age: 10, status: '进入东海学院' },
+      { age: 14, status: '史莱克学院学员' },
+      { age: 18, status: '一字斗铠师' },
+      { age: 22, status: '与古月娜相爱相杀' },
+      { age: 28, status: '金龙王之力觉醒' }
+    ]
+  },
+  douluo4: {
+    name: '蓝轩宇', birthOffset: -30, milestones: [
+      { age: 6, status: '觉醒金银龙王血脉' },
+      { age: 12, status: '进入史莱克学院' },
+      { age: 16, status: '龙变历练' },
+      { age: 20, status: '创造龙神神位' }
+    ]
+  },
+  godrealm: {
+    name: '唐三', birthOffset: 0, milestones: [
+      { age: 100, status: '神界执法者' },
+      { age: 300, status: '大神圈创立者' }
+    ]
+  }
+};
+
+const DIVINE_SKILL_UNLOCK_THRESHOLDS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
+
+const DIVINE_SKILL_POOL = [
+  { name: '神光斩', desc: '凝聚神力化作的锋锐光斩，可斩裂虚空' },
+  { name: '神域降临', desc: '展开神域，领域内自身战力倍增' },
+  { name: '法则掌控', desc: '掌控一种天地法则，随心所欲' },
+  { name: '神罚天降', desc: '召唤天罚之力，毁灭性打击' },
+  { name: '神体蜕变', desc: '神体进一步蜕变，防御与速度倍增' },
+  { name: '神识探查', desc: '神识扫过万里，洞察一切隐匿' },
+  { name: '神威压制', desc: '释放神威，弱者直接臣服' },
+  { name: '神力灌注', desc: '神力灌注全身，战力暴涨' },
+  { name: '神格凝聚', desc: '神格更加凝实，神力上限提升' },
+  { name: '神通觉醒', desc: '觉醒一项远古神通，威力无穷' },
+  { name: '神界召唤', desc: '召唤神界之力助战' },
+  { name: '神之审判', desc: '以神之名审判罪人，无可抵挡' },
+  { name: '神之庇护', desc: '获得神之庇护，免疫一次致命伤害' },
+  { name: '神之契约', desc: '可与生灵缔结神之契约' },
+  { name: '神之创造', desc: '掌握创造之力，可化虚为实' },
+  { name: '神之毁灭', desc: '掌握毁灭之力，可湮灭万物' },
+  { name: '神之时空', desc: '操控时空法则，自由穿梭' },
+  { name: '神之命运', desc: '窥探命运之线，预知未来' },
+  { name: '神之轮回', desc: '领悟轮回法则，生死转换' },
+  { name: '神之本源', desc: '触及神之本源，近乎全能' }
+];
+
+const SOUL_BEAST_DOMAIN_MAP = {
+  火系: '烈焰领域', 冰系: '极寒领域', 雷系: '雷霆领域', 风系: '风暴领域', 土系: '大地领域',
+  水系: '深海领域', 木系: '生命之域', 暗系: '暗影领域', 光系: '光明领域', 毒系: '万毒领域',
+  精神系: '精神领域', 龙系: '龙威领域', 空间系: '虚空领域', 时间系: '时光领域', 吞噬系: '吞噬领域'
+};
+
+const MARTIAL_SOUL_DOMAIN_MAP = {
+  攻击: '杀神领域', 防御: '不动领域', 控制: '幻境领域', 辅助: '祝福领域', 敏攻: '极速领域', 强攻: '战魂领域'
+};
+
 // Keep IDENTITIES for backwards compatibility in other code
 const IDENTITIES = {
   human: HUMAN_BACKGROUNDS,

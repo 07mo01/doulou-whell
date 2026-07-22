@@ -747,6 +747,36 @@ function spinOpportunityWheel() {
   }, 3800);
 }
 
+function openSoulRingWheelAsync() {
+  return new Promise(resolve => {
+    openSoulRingWheel(resolve);
+  });
+}
+
+function openYearEventWheelAsync() {
+  return new Promise(resolve => {
+    openYearEventWheel(resolve);
+  });
+}
+
+function openTimelineCharacterWheelAsync() {
+  return new Promise(resolve => {
+    openTimelineCharacterWheel(resolve);
+  });
+}
+
+function openEnemyWheelAsync() {
+  return new Promise(resolve => {
+    openEnemyWheel(resolve);
+  });
+}
+
+function openOpportunityWheelAsync() {
+  return new Promise(resolve => {
+    openOpportunityWheel(resolve);
+  });
+}
+
 // ============================================================
 // LOVER WHEEL SYSTEM
 // ============================================================
@@ -856,6 +886,210 @@ function spinLoverWheel() {
 let enemyWheelData = null;
 let enemyWheelSpinning = false;
 let enemyWheelCallback = null;
+
+function buildEnemyWheel() {
+  let pool;
+  if (G.identityType === 'soul_beast') {
+    pool = BEAST_ENEMY_POOL.filter(e => {
+      // 天劫雷罚只有十万年未化形的魂兽才会触发
+      if (e.type === 'heaven') return (G.beastYears >= 100000 && !G.transformed);
+      return true;
+    });
+  } else {
+    let timelineId = G.timeline?.id || 'douluo1';
+    pool = ENEMY_POOL[timelineId] || ENEMY_POOL.douluo1;
+    pool = [...pool];
+  }
+  let playerEnemyTrait = G.personality?.traits?.enemy || 1;
+
+  let items = pool.map(e => {
+    let w = e.weight * playerEnemyTrait;
+    if (G.appearance?.id === 'fierce') w *= 1.3;
+    if (G.appearance?.id === 'divine') w *= 1.5;
+    return { ...e, weight: Math.round(w) };
+  });
+
+  let colors = ['#aa2222', '#662222', '#222266', '#226622', '#662266', '#ff4444', '#aa44aa', '#444444'];
+  items.forEach((it, i) => { it.color = colors[i % colors.length]; });
+  return items;
+}
+
+function openEnemyWheel(callback) {
+  enemyWheelData = buildEnemyWheel();
+  enemyWheelCallback = callback;
+  document.getElementById('mini-wheel-label').textContent = (G.timeline?.id === 'godrealm') ? '神界动乱！' : '强敌来袭！';
+  document.getElementById('mini-wheel-hint').textContent = '命运的转盘在转动，你的对手是谁？';
+  document.getElementById('mini-wheel-result-area').innerHTML = '';
+  document.getElementById('mini-wheel-spin-btn').style.display = '';
+  document.getElementById('mini-wheel-spin-btn').classList.remove('btn-disabled');
+  document.getElementById('mini-wheel-spin-btn').onclick = spinEnemyWheel;
+  drawMiniWheel(enemyWheelData);
+  let canvas = document.getElementById('mini-wheel-canvas');
+  canvas.style.transition = 'none';
+  canvas.style.transform = 'rotate(0deg)';
+  void canvas.offsetWidth;
+  document.getElementById('mini-wheel-overlay').classList.add('active');
+}
+
+function spinEnemyWheel() {
+  if (enemyWheelSpinning) return;
+  enemyWheelSpinning = true;
+  let btn = document.getElementById('mini-wheel-spin-btn');
+  btn.classList.add('btn-disabled');
+  let canvas = document.getElementById('mini-wheel-canvas');
+  let total = enemyWheelData.reduce((s, i) => s + i.weight, 0);
+  let selected = weightedRandom(enemyWheelData);
+  let selectedIdx = enemyWheelData.indexOf(selected);
+  let cumWeight = 0;
+  for (let i = 0; i < selectedIdx; i++) cumWeight += enemyWheelData[i].weight;
+  let sectorAngle = (selected.weight / total) * 360;
+  let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
+  let finalAngle = 360 * 6 + (360 - targetCenter + 270);
+  canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
+  canvas.style.transform = `rotate(${finalAngle}deg)`;
+  setTimeout(() => {
+    enemyWheelSpinning = false;
+    btn.classList.remove('btn-disabled');
+    let enemyLevel = Math.max(1, Math.round(G.soulPower * selected.power + (Math.random() * 10 - 5)));
+
+    let isBeast = G.identityType === 'soul_beast';
+    let isHumanEnemy = selected.type === 'human' || selected.type === 'evil_human';
+    let canEscape = isBeast && isHumanEnemy;
+
+    let charm = G.appearance?.attr?.charm || 5;
+    let isFemale = G.gender?.id === 'female';
+    let isFierce = G.appearance?.id === 'fierce';
+    let isDivine = G.appearance?.id === 'divine';
+    let isEvil = selected.type === 'evil' || selected.type === 'evil_human';
+
+    let playerCP = calculateCombatPower(G, false);
+    let enemyCP = calculateCombatPower({ level: enemyLevel, power: selected.power }, true);
+    let cpDiff = playerCP - enemyCP;
+    let cpRatio = cpDiff / Math.max(enemyCP, 1);
+
+    let diff = G.soulPower - enemyLevel;
+    let winChance = 0.5 + diff * 0.02 + cpRatio * 0.3;
+
+    let hasControlSkill = (G.customSkills || []).some(s => s.type === 'control');
+    let hasBoostSkill = (G.customSkills || []).some(s => s.type === 'boost');
+    let hasDefenseSkill = (G.customSkills || []).some(s => s.type === 'defense');
+    let numRings = (G.soulRings || []).length;
+    let numBones = (G.soulBones || []).length;
+    if (hasControlSkill && enemyLevel <= G.soulPower + 5) winChance += 0.08;
+    if (hasBoostSkill) winChance += 0.05;
+    if (hasDefenseSkill && diff < 0) winChance += 0.06;
+    if (numBones >= 4) winChance += 0.05;
+    if (numRings >= 7) winChance += 0.04;
+
+    if (isFierce) winChance += 0.03;
+    if (isDivine && isEvil) winChance += 0.06;
+    winChance = Math.max(0.05, Math.min(0.95, winChance));
+    let win = Math.random() < winChance;
+
+    let playerCPRating = getCombatPowerRating(playerCP);
+    let enemyCPRating = getCombatPowerRating(enemyCP);
+    let cpDisplay = `<p style="font-size:12px;color:var(--gray);margin-top:6px;">我方战力：<span style="color:${playerCPRating.color};">${playerCP}</span>（${playerCPRating.name}） | 敌方战力：<span style="color:${enemyCPRating.color};">${enemyCP}</span>（${enemyCPRating.name}）</p>`;
+
+    let area = document.getElementById('mini-wheel-result-area');
+    let enemyInfo = { name: selected.name, level: enemyLevel, type: selected.type, cp: enemyCP };
+
+    if (canEscape && !win) {
+      let escapeChance = 0.3 + (G.bloodline?.attr?.speed || 0) * 0.1;
+      let escaped = Math.random() < escapeChance;
+      if (escaped) {
+        let lossYears = 1 + Math.floor(Math.random() * 3);
+        G.beastYears = Math.max((G.beastYears || 0) - lossYears, 0);
+        syncBeastSoulPower();
+        G.enemies.push({ ...enemyInfo, escaped: true });
+        area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--green)">成功逃脱！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你察觉到危险，凭借魂兽的本能迅速逃离了人类的猎杀范围！</p><p style="color:var(--gold);margin-top:8px;">逃脱成功，仅损失${lossYears}年修为</p></div>`;
+      } else {
+        let lossCap = isEvil ? 10 : 5;
+        let loss = Math.min(Math.floor(enemyLevel * 0.3), lossCap);
+        let lossYears = Math.floor(loss * 10 + Math.random() * 20);
+        G.beastYears = Math.max((G.beastYears || 0) - lossYears, 0);
+        syncBeastSoulPower();
+        G.enemies.push({ ...enemyInfo, defeated: true });
+        if (Math.random() < 0.15 * selected.power) {
+          G.alive = false;
+          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">命丧猎魂师之手</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你试图逃跑但失败了，最终被人类猎魂师击杀，成为了他们的魂环...</p><p style="color:var(--red);margin-top:8px;">年限-${lossYears}年</p></div>`;
+        } else {
+          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">逃脱失败</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你没能成功逃脱，被人类重创后勉强挣脱...</p><p style="color:var(--red);margin-top:8px;">年限-${lossYears}年</p></div>`;
+        }
+      }
+    } else if (win) {
+      let reward = Math.min(Math.floor(enemyLevel * 0.5), 10);
+      if (isBeast) {
+        let gainYears = 100 + Math.floor(Math.random() * 200);
+        G.beastYears = (G.beastYears || 0) + gainYears;
+        syncBeastSoulPower();
+        G.gold = (G.gold || 0) + Math.floor(enemyLevel * 5);
+        G.enemies.push(enemyInfo);
+        area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--gold)">战斗胜利！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你成功击败了入侵者，吞噬了对方的能量！</p><p style="color:var(--green);margin-top:8px;">年限+${gainYears}年 | 获得${Math.floor(enemyLevel * 5)}金魂币</p></div>`;
+      } else {
+        G.soulPower = Math.min(G.soulPower + reward, G.maxLevel);
+        G.gold = (G.gold || 0) + Math.floor(enemyLevel * 10);
+        G.enemies.push(enemyInfo);
+        let extraText = '';
+        if (isFierce) extraText = '<br><span style="color:var(--cyan);font-size:12px;">你的凶相让敌人心生畏惧，战斗更加顺利。</span>';
+        if (hasControlSkill) extraText += '<br><span style="color:var(--purple);font-size:12px;">你用控制系自创魂技牵制了敌人，占据了上风！</span>';
+        area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--gold)">战斗胜利！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你成功击败了对手！</p><p style="color:var(--green);margin-top:8px;">魂力+${reward}级 | 获得${Math.floor(enemyLevel * 10)}金魂币</p>${extraText}</div>`;
+      }
+    } else {
+      let lossCap = isEvil ? 10 : 5;
+      let loss = Math.min(Math.floor(enemyLevel * 0.3), lossCap);
+
+      if (isBeast) {
+        let lossYears = Math.floor(loss * 10 + Math.random() * 20);
+        G.beastYears = Math.max((G.beastYears || 0) - lossYears, 0);
+        syncBeastSoulPower();
+        G.enemies.push({ ...enemyInfo, defeated: true });
+        if (Math.random() < 0.15 * selected.power) {
+          G.alive = false;
+          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">陨落</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>实力差距太大，你倒在了强敌的爪下...</p><p style="color:var(--red);margin-top:8px;">年限-${lossYears}年</p></div>`;
+        } else {
+          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">战斗失败</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你被击败了，身受重伤...</p><p style="color:var(--red);margin-top:8px;">年限-${lossYears}年</p></div>`;
+        }
+      } else {
+        G.soulPower = Math.max(G.soulPower - loss, 1);
+        G.enemies.push({ ...enemyInfo, defeated: true });
+
+        let specialResult = false;
+        if (isEvil && isFemale && charm >= 8 && Math.random() < 0.3) {
+          let drainExtra = Math.min(Math.floor(enemyLevel * 0.2), 5);
+          G.soulPower = Math.max(G.soulPower - drainExtra, 1);
+          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">邪魂师的觊觎</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>邪魂师被你的容貌所吸引，没有直接杀你，而是用邪术大量吸取了你的魂力，欲将你掳走修炼...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss + drainExtra}级（被吸取）</p></div>`;
+          specialResult = true;
+        } else if (isEvil && isDivine && Math.random() < 0.2) {
+          let recover = Math.min(3, loss);
+          G.soulPower = Math.min(G.soulPower + recover, G.maxLevel);
+          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--gold)">神辉护体！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你身上散发的神辉让邪魂师痛苦不堪，他的邪术被净化了大半！</p><p style="color:var(--gold);margin-top:8px;">魂力-${loss}级，但神辉净化后恢复${recover}级</p></div>`;
+          specialResult = true;
+        } else if (isEvil) {
+          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">邪魂侵蚀</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你被邪魂师击败，邪术侵蚀了你的经脉，大量魂力被吸取...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+        }
+
+        if (!specialResult) {
+          if (Math.random() < 0.15 * selected.power) {
+            G.alive = false;
+            if (isEvil) {
+              area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">魂飞魄散</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>邪魂师将你彻底吞噬，连灵魂都没有留下...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+            } else {
+              area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">命丧敌手！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>实力差距太大，你倒在了血泊之中...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+            }
+          } else {
+            if (isFierce) {
+              area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">战斗失败</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你被击败了，但你的凶相让敌人不敢追击，得以保全性命。</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+            } else {
+              area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">战斗失败</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc ? `<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>` : ''}${cpDisplay}<p>你被击败了，身受重伤...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+            }
+          }
+        }
+      }
+    }
+    document.getElementById('mini-wheel-spin-btn').style.display = 'none';
+    document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
+  }, 4800);
+}
 
 
 // ============================================================

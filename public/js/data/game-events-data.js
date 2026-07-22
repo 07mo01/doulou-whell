@@ -71,6 +71,414 @@ const ACHIEVEMENTS = [
   { id: 'quick_start', name: '快速转世', cat: '特殊', desc: '使用快速随机开始游戏', icon: '⚡', check: s => s._quickStart }
 ];
 
+const JUSTICE_EVENT_POOLS = {
+  douluo1: [
+    { text: '路见不平，你看到一位老人被武魂殿的魂师欺负，挺身而出！', winChance: 0.8, rewards: { merit: 5, soulPower: 1 } },
+    { text: '你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！', winChance: 0.6, rewards: { merit: 10, soulPower: 2 } },
+    { text: '一位少女被魂兽追杀，你拔刀相助！', winChance: 0.7, rewards: { merit: 8, soulPower: 1 } },
+    { text: '你撞见武魂殿的人在欺压平民，仗义执言！', winChance: 0.5, rewards: { merit: 15, soulPower: 2 } },
+    { text: '一伙强盗劫掠商队，你出手相救！', winChance: 0.9, rewards: { merit: 3, soulPower: 1 } }
+  ],
+  douluo2: [
+    { text: '你看到一位平民被日月帝国的魂导师欺压，挺身而出！', winChance: 0.8, rewards: { merit: 5, soulPower: 1 } },
+    { text: '你发现一群邪魂师在袭击村庄，义无反顾地出手相助！', winChance: 0.6, rewards: { merit: 10, soulPower: 2 } },
+    { text: '一位少女被魂兽追杀，你拔刀相助！', winChance: 0.7, rewards: { merit: 8, soulPower: 1 } },
+    { text: '你撞见圣灵教的人在抓捕平民进行邪恶实验，仗义执言！', winChance: 0.5, rewards: { merit: 15, soulPower: 2 } },
+    { text: '一伙强盗劫掠商队，你出手相救！', winChance: 0.9, rewards: { merit: 3, soulPower: 1 } }
+  ],
+  douluo3: [
+    { text: '你看到一位平民被传灵塔的执事欺压，挺身而出！', winChance: 0.8, rewards: { merit: 5, soulPower: 1 } },
+    { text: '你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！', winChance: 0.6, rewards: { merit: 10, soulPower: 2 } },
+    { text: '一位少女被魂兽追杀，你拔刀相助！', winChance: 0.7, rewards: { merit: 8, soulPower: 1 } },
+    { text: '你撞见圣灵教的人在抓捕平民进行邪恶实验，仗义执言！', winChance: 0.5, rewards: { merit: 15, soulPower: 2 } },
+    { text: '一伙强盗劫掠商队，你出手相救！', winChance: 0.9, rewards: { merit: 3, soulPower: 1 } }
+  ],
+  douluo4: [
+    { text: '你看到一位平民被星际海盗欺压，挺身而出！', winChance: 0.8, rewards: { merit: 5, soulPower: 1 } },
+    { text: '你发现一群深红之域的生物在袭击殖民地，义无反顾地出手相助！', winChance: 0.6, rewards: { merit: 10, soulPower: 2 } },
+    { text: '一位少女被外星魂兽追杀，你拔刀相助！', winChance: 0.7, rewards: { merit: 8, soulPower: 1 } },
+    { text: '你撞见天龙星的龙族在欺压人类移民，仗义执言！', winChance: 0.5, rewards: { merit: 15, soulPower: 2 } },
+    { text: '一伙星际强盗劫掠商船，你出手相救！', winChance: 0.9, rewards: { merit: 3, soulPower: 1 } }
+  ],
+  godrealm: [
+    { text: '你看到一位神官被神兽欺负，挺身而出！', winChance: 0.8, rewards: { merit: 5, soulPower: 1 } },
+    { text: '你发现一群叛逆神兽在破坏神界秩序，义无反顾地出手相助！', winChance: 0.6, rewards: { merit: 10, soulPower: 2 } },
+    { text: '一位神官被流放神兽追杀，你拔刀相助！', winChance: 0.7, rewards: { merit: 8, soulPower: 1 } },
+    { text: '你撞见毁灭之神的部下在欺压弱小神祇，仗义执言！', winChance: 0.5, rewards: { merit: 15, soulPower: 2 } },
+    { text: '一伙神界流民劫掠集市，你出手相救！', winChance: 0.9, rewards: { merit: 3, soulPower: 1 } }
+  ],
+  default: [
+    { text: '路见不平，你看到一位老人被魂师欺负，挺身而出！', winChance: 0.8, rewards: { merit: 5, soulPower: 1 } },
+    { text: '你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！', winChance: 0.6, rewards: { merit: 10, soulPower: 2 } },
+    { text: '一位少女被魂兽追杀，你拔刀相助！', winChance: 0.7, rewards: { merit: 8, soulPower: 1 } },
+    { text: '你撞见邪恶势力在欺压平民，仗义执言！', winChance: 0.5, rewards: { merit: 15, soulPower: 2 } },
+    { text: '一伙强盗劫掠商队，你出手相救！', winChance: 0.9, rewards: { merit: 3, soulPower: 1 } }
+  ]
+};
+
+const AUCTION_EVENT_POOLS = {
+  douluo1: [
+    { name: '千年魂骨碎片', cost: 50, rewards: { soulPower: 1 }, resultText: '吸收了碎片中的魂力，魂力+1级' },
+    { name: '稀有药草·龙血参', cost: 80, rewards: { soulPower: 2 }, resultText: '服用后魂力暴涨，魂力+2级' },
+    { name: '上古暗器图谱残卷', cost: 60, rewards: { soulPower: 1 }, resultText: '领悟了上古暗器的皮毛，魂力+1级' },
+    { name: '上古武魂秘典', cost: 100, rewards: { soulPower: 3 }, resultText: '领悟了上古修炼法门，魂力+3级' },
+    { name: '仙品药草·绮罗郁金香', cost: 50, rewards: { charm: 1 }, resultText: '服用后容貌提升，魅力+1' }
+  ],
+  douluo2: [
+    { name: '千年魂骨碎片', cost: 50, rewards: { soulPower: 1 }, resultText: '吸收了碎片中的魂力，魂力+1级' },
+    { name: '稀有药草·龙血参', cost: 80, rewards: { soulPower: 2 }, resultText: '服用后魂力暴涨，魂力+2级' },
+    { name: '日月帝国魂导器图纸', cost: 60, minBattleArmor: 1, resultText: '掌握了魂导器制作技术' },
+    { name: '上古武魂秘典', cost: 100, rewards: { soulPower: 3 }, resultText: '领悟了上古修炼法门，魂力+3级' },
+    { name: '魂导美容仪', cost: 50, rewards: { charm: 1 }, resultText: '使用后容貌提升，魅力+1' }
+  ],
+  douluo3: [
+    { name: '千年魂骨碎片', cost: 50, rewards: { soulPower: 1 }, resultText: '吸收了碎片中的魂力，魂力+1级' },
+    { name: '有灵合金配方', cost: 80, minBattleArmor: 2, resultText: '掌握了有灵合金技术' },
+    { name: '一字斗铠设计图', cost: 60, minBattleArmor: 1, resultText: '获得了一字斗铠设计图' },
+    { name: '上古武魂秘典', cost: 100, rewards: { soulPower: 3 }, resultText: '领悟了上古修炼法门，魂力+3级' },
+    { name: '传灵塔美容魂导器', cost: 50, rewards: { charm: 1 }, resultText: '使用后容貌提升，魅力+1' }
+  ],
+  douluo4: [
+    { name: '千年魂骨碎片', cost: 50, rewards: { soulPower: 1 }, resultText: '吸收了碎片中的魂力，魂力+1级' },
+    { name: '龙力结晶', cost: 80, rewards: { soulPower: 2 }, resultText: '吸收龙力后魂力暴涨，魂力+2级' },
+    { name: '星际魂导器核心', cost: 60, minBattleArmor: 2, resultText: '获得了星际魂导器技术' },
+    { name: '上古武魂秘典', cost: 100, rewards: { soulPower: 3 }, resultText: '领悟了上古修炼法门，魂力+3级' },
+    { name: '天龙星养颜秘方', cost: 50, rewards: { charm: 1 }, resultText: '使用后容貌提升，魅力+1' }
+  ],
+  godrealm: [
+    { name: '神骨碎片', cost: 50, rewards: { soulPower: 1 }, resultText: '吸收了神骨碎片中的神力，魂力+1级' },
+    { name: '神赐药草', cost: 80, rewards: { soulPower: 2 }, resultText: '服用后神力暴涨，魂力+2级' },
+    { name: '神器残片', cost: 60, rewards: { soulPower: 1 }, resultText: '领悟了神器中的法则，魂力+1级' },
+    { name: '神界秘典', cost: 100, rewards: { soulPower: 3 }, resultText: '领悟了神界法则，魂力+3级' },
+    { name: '生命精华', cost: 50, rewards: { charm: 1 }, resultText: '使用后容貌提升，魅力+1' }
+  ],
+  default: [
+    { name: '千年魂骨碎片', cost: 50, rewards: { soulPower: 1 }, resultText: '吸收了碎片中的魂力，魂力+1级' },
+    { name: '稀有药草·龙血参', cost: 80, rewards: { soulPower: 2 }, resultText: '服用后魂力暴涨，魂力+2级' },
+    { name: '魂导器图纸', cost: 60, minBattleArmor: 1, resultText: '掌握了魂导器制作技术' },
+    { name: '上古武魂秘典', cost: 100, rewards: { soulPower: 3 }, resultText: '领悟了上古修炼法门，魂力+3级' },
+    { name: '美容养颜丹', cost: 50, rewards: { charm: 1 }, resultText: '服用后容貌提升，魅力+1' }
+  ]
+};
+
+const PARTNER_EVENT_POOLS = {
+  douluo1: [
+    { text: '你与{{spouseName}}在星斗大森林中历练，两人并肩作战，默契大增。', rewards: { soulPower: 2 } },
+    { text: '{{spouseName}}为你寻来了一株相思断肠红（仿品），助你稳固魂力。', rewards: { soulPower: 3 } },
+    { text: '你和{{spouseName}}一同前往海神岛朝圣，在海神之光下共同修炼。', rewards: { soulPower: 2, merit: 5 } },
+    {
+      text: '{{spouseName}}遭遇武魂殿余孽的袭击，你奋不顾身前去相救！',
+      check: {
+        winChance: 0.8,
+        success: { rewards: { soulPower: 1 }, resultText: '成功救出！两人感情更加深厚，魂力+1级' },
+        failure: { rewards: { soulPower: -2 }, resultText: '营救过程中受伤，魂力-2级' }
+      }
+    },
+    { text: '你和{{spouseName}}在索托城散步，享受难得的宁静时光。', resultText: '平淡而幸福的一年。' }
+  ],
+  douluo2: [
+    { text: '你与{{spouseName}}在海神湖畔漫步，黄金树的见证下感情升温。', rewards: { soulPower: 2 } },
+    { text: '{{spouseName}}亲手为你制作了一件二级魂导器作为礼物。', rewards: { gold: 20 }, minBattleArmor: 1, resultText: '掌握魂导基础，获得20金魂币' },
+    { text: '你和{{spouseName}}参加了海神缘相亲大会后的庆典，羡煞旁人。', rewards: { soulPower: 2, merit: 8 } },
+    {
+      text: '{{spouseName}}在监察团任务中遇险，你火速赶往救援！',
+      check: {
+        winChance: 0.75,
+        success: { rewards: { soulPower: 1 }, resultText: '成功救出！两人感情更加深厚，魂力+1级' },
+        failure: { rewards: { soulPower: -2 }, resultText: '营救过程中受伤，魂力-2级' }
+      }
+    },
+    { text: '你和{{spouseName}}一起研究魂导器到深夜，虽然疲惫但很充实。', resultText: '平淡而幸福的一年。' }
+  ],
+  douluo3: [
+    { text: '你与{{spouseName}}在史莱克学院的斗铠工坊一起制作合金，默契十足。', rewards: { soulPower: 2 } },
+    { text: '{{spouseName}}陪你去传灵塔升灵台修炼，两人在虚拟世界中并肩作战。', rewards: { soulPower: 2 } },
+    { text: '你和{{spouseName}}一同前往龙谷秘境探险，在龙骨山脉中许下了誓言。', rewards: { soulPower: 3 }, resultText: '魂力+3级（龙骨见证）' },
+    {
+      text: '{{spouseName}}被圣灵教的人盯上，你挺身而出保护爱人！',
+      check: {
+        winChance: 0.7,
+        success: { rewards: { soulPower: 1, merit: 5 }, resultText: '成功击退敌人！名声+5，魂力+1级' },
+        failure: { rewards: { soulPower: -2 }, resultText: '不敌邪魂师，受伤后魂力-2级' }
+      }
+    },
+    { text: '你和{{spouseName}}在东海城的海边散步，谈论着未来的斗铠设计。', resultText: '平淡而幸福的一年。' }
+  ],
+  douluo4: [
+    { text: '你与{{spouseName}}在天龙星的龙族花园中约会，外星球的浪漫别有一番风味。', rewards: { soulPower: 2 } },
+    { text: '{{spouseName}}驾驶飞船带你游览了斗罗联邦的星际疆域。', rewards: { gold: 40 }, resultText: '获得40金魂币' },
+    { text: '你和{{spouseName}}一同探索了龙界遗迹，在龙神的气息中感情升华。', rewards: { soulPower: 3 } },
+    {
+      text: '{{spouseName}}在深红之域的探索中失联，你冒着生命危险前去寻找！',
+      check: {
+        winChance: 0.7,
+        success: { rewards: { soulPower: 2 }, resultText: '成功找到！两人在生死之间更加珍惜彼此，魂力+2级' },
+        failure: { rewards: { soulPower: -3 }, resultText: '遭遇深红生物袭击，重伤后魂力-3级' }
+      }
+    },
+    { text: '你和{{spouseName}}在精灵星的栖息地露营，欣赏着外星球的星空。', resultText: '平淡而幸福的一年。' }
+  ],
+  godrealm: [
+    { text: '你与{{spouseName}}在神界花园中漫步，神界的景色万年不变但身边有你足矣。', rewards: { soulPower: 3 } },
+    { text: '{{spouseName}}用生命之力为你洗涤神魂，你的神力更加纯粹。', rewards: { soulPower: 4 }, resultText: '魂力+4级（神魂洗涤）' },
+    { text: '你和{{spouseName}}一同参加了神界委员会举办的论道大会，在诸神面前展示了你们的默契。', rewards: { soulPower: 3, merit: 10 } },
+    {
+      text: '{{spouseName}}在神界深渊巡查时遇险，你冲入深渊营救！',
+      check: {
+        winChance: 0.8,
+        success: { rewards: { soulPower: 2 }, resultText: '成功救出！两人在神界也是令人羡慕的神仙眷侣，魂力+2级' },
+        failure: { rewards: { soulPower: -2 }, resultText: '被神界乱流所伤，魂力-2级' }
+      }
+    },
+    { text: '你和{{spouseName}}在神界天河旁静修，数万年的陪伴让你们的感情愈发深厚。', resultText: '平淡而幸福的一年。' }
+  ],
+  default: [
+    { text: '你与{{spouseName}}一同修炼，两人相辅相成，魂力精进。', rewards: { soulPower: 2 } },
+    { text: '{{spouseName}}为你寻来一株稀有药草，助你突破瓶颈。', rewards: { soulPower: 3 } },
+    { text: '你和{{spouseName}}共同游历大陆，增长见闻。', rewards: { gold: 50 }, resultText: '获得50金魂币' },
+    {
+      text: '{{spouseName}}遭遇危险，你奋不顾身前去相救！',
+      check: {
+        winChance: 0.7,
+        success: { resultText: '成功救出！两人感情更加深厚。' },
+        failure: { rewards: { soulPower: -2 }, resultText: '营救过程中受伤，魂力-2级' }
+      }
+    },
+    { text: '你和{{spouseName}}感情平淡但温馨，携手走过这一年。', resultText: '平淡而幸福的一年。' }
+  ]
+};
+
+const FORTUNE_EVENT_POOLS = {
+  human: {
+    douluo1: {
+      sp: ['你在一处隐秘山谷发现了一株万年灵芝，服用后魂力大涨！', '你在猎魂森林深处发现了一处前人遗留的洞府，获得了一本上古修炼笔记。', '一位游历的魂师看你资质不错，赠送了你一枚珍贵的魂骨碎片。', '你在索托城偶遇一位神秘的封号斗罗，他随手指点了几句就让你茅塞顿开。', '你参加了一场地下拍卖会，意外以低价拍下了一株龙血参。'],
+      gold: ['你意外发现了一处被魂兽守护的宝藏！', '你帮助了一位商人，他赠予你大量金魂币作为谢礼。', '你在斗魂场下注赢了，获得了丰厚的回报。', '你在瀑布下修炼时发现水底有一道暗门，里面藏着前辈魂师留下的金币。'],
+      appearance: ['你服用了某种神奇的天材地宝，容貌发生了变化...', '你修炼了一种养颜功法，气质越发出众。', '你在冰火两仪眼附近采摘到一株仙品药草，不仅提升了修为，容貌也变得更加出众。'],
+      bone: ['你在秘境探险中意外发现了一块魂骨！', '你猎杀了一只罕见魂兽，它竟然产出了一块魂骨！', '你在星斗大森林核心区边缘捡到了一块前人遗留的魂骨！']
+    },
+    douluo2: {
+      sp: ['你在海神湖畔捡到一块奇特的魂导核心，里面蕴含着远古魂导技术！', '你的精神探测意外触碰到黄金树的意识，获得了短暂的精神力洗礼。', '你在日月帝国的边境发现了一处魂导师遗迹，获得了一本失传的修炼手册。', '你遇到了一只濒死的天梦冰蚕（幼体），它自愿将部分精神力赠与你。'],
+      gold: ['你制作了一件魂导器并出售，赚了不少钱。', '你在日月帝国的边境贸易中获利颇丰。', '你发现了一批日月帝国流出的稀有金属，卖了个好价钱。'],
+      appearance: ['你使用了一款新型魂导美容仪，效果显著。', '你修炼了唐门的玄天功，气质越发超凡脱俗。', '海神湖畔的灵气洗涤了你的肌肤，魅力提升。'],
+      bone: ['你在监察团任务中发现了一块魂骨！', '你在海神阁的藏宝库中获得了一块传承魂骨！', '你剿灭邪魂师据点时，意外发现了一块被掠夺的魂骨！']
+    },
+    douluo3: {
+      sp: ['你在升灵台中意外触发了一个隐藏区域，魂灵获得了额外的成长能量！', '你锻造时意外进入了一种奇妙的境界，魂力随之突破。', '你在龙谷秘境的边缘捡到了一块龙骨碎片，龙族气息让你血脉沸腾。', '你的魂灵在传灵塔的特殊培育舱中发生了良性变异。'],
+      gold: ['你锻造的一件合金作品被高价买走。', '你在传灵塔的悬赏任务中获得了丰厚奖励。', '你发现了一种新型稀有金属矿脉，联邦给予了奖励。'],
+      appearance: ['你使用了传灵塔最新研发的美容魂导器。', '你的武魂二次觉醒，连带容貌也变得更加出众。', '你在生命古树的树荫下修炼，生命能量让你的气质更加出众。'],
+      bone: ['你在古战场遗址中发现了一块上古魂骨！', '你击杀了一只深渊生物，它掉落了一块奇特的魂骨！', '你在龙谷秘境中找到了一块龙骨化成的魂骨！']
+    },
+    douluo4: {
+      sp: ['你在天龙星的龙族祭坛附近修炼，意外吸收了一丝纯净的龙力！', '你在深红之域的边缘发现了一种奇异的能量晶体，对修炼大有裨益。', '你探索龙界遗迹时，龙神的气息灌入体内，修为大增。', '你在精灵星的生命古树下冥想，感受到了宇宙本源的生命能量。'],
+      gold: ['你发现了一颗富含稀有金属的小行星，获得了联邦的奖励。', '你参加星际魂师大赛获得了高额奖金。', '你帮龙马星系的商人解决了一个难题，获得了丰厚报酬。'],
+      appearance: ['你吸收了精灵星的生命能量，容貌变得更加完美。', '你的龙神血脉觉醒了一丝，连带外貌也发生了变化。', '你使用了天龙星龙族特有的养颜秘方，效果惊人。'],
+      bone: ['你在龙界遗迹中发现了一块龙族魂骨！', '你探索未知星域时获得了一块外星生物的魂骨！', '你在深红之域击败了一只强大的深红生物，获得了一块变异魂骨！']
+    },
+    godrealm: {
+      sp: ['你获得了一道神赐神力，修为突飞猛进！', '你在神界法则中感悟到了宇宙的奥秘。', '你吸收了一只神兽的神性精华。', '唐三路过你的修炼之地，随口指点了一句就让你豁然开朗。'],
+      gold: ['你在神界集市中出售了一件多余的神器。', '你完成了一项神界任务，获得了丰厚奖励。', '你在神界天河中捡到了一块神金，价值连城。'],
+      appearance: ['生命女神赐予你一滴生命精华，你的容貌变得完美无瑕。', '你在神光中洗涤肉身，气质变得超凡脱俗。', '神界的法则之力重塑了你的形体，魅力提升。'],
+      bone: ['你在神界深渊中发现了一块神骨！', '你在神域秘境中获得了一块传承神骨！', '你协助神界委员会剿灭叛逆神兽，获得了一块神兽魂骨！']
+    },
+    default: {
+      sp: ['你在一处隐秘之地发现了前人遗留的修炼资源，修为有所精进。'],
+      gold: ['你偶然得到了一笔意外之财。'],
+      appearance: ['你得到了一份改善体质与气质的机缘。'],
+      bone: ['你在探险中发现了一块珍贵魂骨！']
+    }
+  },
+  soul_beast: {
+    douluo1: {
+      sp: ['你发现了一株散发着浓郁灵气的万年灵芝，毫不犹豫地一口吞下，修为大涨！', '你闯入了一处前人遗留的洞府，里面残留的能量被你尽数吸收。', '一只重伤的千年魂兽倒在你面前，你本能地吞噬了它的魂力。', '你在瀑布下发现了隐藏的灵泉，喝了几口后浑身舒畅。'],
+      gold: ['你发现了一处被遗弃的洞穴，里面散落着人类魂师留下的金币。', '你在森林中捡到了一枚人类掉落的储物戒指，里面有一些金魂币。', '你守护了一片药田，主人感激地赠予你财宝。'],
+      appearance: ['你吞噬了一颗奇异的果实，身上的毛发变得更加光亮...', '你吸收了一缕月华之力，气质变得越发威严。', '你在灵泉中泡了一晚，体型变得更加矫健威武。'],
+      bone: ['你发现了一只强大魂兽的遗骸，吞噬了它残留的能量精华！', '你在洞穴深处发现了一块能量结晶，里面蕴含着浓郁的天地灵气！', '你击败了一只入侵你领地的魂兽，吞噬了它的本源之力！']
+    },
+    douluo2: {
+      sp: ['你在海神湖畔发现了一块蕴含能量的魂导核心碎片，一口咬碎吞了下去！', '黄金树的气息让你浑身舒泰，不自觉地靠近吸收了不少能量。', '你在边境发现了一处废弃的魂导师实验室，里面残留的能量被你尽数吞噬。', '你遇到了一只濒死的天梦冰蚕（幼体），本能地吞噬了它的精神力。'],
+      gold: ['你在人类城镇外围的废墟中发现了不少散落的金魂币。', '你帮一只受伤的魂兽找到回家的路，它的族群赠予你一些人类金币作为谢礼。'],
+      appearance: ['你吸收了一缕海神湖畔的灵气，身上的鳞片/毛发变得更加鲜艳。', '你吞噬了一种奇异的灵果，体型更加威武霸气。'],
+      bone: ['你发现了一处人类监察团的遗物，里面有一块蕴含能量的结晶！', '你在海底发现了一枚遗落的魂导器核心，吞噬后获得了额外的能量！']
+    },
+    douluo3: {
+      sp: ['你在龙谷秘境边缘发现了一块龙骨碎片，龙族的气息让你血脉沸腾！', '你在森林深处发现了一处灵泉，畅饮之后修为大涨。', '你的血脉在月光下发生了微妙的共鸣，仿佛有远古的力量在觉醒。', '你吞噬了一只闯入你领地的深渊生物，它的能量让你实力大增。'],
+      gold: ['你发现了一处人类采矿队遗弃的营地，里面有不少值钱的金属。', '你在传灵塔外围的废墟中找到了一些人类掉落的金币。'],
+      appearance: ['你的生命能量得到了升华，外表变得更加威严霸气。', '你的血脉之力微微觉醒，身上的气息变得更加慑人。'],
+      bone: ['你在古战场发现了一只远古魂兽的完整遗骸，吞噬后获得了巨大的能量！', '你击败了一只挑战你的深渊生物，吞噬了它的核心！']
+    },
+    douluo4: {
+      sp: ['你在天龙星的龙族祭坛附近修炼，意外吸收了一丝纯净的龙力！', '你在深红之域的边缘发现了一种奇异的能量晶体，一口咬碎吞了下去。', '你探索龙界遗迹时，龙神的气息灌入体内，修为大增。', '你在精灵星的生命古树下冥想，感受到了宇宙本源的生命能量。'],
+      gold: ['你发现了一颗小行星上人类遗落的物资，里面有不少值钱的东西。', '你在星际港口附近捡到了一些人类掉落的货币。'],
+      appearance: ['你吸收了精灵星的生命能量，外表变得更加完美威严。', '你的龙神血脉觉醒了一丝，体型变得更加庞大威武。'],
+      bone: ['你在龙界遗迹中发现了一只远古龙族的遗骸，吞噬后获得了龙族传承之力！', '你在深红之域击败了一只强大的深红生物，吞噬了它的能量核心！']
+    },
+    godrealm: {
+      sp: ['你获得了一道神赐神力，修为突飞猛进！', '你在神界法则中感悟到了宇宙的奥秘。', '你吞噬了一只叛逆神兽的神性精华。', '生命女神路过你的修炼之地，随手洒下了一滴生命甘露。'],
+      gold: ['你在神界森林中发现了前人遗留的神金。', '你完成了一项神界任务，获得了丰厚奖励。', '你在神界天河中捡到了一块蕴含神力的结晶。'],
+      appearance: ['生命女神赐予你一滴生命精华，你的外表变得完美无瑕。', '你在神光中洗涤肉身，气质变得超凡脱俗。', '神界的法则之力重塑了你的形体，魅力提升。'],
+      bone: ['你在神界深渊中发现了一只陨落神兽的遗骸，吞噬后获得了神性精华！', '你协助神界委员会剿灭叛逆神兽，吞噬了它的神性本源！']
+    },
+    default: {
+      sp: ['你在天地灵气汇聚之地修炼，修为稳步提升。'],
+      gold: ['你从人类遗迹中翻出了一些有价值的财物。'],
+      appearance: ['你吸收灵气后体魄与气势更上一层楼。'],
+      bone: ['你在荒野中发现了一份强者遗留的本源精华！']
+    }
+  }
+};
+
+const FORTUNE_EVENT_RULES = {
+  types: ['sp', 'gold', 'appearance', 'bone'],
+  sp: {
+    rewards: { soulPower: { min: 1, max: 3 } },
+    beastRewards: { beastYears: { min: 100, max: 500 } }
+  },
+  gold: {
+    rewards: { gold: { min: 20, max: 99 } }
+  },
+  appearance: {
+    rewards: { charm: 1 },
+    fallbackRewards: { soulPower: 1 }
+  },
+  bone: {
+    boneTypes: ['头部魂骨', '躯干魂骨', '左臂骨', '右臂骨', '左腿骨', '右腿骨'],
+    duplicateRewards: { gold: 100 },
+    beastRewards: { beastYears: { min: 200, max: 500 } }
+  }
+};
+
+const NORMAL_EVENT_POOLS = {
+  soul_beast: {
+    douluo1: [
+      { text: '你在星斗大森林深处吸收月华之力，修为稳步增长。', rewards: { soulPower: 1, beastYears: 25 } },
+      { text: '你发现了一处灵泉，畅饮之后浑身舒畅，本源之力有所增强。', rewards: { soulPower: 1, beastYears: 35 } },
+      { text: '你与同族切磋斗技，在战斗中磨练了本能。', rewards: { soulPower: 2, beastYears: 20 } },
+      { text: '你吞噬了一只入侵领地的小型魂兽，获得了额外的能量。', rewards: { soulPower: 1, beastYears: 45 } },
+      { text: '你在瀑布下淬炼肉身，皮毛/鳞甲变得更加坚韧。', rewards: { soulPower: 1, beastYears: 25 } },
+      { text: '你感应到了森林深处某位十万年魂兽的气息，受到启发。', rewards: { soulPower: 2, beastYears: 20 } },
+      { text: '你在冰火两仪眼附近修炼，极致能量让你的血脉更加纯粹。', rewards: { soulPower: 2, beastYears: 40 } },
+      { text: '平静的一年，你安心修炼，无惊无险。', rewards: { soulPower: 1, beastYears: 18 } }
+    ],
+    douluo2: [
+      { text: '你在森林中吸收天地灵气，黄金树的气息让修炼事半功倍。', rewards: { soulPower: 1, beastYears: 25 } },
+      { text: '你发现了一片被人类遗弃的药田，吞食了几株灵草。', rewards: { soulPower: 1, beastYears: 35 } },
+      { text: '你与其他魂兽争夺领地，胜利后吞噬了对方的残余能量。', rewards: { soulPower: 2, beastYears: 30 } },
+      { text: '你避开了人类监察团的巡逻，在隐秘山谷中安心修炼。', rewards: { soulPower: 1, beastYears: 18 } },
+      { text: '你在冰原上修炼，极寒环境淬炼了你的意志。', rewards: { soulPower: 1, beastYears: 25 } },
+      { text: '你吞噬了一只邪魂师留下的邪恶魂兽，获得了诡异的能量。', rewards: { soulPower: 2, beastYears: 35 } },
+      { text: '你感受到日月帝国魂导器的能量波动，从中汲取了一丝变异之力。', rewards: { soulPower: 2, beastYears: 30 } }
+    ],
+    douluo3: [
+      { text: '你在龙谷秘境边缘感应到龙族气息，血脉微微沸腾。', rewards: { soulPower: 1, beastYears: 25 } },
+      { text: '你发现了一处地下灵脉，汲取其中的能量修炼。', rewards: { soulPower: 2, beastYears: 35 } },
+      { text: '你击败了一只挑战你的深渊生物，吞噬了它的核心。', rewards: { soulPower: 2, beastYears: 45 } },
+      { text: '你在传灵塔外围的森林中躲避人类的目光，默默修炼。', rewards: { soulPower: 1, beastYears: 18 } },
+      { text: '你吞噬了一只重伤的同类，虽然残忍但弱肉强食是法则。', rewards: { soulPower: 1, beastYears: 35 } },
+      { text: '你在斗铠碎片遗迹中感悟远古力量，修为精进。', rewards: { soulPower: 2, beastYears: 40 } },
+      { text: '平静的一年，你在隐秘洞穴中沉睡修炼。', rewards: { soulPower: 1, beastYears: 25 } }
+    ],
+    douluo4: [
+      { text: '你在天龙星的原始森林中吸收龙力，修为有所提升。', rewards: { soulPower: 1, beastYears: 25 } },
+      { text: '你发现了一颗蕴含能量的陨石碎片，吞噬后获得了异域能量。', rewards: { soulPower: 2, beastYears: 45 } },
+      { text: '你躲避星际猎魂师的追捕，在荒星上艰难求生。', rewards: { soulPower: 1, beastYears: 18 } },
+      { text: '你在深红之域边缘吸收了一丝奇异能量，修为大涨。', rewards: { soulPower: 2, beastYears: 35 } },
+      { text: '你在精灵星的生命古树下修炼，感受到了宇宙本源之力。', rewards: { soulPower: 2, beastYears: 35 } },
+      { text: '你在龙马星系吸收异星法则，血脉产生微妙变化。', rewards: { soulPower: 2, beastYears: 40 } },
+      { text: '平静的一年，你在洞穴中沉睡，吸收天地精华。', rewards: { soulPower: 1, beastYears: 25 } }
+    ],
+    godrealm: [
+      { text: '你在神界森林中吸收神性精华，本源之力变得更加纯粹。', rewards: { soulPower: 2, beastYears: 50 } },
+      { text: '你吞噬了一只叛逆神兽的神性本源，修为大增。', rewards: { soulPower: 2, beastYears: 60 } },
+      { text: '你在神界天河中洗涤肉身，去除了体内的杂质。', rewards: { soulPower: 1, beastYears: 40 } },
+      { text: '你观摩了神界法则的运转，对天地大道有了新的感悟。', rewards: { soulPower: 2, beastYears: 50 } },
+      { text: '你在神兽领域边缘感悟神兽本源，血脉之力沸腾。', rewards: { soulPower: 2, beastYears: 55 } },
+      { text: '平静的一年，你在神界隐秘角落中安心修炼。', rewards: { soulPower: 1, beastYears: 35 } }
+    ],
+    default: [
+      { text: '你闭关苦修，感悟天地之力。', rewards: { soulPower: 1, beastYears: 18 } },
+      { text: '你在森林中吸收日月精华，修为稳步增长。', rewards: { soulPower: 1, beastYears: 25 } },
+      { text: '平静的一年，你安心修炼，无惊无险。', rewards: { soulPower: 1, beastYears: 18 } }
+    ]
+  },
+  divine_beast: {
+    godrealm: [
+      { text: '你在神界天河中沐浴，神性精华浸润全身，神力大增。', rewards: { soulPower: 2 } },
+      { text: '你观摩神界法则流转，对天地大道有了新的感悟。', rewards: { soulPower: 2 } },
+      { text: '你在神兽领域与其他神兽切磋，磨练了本能。', rewards: { soulPower: 1 } },
+      { text: '你吞噬了一缕散落的神性本源，神力更加凝实。', rewards: { soulPower: 2 } },
+      { text: '你在神界古树下修炼，吸收远古神力。', rewards: { soulPower: 1 } },
+      { text: '你感悟了血脉深处的远古记忆，神力觉醒。', rewards: { soulPower: 2 } },
+      { text: '你在神界灵山之巅吐纳，云雾化作神力涌入体内。', rewards: { soulPower: 1 } },
+      { text: '平静的一年，你在神界隐秘之地安心修炼。', rewards: { soulPower: 1 } }
+    ],
+    default: [
+      { text: '你在神域之中安心修炼，神力稳步增长。', rewards: { soulPower: 1 } }
+    ]
+  },
+  god: {
+    godrealm: [
+      { text: '你在神殿中冥想，神格更加凝实，神力提升。', rewards: { soulPower: 2 } },
+      { text: '你观摩神界委员会的法则会议，对神道有了新的领悟。', rewards: { soulPower: 2 } },
+      { text: '你巡视所掌管的领域，神力在职责中精进。', rewards: { soulPower: 1 } },
+      { text: '你与其他神祇论道，交流修炼心得。', rewards: { soulPower: 1 } },
+      { text: '你感悟了远古神祇遗留的修炼印记，神力大涨。', rewards: { soulPower: 2 } },
+      { text: '你在神界天河畔修炼，天河之力助你凝练神格。', rewards: { soulPower: 1 } },
+      { text: '你参悟了一件远古神器的使用之法，神力有所提升。', rewards: { soulPower: 2 } },
+      { text: '平静的一年，你在神殿中安心修炼。', rewards: { soulPower: 1 } }
+    ],
+    default: [
+      { text: '你在神界法则之下静修，神力缓慢凝实。', rewards: { soulPower: 1 } }
+    ]
+  },
+  human: {
+    douluo1: [
+      { text: '你在瀑布下苦修，如当年唐三修炼玄天功一般，肉体与精神同步提升。', rewards: { soulPower: 2 } },
+      { text: '你进入猎魂森林历练，与低阶魂兽交手，实战经验大增。', rewards: { soulPower: 1 } },
+      { text: '你在宗门藏经阁读到上古暗器图谱，虽不能制作但开阔了眼界。', rewards: { soulPower: 1 } },
+      { text: '你参加了一场魂师友谊赛，在切磋中发现了自己武魂的新用法。', rewards: { soulPower: 2 } },
+      { text: '你跟随师长前往星斗大森林外围，远远感受到了十万年魂兽的恐怖气息。', rewards: { soulPower: 1 } },
+      { text: '你在索托城的大斗魂场观战，被魂师们的热血战斗所感染。', rewards: { soulPower: 1 } }
+    ],
+    douluo2: [
+      { text: '你在海神湖畔冥想，黄金树的力量潜移默化地滋养着你的武魂。', rewards: { soulPower: 1 } },
+      { text: '你研究了一件一级魂导器的构造，对魂导科技的理解更深了一层。', rewards: { soulPower: 1 } },
+      { text: '你尝试用精神探测感知周围环境，精神力如同霍雨浩那般缓慢增长。', rewards: { soulPower: 2 } },
+      { text: '你在史莱克学院的训练场上挥洒汗水，外院弟子的日常就是如此充实。', rewards: { soulPower: 1 } },
+      { text: '你阅读了唐门暗器与魂导器结合的论文，对两个时代的融合有了新的认识。', rewards: { soulPower: 1 } },
+      { text: '你参与了一场模拟魂导对抗赛，体验了日月帝国魂导师的战斗方式。', rewards: { soulPower: 2 } }
+    ],
+    douluo3: [
+      { text: '你在锻造台上挥汗如雨，千锻一品的目标让你不断突破自我。', rewards: { soulPower: 1 } },
+      { text: '你在升灵台中进行虚拟实战，魂灵在战斗中成长，你的操作也更加娴熟。', rewards: { soulPower: 2 } },
+      { text: '你研究了一块有灵合金的配方，斗铠制作的道路漫长但充满诱惑。', rewards: { soulPower: 1 } },
+      { text: '你在史莱克学院的图书馆查阅万年前的史料，对比今昔感慨万千。', rewards: { soulPower: 1 } },
+      { text: '你尝试将血脉之力与魂技融合，如同唐舞麟那般寻找属于自己的战斗方式。', rewards: { soulPower: 2 } },
+      { text: '你在传灵塔参观魂灵培育中心，看到濒临灭绝的魂兽被悉心照料。', rewards: { soulPower: 1 } }
+    ],
+    douluo4: [
+      { text: '你在精灵星的原始森林中冥想，外星球的能量与斗罗星截然不同。', rewards: { soulPower: 1 } },
+      { text: '你驾驶小型宇宙飞船进行了一次短途航行，星际时代的魂师需要掌握的技能真多。', rewards: { soulPower: 1 } },
+      { text: '你在天龙星的龙族遗迹中修炼，龙神血脉的气息让你修炼速度有所提升。', rewards: { soulPower: 2 } },
+      { text: '你参加了一场星际魂师对抗赛，见识了来自不同星球的魂师强者。', rewards: { soulPower: 1 } },
+      { text: '你学习了古武与魂技结合的新流派，娜娜老师的理论让你受益匪浅。', rewards: { soulPower: 2 } },
+      { text: '你在龙源星猎杀了一只小型龙族生物，获取了珍贵的龙力结晶。', rewards: { soulPower: 1 } }
+    ],
+    godrealm: [
+      { text: '你在神界法则之下修炼，神力与魂力截然不同，需要重新适应。', rewards: { soulPower: 2 } },
+      { text: '你观摩了神界中枢的运转，对宇宙法则有了更深层次的感悟。', rewards: { soulPower: 2 } },
+      { text: '你在神界森林中狩猎神兽，这里的“魂兽”都散发着神性的光辉。', rewards: { soulPower: 1 } },
+      { text: '你参加了一场神祇之间的论道，虽然只是旁听但收获颇丰。', rewards: { soulPower: 1 } },
+      { text: '你在神界天河中洗涤肉身，神力的杂质被一一清除。', rewards: { soulPower: 2 } },
+      { text: '你尝试凝聚神位，虽然失败但为未来的突破积累了经验。', rewards: { soulPower: 1 } }
+    ],
+    default: [
+      { text: '你闭关苦修，感悟天地之力。', rewards: { soulPower: 1 } },
+      { text: '你在宗门藏经阁阅读典籍，有所感悟。', rewards: { soulPower: 1 } },
+      { text: '平静的一年，你安心修炼，无惊无险。', rewards: { soulPower: 1 } }
+    ]
+  }
+};
+
 // ============================================================
 // EVENT POOLS
 // ============================================================
@@ -476,50 +884,50 @@ const SCHOOL_EVENTS = {
     name: '史莱克学院',
     desc: '弗兰德院长在索托城创办的怪物学院，只招收真正的天才，口号是"只收怪物不收普通人"。',
     events: [
-      { text: '弗兰德院长亲自对你进行魔鬼训练，负重跑、瀑布下冥想，你的身体极限被不断突破。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } },
-      { text: '大师玉小刚的理论课让你茅塞顿开——原来武魂之间还有如此精妙的配合之道！', effect: (g) => { g.soulPower = Math.min(g.soulPower + 3, g.maxLevel); return '魂力+3级'; } },
-      { text: '柳二龙副院长带你去星斗大森林外围猎杀魂兽，实战经验大幅提升。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); g.merit = (g.merit || 0) + 3; return '魂力+2级，名声+3'; } },
-      { text: '你与史莱克七怪进行团队对战演练，唐三的战术指挥让你受益匪浅。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 1, g.maxLevel); g.merit = (g.merit || 0) + 5; return '魂力+1级，名声+5'; } },
-      { text: '学院食堂的大香肠让你永生难忘——虽然味道奇怪但恢复效果惊人。', effect: (g) => { g.gold = (g.gold || 0) + 10; return '获得10金魂币'; } },
-      { text: '赵无极老师亲自测试你的实力，在不动明王的威压下你的战斗意志更加坚定。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } }
+      { text: '弗兰德院长亲自对你进行魔鬼训练，负重跑、瀑布下冥想，你的身体极限被不断突破。', rewards: { soulPower: 2 } },
+      { text: '大师玉小刚的理论课让你茅塞顿开——原来武魂之间还有如此精妙的配合之道！', rewards: { soulPower: 3 } },
+      { text: '柳二龙副院长带你去星斗大森林外围猎杀魂兽，实战经验大幅提升。', rewards: { soulPower: 2, merit: 3 } },
+      { text: '你与史莱克七怪进行团队对战演练，唐三的战术指挥让你受益匪浅。', rewards: { soulPower: 1, merit: 5 } },
+      { text: '学院食堂的大香肠让你永生难忘——虽然味道奇怪但恢复效果惊人。', rewards: { gold: 10 }, resultText: '获得10金魂币' },
+      { text: '赵无极老师亲自测试你的实力，在不动明王的威压下你的战斗意志更加坚定。', rewards: { soulPower: 2 } }
     ]
   },
   douluo2: {
     name: '史莱克学院',
     desc: '大陆第一学院，外院与内院并存，汇聚天下英才。海神阁是学院最高权力机构。',
     events: [
-      { text: '周漪老师的新生考核异常严格，你在高压下突破了自身极限。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } },
-      { text: '帆羽老师带你进入魂导系实验室，你第一次亲手制作出一件一级魂导器。', effect: (g) => { g.battleArmor = Math.max(g.battleArmor || 0, 1); g.gold = (g.gold || 0) + 15; return '掌握魂导基础，获得15金魂币'; } },
-      { text: '你成功考入史莱克内院，言少哲院长亲自为你颁发内院徽章。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 3, g.maxLevel); g.merit = (g.merit || 0) + 8; return '魂力+3级，名声+8'; } },
-      { text: '穆老在黄金树下的授课让你对光明与生命有了新的感悟。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } },
-      { text: '玄老带你执行监察团任务，铲除邪魂师的行动让你明白强者的责任。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); g.merit = (g.merit || 0) + 6; return '魂力+2级，名声+6'; } },
-      { text: '你在海神湖畔冥想，黄金树的力量洗涤你的心灵。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 1, g.maxLevel); return '魂力+1级'; } }
+      { text: '周漪老师的新生考核异常严格，你在高压下突破了自身极限。', rewards: { soulPower: 2 } },
+      { text: '帆羽老师带你进入魂导系实验室，你第一次亲手制作出一件一级魂导器。', rewards: { gold: 15 }, minBattleArmor: 1, resultText: '掌握魂导基础，获得15金魂币' },
+      { text: '你成功考入史莱克内院，言少哲院长亲自为你颁发内院徽章。', rewards: { soulPower: 3, merit: 8 } },
+      { text: '穆老在黄金树下的授课让你对光明与生命有了新的感悟。', rewards: { soulPower: 2 } },
+      { text: '玄老带你执行监察团任务，铲除邪魂师的行动让你明白强者的责任。', rewards: { soulPower: 2, merit: 6 } },
+      { text: '你在海神湖畔冥想，黄金树的力量洗涤你的心灵。', rewards: { soulPower: 1 } }
     ]
   },
   douluo3: {
     name: '史莱克学院',
     desc: '斗罗大陆最顶尖的魂师学院。在魂兽濒临灭绝的时代，传灵塔与学院共同培养新一代魂师。',
     events: [
-      { text: '舞长空老师对你进行了冷傲但严格的指导，你的剑法/身法精进不少。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } },
-      { text: '你在传灵塔的升灵台中进行虚拟实战，魂灵在战斗中获得了成长。', effect: (g) => { if (g.soulRings && g.soulRings.length > 0) { let last = g.soulRings[g.soulRings.length - 1]; last.years = Math.floor(last.years * 1.2); } g.soulPower = Math.min(g.soulPower + 1, g.maxLevel); return '魂灵年份提升20%，魂力+1级'; } },
-      { text: '枫无羽长老亲自指点你锻造，作为圣匠的他让你的锻造技艺突飞猛进。', effect: (g) => { g.gold = (g.gold || 0) + 30; return '获得30金魂币'; } },
-      { text: '浊世长老的赤龙九式虽然只是演示，但让你明白了力量与技巧的结合。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } },
-      { text: '你在斗铠工坊成功制作出第一件有灵合金，向一字斗铠迈出了第一步。', effect: (g) => { g.battleArmor = Math.max(g.battleArmor || 0, 2); return '掌握斗铠基础'; } },
-      { text: '参加学院组织的星斗大森林实战，你第一次感受到濒临灭绝的魂兽们的悲哀。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 1, g.maxLevel); g.merit = (g.merit || 0) + 4; return '魂力+1级，名声+4'; } },
-      { text: '云冥阁主亲自授课，擎天枪的枪意让你明白了什么是"一枪擎天"。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 3, g.maxLevel); return '魂力+3级（阁主指点）'; } }
+      { text: '舞长空老师对你进行了冷傲但严格的指导，你的剑法/身法精进不少。', rewards: { soulPower: 2 } },
+      { text: '你在传灵塔的升灵台中进行虚拟实战，魂灵在战斗中获得了成长。', rewards: { soulPower: 1 }, special: { latestRingYearsMultiplier: 1.2 }, resultText: '魂灵年份提升20%，魂力+1级' },
+      { text: '枫无羽长老亲自指点你锻造，作为圣匠的他让你的锻造技艺突飞猛进。', rewards: { gold: 30 }, resultText: '获得30金魂币' },
+      { text: '浊世长老的赤龙九式虽然只是演示，但让你明白了力量与技巧的结合。', rewards: { soulPower: 2 } },
+      { text: '你在斗铠工坊成功制作出第一件有灵合金，向一字斗铠迈出了第一步。', minBattleArmor: 2, resultText: '掌握斗铠基础' },
+      { text: '参加学院组织的星斗大森林实战，你第一次感受到濒临灭绝的魂兽们的悲哀。', rewards: { soulPower: 1, merit: 4 } },
+      { text: '云冥阁主亲自授课，擎天枪的枪意让你明白了什么是"一枪擎天"。', rewards: { soulPower: 3 }, resultText: '魂力+3级（阁主指点）' }
     ]
   },
   douluo4: {
     name: '史莱克学院',
     desc: '星际时代最顶尖的魂师学院，拥有精灵星、天龙星等外星分院，是联邦的中流砥柱。',
     events: [
-      { text: '唐震华老师带你进行星际航行实训，你第一次驾驶宇宙飞船。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } },
-      { text: '在精灵星的魂兽栖息地，你与一只强大的外星魂兽建立了友谊。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 1, g.maxLevel); g.merit = (g.merit || 0) + 5; return '魂力+1级，名声+5'; } },
-      { text: '参加龙源星实战演练，你第一次与龙族生物交手，经验宝贵。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); g.merit = (g.merit || 0) + 5; return '魂力+2级，名声+5'; } },
-      { text: '娜娜老师教导你古武技巧，她的教学方式独特而高效。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } },
-      { text: '在天龙星的龙族秘境中，你感受到龙神血脉的召唤。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 1, g.maxLevel); return '魂力+1级'; } },
-      { text: '参加史莱克七怪选拔赛，你的表现让评委们眼前一亮。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 3, g.maxLevel); g.merit = (g.merit || 0) + 8; return '魂力+3级，名声+8'; } },
-      { text: '唐乐（唐舞麟）在学院举办音乐会，金龙王的旋律中你领悟了力量与美的融合。', effect: (g) => { g.soulPower = Math.min(g.soulPower + 2, g.maxLevel); return '魂力+2级'; } }
+      { text: '唐震华老师带你进行星际航行实训，你第一次驾驶宇宙飞船。', rewards: { soulPower: 2 } },
+      { text: '在精灵星的魂兽栖息地，你与一只强大的外星魂兽建立了友谊。', rewards: { soulPower: 1, merit: 5 } },
+      { text: '参加龙源星实战演练，你第一次与龙族生物交手，经验宝贵。', rewards: { soulPower: 2, merit: 5 } },
+      { text: '娜娜老师教导你古武技巧，她的教学方式独特而高效。', rewards: { soulPower: 2 } },
+      { text: '在天龙星的龙族秘境中，你感受到龙神血脉的召唤。', rewards: { soulPower: 1 } },
+      { text: '参加史莱克七怪选拔赛，你的表现让评委们眼前一亮。', rewards: { soulPower: 3, merit: 8 } },
+      { text: '唐乐（唐舞麟）在学院举办音乐会，金龙王的旋律中你领悟了力量与美的融合。', rewards: { soulPower: 2 } }
     ]
   }
 };
