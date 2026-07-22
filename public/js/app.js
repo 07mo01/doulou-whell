@@ -1,461 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>斗罗大陆转盘 - 随机人生模拟</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --bg:#0a0a1a;--bg2:#12122a;--card:#1a1a3e;--card2:#222255;
-  --gold:#ffd700;--gold2:#ffaa00;--red:#ff4444;--blue:#4488ff;
-  --green:#44ff88;--purple:#aa66ff;--cyan:#44ddff;--white:#e8e8ff;
-  --gray:#8888aa;--dark:#333355;
-  --font:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;
-}
-body{font-family:var(--font);background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;}
-.screen{display:none;width:100%;min-height:100vh;flex-direction:column;align-items:center;}
-.screen.active{display:flex;}
-.btn{padding:12px 32px;border:2px solid var(--gold);background:linear-gradient(135deg,#1a1a4e,#2a2a6e);color:var(--gold);font-size:16px;font-family:var(--font);cursor:pointer;border-radius:8px;transition:all .3s;letter-spacing:2px;position:relative;overflow:hidden;}
-.btn:hover{background:linear-gradient(135deg,#2a2a6e,#3a3a8e);box-shadow:0 0 20px rgba(255,215,0,.3);transform:translateY(-2px);}
-.btn:active{transform:translateY(0);}
-.btn-sm{padding:8px 20px;font-size:13px;}
-.btn-red{border-color:var(--red);color:var(--red);}
-.btn-blue{border-color:var(--blue);color:var(--blue);}
-.btn-green{border-color:var(--green);color:var(--green);}
-.btn-disabled{opacity:.5;pointer-events:none;}
-
-/* ===== Title Screen ===== */
-#screen-title{justify-content:center;gap:20px;background:radial-gradient(ellipse at center,#1a1a4e 0%,#0a0a1a 70%);}
-.title-logo{font-size:48px;font-weight:bold;background:linear-gradient(135deg,var(--gold),var(--gold2),#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 30px rgba(255,215,0,.3);margin-bottom:10px;letter-spacing:8px;}
-.title-sub{font-size:16px;color:var(--gray);letter-spacing:4px;margin-bottom:40px;}
-.title-buttons{display:flex;flex-direction:column;gap:15px;align-items:center;}
-.title-ver{position:fixed;bottom:20px;color:var(--dark);font-size:12px;}
-
-/* ===== Wheel Screen ===== */
-#screen-wheel{justify-content:center;padding:20px;}
-.wheel-stage{position:relative;width:360px;height:360px;margin:20px auto;}
-.wheel-canvas{width:360px;height:360px;border-radius:50%;box-shadow:0 0 40px rgba(255,215,0,.2),inset 0 0 30px rgba(0,0,0,.5);border:3px solid var(--gold);}
-.wheel-pointer{position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-top:35px solid var(--gold);z-index:10;filter:drop-shadow(0 2px 6px rgba(255,215,0,.5));}
-.wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,#2a2a6e,#1a1a3e);border:3px solid var(--gold);z-index:5;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gold);}
-.wheel-label{font-size:22px;color:var(--gold);margin:15px 0;letter-spacing:4px;text-align:center;min-height:30px;}
-.wheel-hint{color:var(--gray);font-size:13px;margin-top:10px;}
-.wheel-result{margin-top:20px;padding:20px 30px;background:var(--card);border:1px solid var(--gold);border-radius:12px;text-align:center;min-width:300px;animation:fadeUp .5s;}
-.wheel-result h3{color:var(--gold);margin-bottom:8px;font-size:18px;}
-.wheel-result p{color:var(--white);font-size:14px;line-height:1.6;}
-.wheel-step{color:var(--gray);font-size:13px;margin-bottom:10px;}
-
-/* ===== Awakening Screen ===== */
-#screen-awakening{justify-content:center;padding:20px;gap:20px;}
-.awakening-card{background:var(--card);border:2px solid var(--gold);border-radius:16px;padding:30px;max-width:500px;width:90%;animation:fadeUp .8s;}
-.awakening-title{font-size:24px;color:var(--gold);text-align:center;margin-bottom:20px;letter-spacing:4px;}
-.awakening-attrs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;}
-.attr-item{background:var(--bg2);padding:12px;border-radius:8px;border:1px solid var(--dark);}
-.attr-label{font-size:12px;color:var(--gray);margin-bottom:4px;}
-.attr-value{font-size:16px;color:var(--white);font-weight:bold;}
-.attr-value.gold{color:var(--gold);}
-.attr-value.purple{color:var(--purple);}
-.attr-value.cyan{color:var(--cyan);}
-
-/* ===== Life Screen ===== */
-#screen-life{flex-direction:row;padding:0;min-height:100vh;}
-.life-sidebar{width:280px;background:var(--bg2);border-right:1px solid var(--dark);padding:20px;overflow-y:auto;height:100vh;position:fixed;left:0;top:0;}
-.life-main{margin-left:280px;flex:1;padding:20px;max-width:700px;}
-.sidebar-title{font-size:18px;color:var(--gold);margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--dark);letter-spacing:2px;}
-.sidebar-section{margin-bottom:18px;}
-.sidebar-section h4{color:var(--cyan);font-size:13px;margin-bottom:8px;letter-spacing:1px;}
-.sp-bar{height:16px;background:var(--dark);border-radius:8px;overflow:hidden;position:relative;margin:4px 0 8px;}
-.sp-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green));border-radius:8px;transition:width .8s;position:relative;}
-.sp-fill::after{content:attr(data-text);position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8);}
-.ring-slots{display:flex;gap:4px;flex-wrap:wrap;}
-.ring-slot{width:28px;height:28px;border-radius:50%;border:2px solid var(--dark);display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;}
-.ring-slot.w{background:#aaaaaa44;border-color:#aaa;}
-.ring-slot.y{background:#dddd0044;border-color:#dd0;}
-.ring-slot.p{background:#aa00ff44;border-color:#a0f;}
-.ring-slot.b{background:#22222288;border-color:#666;}
-.ring-slot.r{background:#ff000044;border-color:#f00;}
-.ring-slot.g{background:#ffaa0044;border-color:var(--gold);}
-.ring-slot.empty{background:transparent;}
-
-.event-log{display:flex;flex-direction:column;gap:10px;}
-.event-entry{background:var(--card);border:1px solid var(--dark);border-radius:10px;padding:14px 18px;animation:fadeUp .4s;}
-.event-year{font-size:12px;color:var(--gold);margin-bottom:4px;}
-.event-type{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;margin-right:6px;}
-.event-type.cultivate{background:#224422;color:var(--green);}
-.event-type.social{background:#222244;color:var(--blue);}
-.event-type.battle{background:#442222;color:var(--red);}
-.event-type.fortune{background:#443322;color:var(--gold);}
-.event-type.crisis{background:#442244;color:var(--purple);}
-.event-text{font-size:14px;line-height:1.6;margin-top:6px;}
-.life-controls{display:flex;gap:10px;margin-top:20px;justify-content:center;flex-wrap:wrap;}
-
-/* ===== Mini Wheel (soul ring hunt) ===== */
-.mini-wheel-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:110;justify-content:center;align-items:center;flex-direction:column;gap:15px;}
-.mini-wheel-overlay.active{display:flex;}
-.mini-wheel-wrap{position:relative;width:300px;height:300px;}
-.mini-wheel-canvas{width:300px;height:300px;border-radius:50%;box-shadow:0 0 30px rgba(255,215,0,.3),inset 0 0 20px rgba(0,0,0,.5);border:3px solid var(--gold);}
-.mini-wheel-pointer{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid var(--gold);z-index:10;filter:drop-shadow(0 2px 4px rgba(255,215,0,.5));}
-.mini-wheel-label{font-size:18px;color:var(--gold);letter-spacing:3px;text-align:center;}
-.mini-wheel-hint{font-size:13px;color:var(--gray);}
-.mini-wheel-result{padding:15px 25px;background:var(--card);border:1px solid var(--gold);border-radius:10px;text-align:center;min-width:260px;animation:fadeUp .4s;max-width:90%;}
-
-/* ===== Event Modal ===== */
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:100;justify-content:center;align-items:center;}
-.modal-overlay.active{display:flex;}
-.modal-box{background:var(--card);border:2px solid var(--gold);border-radius:16px;padding:30px;max-width:480px;width:90%;animation:fadeUp .3s;max-height:80vh;overflow-y:auto;}
-.modal-title{font-size:20px;color:var(--gold);margin-bottom:15px;text-align:center;}
-.modal-body{font-size:14px;line-height:1.8;margin-bottom:20px;color:var(--white);}
-.modal-choices{display:flex;flex-direction:column;gap:10px;}
-.choice-btn{padding:12px 20px;background:var(--bg2);border:1px solid var(--dark);color:var(--white);font-size:14px;font-family:var(--font);cursor:pointer;border-radius:8px;transition:all .2s;text-align:left;}
-.choice-btn:hover{border-color:var(--gold);background:var(--card2);}
-
-/* ===== Review Screen ===== */
-#screen-review{padding:20px;gap:20px;}
-.review-container{max-width:600px;width:90%;}
-.review-title{font-size:28px;color:var(--gold);text-align:center;margin-bottom:25px;letter-spacing:4px;}
-.review-timeline{position:relative;padding-left:30px;border-left:2px solid var(--dark);margin:20px 0;}
-.review-node{position:relative;margin-bottom:20px;padding-left:20px;}
-.review-node::before{content:'';position:absolute;left:-36px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--bg);}
-.review-node .year{font-size:12px;color:var(--gold);}
-.review-node .desc{font-size:14px;margin-top:4px;}
-.review-rating{text-align:center;margin:30px 0;}
-.rating-letter{font-size:72px;font-weight:bold;text-shadow:0 0 30px currentColor;}
-.review-epitaph{text-align:center;font-size:16px;color:var(--gray);font-style:italic;margin:20px 0;padding:20px;border:1px solid var(--dark);border-radius:8px;background:var(--bg2);}
-.review-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;}
-.stat-item{background:var(--bg2);padding:12px;border-radius:8px;text-align:center;}
-.stat-num{font-size:24px;color:var(--gold);font-weight:bold;}
-.stat-label{font-size:12px;color:var(--gray);margin-top:4px;}
-.legacy-options{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
-
-/* ===== Fate Finale (Review) Screen ===== */
-.review-header{text-align:center;margin-bottom:20px;}
-.review-fate-title{font-size:36px;color:var(--gold);letter-spacing:6px;text-shadow:0 0 30px rgba(255,215,0,.4);margin-bottom:6px;}
-.review-fate-sub{font-size:13px;color:var(--gray);letter-spacing:2px;}
-.review-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0;}
-.review-left{display:flex;flex-direction:column;gap:12px;}
-.review-right{display:flex;flex-direction:column;gap:12px;}
-.review-panel{background:var(--card);border:1px solid var(--dark);border-radius:12px;padding:16px;}
-.review-panel-title{font-size:14px;color:var(--gold);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--dark);letter-spacing:2px;}
-.review-info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;}
-.review-info-row:last-child{border-bottom:none;}
-.review-info-label{color:var(--gray);}
-.review-info-value{color:var(--white);font-weight:bold;text-align:right;max-width:60%;}
-.review-info-value.gold{color:var(--gold);}
-.review-info-value.cyan{color:var(--cyan);}
-.review-info-value.red{color:var(--red);}
-.review-seed{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(170,102,255,.08));border:1px dashed var(--gold);border-radius:10px;margin-top:4px;}
-.review-seed-icon{font-size:20px;}
-.review-seed-name{font-size:15px;color:var(--gold);font-weight:bold;}
-.review-seed-desc{font-size:11px;color:var(--gray);margin-top:2px;}
-
-@media(max-width:768px){
-  .review-layout{grid-template-columns:1fr;}
-  .review-fate-title{font-size:26px;letter-spacing:3px;}
-}
-
-/* ===== Achievement Screen ===== */
-#screen-achievements{padding:20px;}
-.ach-container{max-width:600px;width:90%;}
-.ach-title{font-size:24px;color:var(--gold);text-align:center;margin-bottom:20px;letter-spacing:4px;}
-.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
-.ach-card{background:var(--card);border:1px solid var(--dark);border-radius:10px;padding:15px;transition:all .3s;}
-.ach-card.unlocked{border-color:var(--gold);box-shadow:0 0 10px rgba(255,215,0,.15);}
-.ach-card.locked{opacity:.5;filter:grayscale(.8);}
-.ach-icon{font-size:24px;margin-bottom:8px;}
-.ach-name{font-size:14px;color:var(--white);font-weight:bold;}
-.ach-desc{font-size:12px;color:var(--gray);margin-top:4px;}
-.ach-cat{font-size:11px;color:var(--cyan);margin-top:6px;}
-
-/* ===== Save Screen ===== */
-#screen-saves{padding:20px;}
-.save-container{max-width:500px;width:90%;}
-.save-title{font-size:24px;color:var(--gold);text-align:center;margin-bottom:20px;letter-spacing:4px;}
-.save-slots{display:flex;flex-direction:column;gap:12px;}
-.save-slot{background:var(--card);border:1px solid var(--dark);border-radius:10px;padding:18px;cursor:pointer;transition:all .3s;display:flex;justify-content:space-between;align-items:center;}
-.save-slot:hover{border-color:var(--gold);background:var(--card2);}
-.save-slot-info h4{color:var(--white);font-size:14px;}
-.save-slot-info p{color:var(--gray);font-size:12px;margin-top:4px;}
-.save-slot-actions{display:flex;gap:8px;}
-.back-link{color:var(--gray);font-size:14px;cursor:pointer;margin-bottom:20px;transition:color .2s;}
-.back-link:hover{color:var(--gold);}
-
-/* ===== Cross-skill Modal ===== */
-.cross-skill-display{background:linear-gradient(135deg,#2a1a4e,#1a2a4e);border:2px solid var(--purple);border-radius:12px;padding:20px;margin:15px 0;text-align:center;animation:glow 2s infinite alternate;}
-.cross-skill-display h4{color:var(--purple);font-size:16px;margin-bottom:8px;}
-
-/* ===== Animations ===== */
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-@keyframes glow{from{box-shadow:0 0 10px rgba(170,102,255,.2);}to{box-shadow:0 0 25px rgba(170,102,255,.4);}}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
-
-/* ===== Scrollbar ===== */
-::-webkit-scrollbar{width:6px;}
-::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--dark);border-radius:3px;}
-::-webkit-scrollbar-thumb:hover{background:var(--gray);}
-
-/* ===== Responsive ===== */
-@media(max-width:768px){
-  .life-sidebar{position:relative;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--dark);}
-  #screen-life{flex-direction:column;}
-  .life-main{margin-left:0;max-width:100%;}
-  .title-logo{font-size:32px;letter-spacing:4px;}
-  .wheel-stage{width:300px;height:300px;}
-  .wheel-canvas{width:300px;height:300px;}
-  .awakening-attrs{grid-template-columns:1fr;}
-  .review-stats{grid-template-columns:1fr 1fr;}
-}
-
-/* ===== Particle BG ===== */
-.particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
-.particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:float linear infinite;}
-@keyframes float{0%{opacity:0;transform:translateY(100vh);}10%{opacity:.6;}90%{opacity:.6;}100%{opacity:0;transform:translateY(-10vh);}}
-</style>
-</head>
-<body>
-
-<!-- Particles Background -->
-<div class="particles" id="particles"></div>
-
-<!-- ===== Title Screen ===== -->
-<div class="screen active" id="screen-title">
-  <div class="title-logo">斗罗大陆转盘</div>
-  <div class="title-sub">随机人生模拟游戏</div>
-  <div class="title-buttons">
-    <button class="btn" onclick="startNewGame()">开始转世</button>
-    <button class="btn btn-blue" onclick="startQuickRandom()">⚡ 快速随机（魂师+魂兽）</button>
-    <button class="btn btn-blue" onclick="showScreen('screen-saves');renderSaves()">回忆往生</button>
-    <button class="btn btn-green" onclick="showScreen('screen-achievements');renderAchievements()">成就系统</button>
-  </div>
-  <div class="title-ver">V2.0 完善版 | 基于斗罗大陆原著世界观</div>
-</div>
-
-<!-- ===== Quick Random Preview ===== -->
-<div class="screen" id="screen-quick-random">
-  <div style="max-width:800px;margin:0 auto;width:90%;">
-    <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
-    <div id="quick-random-content"></div>
-  </div>
-</div>
-
-<!-- ===== Wheel Screen ===== -->
-<div class="screen" id="screen-wheel">
-  <div class="wheel-step" id="wheel-step"></div>
-  <div class="wheel-label" id="wheel-label"></div>
-  <div class="wheel-stage">
-    <div class="wheel-pointer"></div>
-    <canvas class="wheel-canvas" id="wheel-canvas" width="720" height="720"></canvas>
-    <div class="wheel-center" id="wheel-center">转</div>
-  </div>
-  <button class="btn" id="wheel-spin-btn" onclick="spinWheel()">旋转转盘</button>
-  <button class="btn" id="wheel-next-btn" onclick="nextWheelStep()" style="display:none;margin-top:10px;">下一步</button>
-  <div id="wheel-result-area"></div>
-  <div class="wheel-hint" id="wheel-hint"></div>
-</div>
-
-<!-- ===== Awakening Screen ===== -->
-<div class="screen" id="screen-awakening">
-  <div class="awakening-card" id="awakening-card">
-    <div class="awakening-title">武魂觉醒</div>
-    <div id="awakening-content"></div>
-  </div>
-  <div style="display:flex;gap:12px;margin-top:10px;">
-    <button class="btn" onclick="enterLife()">踏入斗罗大陆</button>
-    <button class="btn btn-sm btn-red" onclick="rerollAll()">重新转世</button>
-  </div>
-</div>
-
-<!-- ===== Life Screen ===== -->
-<div class="screen" id="screen-life">
-  <div class="life-sidebar" id="life-sidebar"></div>
-  <div class="life-main">
-    <div class="event-log" id="event-log"></div>
-    <div class="life-controls" id="life-controls"></div>
-    <!-- Godhood Choice Panel -->
-    <div id="godhood-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);">
-      <h2 style="color:var(--gold);text-align:center;margin-bottom:20px;">🌟 成神之路</h2>
-      <p style="color:var(--gray);text-align:center;margin-bottom:20px;">你的修为已达到位面极限，感应到了神界的召唤...</p>
-      <div style="display:flex;flex-direction:column;gap:15px;">
-        <button class="btn" onclick="chooseGodhood('inherit')" style="text-align:left;padding:15px;">
-          <div style="font-size:16px;color:var(--gold);font-weight:bold;">🏛️ 继承神位</div>
-          <div style="font-size:12px;color:var(--gray);margin-top:4px;">成功率较高（70%），继承一位陨落神祇的神位，稳妥成神。</div>
-        </button>
-        <button class="btn" onclick="chooseGodhood('create')" style="text-align:left;padding:15px;">
-          <div style="font-size:16px;color:var(--cyan);font-weight:bold;">⚡ 自创神位</div>
-          <div style="font-size:12px;color:var(--gray);margin-top:4px;">成功率较低（40%），以自身为根基创造全新神位，风险与机遇并存。</div>
-        </button>
-      </div>
-      <div id="godhood-result" style="margin-top:15px;text-align:center;display:none;"></div>
-    </div>
-    <!-- Douluo Path Choice Panel -->
-    <div id="douluo-path-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);">
-      <h2 style="color:var(--gold);text-align:center;margin-bottom:10px;">🎖️ 封号斗罗</h2>
-      <p style="color:var(--gray);text-align:center;margin-bottom:15px;font-size:13px;">你的修为突破90级，成为封号斗罗！请选择你的道路...</p>
-      <div style="margin-bottom:15px;">
-        <label style="color:var(--gray);font-size:12px;">你的封号（2字）：</label>
-        <input type="text" id="custom-title-input" maxlength="2" style="width:60px;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.3);border-radius:6px;color:var(--gold);padding:6px;font-size:16px;margin-left:8px;" placeholder="如：昊天">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <button class="btn" onclick="chooseDouluoPath('family')" style="text-align:left;padding:12px;">
-          <div style="font-size:15px;color:#ff66aa;font-weight:bold;">💕 成家立业</div>
-          <div style="font-size:11px;color:var(--gray);margin-top:3px;">与心爱之人共度余生，解锁恋爱系统，体验人间烟火。</div>
-        </button>
-        <button class="btn" onclick="chooseDouluoPath('god')" style="text-align:left;padding:12px;">
-          <div style="font-size:15px;color:var(--gold);font-weight:bold;">✨ 追求神位</div>
-          <div style="font-size:11px;color:var(--gray);margin-top:3px;">继续修炼，追求更高的境界，当达到极限时可选择成神。</div>
-        </button>
-        <button class="btn" id="btn-godrealm-path" onclick="chooseDouluoPath('godrealm')" style="text-align:left;padding:12px;display:none;">
-          <div style="font-size:15px;color:#ffdd44;font-weight:bold;">🌟 飞升神界</div>
-          <div style="font-size:11px;color:var(--gray);margin-top:3px;">绝世唐门百级魂力突破位面界限，飞升神界，进入神界传说时间线！</div>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== Event Modal / Save Detail ===== -->
-<div class="modal-overlay" id="modal-event" onclick="if(event.target===this)this.classList.remove('active')">
-  <div class="modal-box" id="modal-event-box"></div>
-</div>
-
-<!-- ===== Mini Wheel Overlay (soul ring hunt) ===== -->
-<div class="mini-wheel-overlay" id="mini-wheel-overlay">
-  <div class="mini-wheel-label" id="mini-wheel-label"></div>
-  <div class="mini-wheel-wrap">
-    <div class="mini-wheel-pointer"></div>
-    <canvas class="mini-wheel-canvas" id="mini-wheel-canvas" width="600" height="600"></canvas>
-  </div>
-  <button class="btn" id="mini-wheel-spin-btn" onclick="spinMiniWheel()">旋转转盘</button>
-  <div class="mini-wheel-hint" id="mini-wheel-hint"></div>
-  <div id="mini-wheel-result-area"></div>
-  <button id="mini-auto-stop-btn" class="btn btn-sm btn-red" style="position:fixed;top:12px;right:12px;z-index:120;display:none;" onclick="toggleAuto()">⏹ 停止自动推演</button>
-</div>
-
-<!-- ===== Review Screen ===== -->
-<div class="screen" id="screen-review">
-  <div class="review-container" id="review-container"></div>
-</div>
-
-<!-- ===== Achievement Screen ===== -->
-<div class="screen" id="screen-achievements">
-  <div class="ach-container">
-    <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
-    <div class="ach-title">成就殿堂</div>
-    <div class="ach-grid" id="ach-grid"></div>
-  </div>
-</div>
-
-<!-- ===== Save Screen ===== -->
-<div class="screen" id="screen-saves">
-  <div class="save-container">
-    <div class="back-link" onclick="showScreen('screen-title')">&#8592; 返回主界面</div>
-    <div class="save-title">往生回忆</div>
-    <div class="save-slots" id="save-slots"></div>
-  </div>
-</div>
-
-<script>
-// ============================================================
-// API CLIENT - Frontend to Backend communication
-// Fallback to localStorage if server unavailable
-// ============================================================
-const API_BASE = '';
-let _apiAvailable = null;
-
-async function checkApi() {
-  if (_apiAvailable !== null) return _apiAvailable;
-  if (location.protocol === 'file:') { _apiAvailable = false; return false; }
-  try {
-    let opts = { method: 'GET' };
-    try { opts.signal = AbortSignal.timeout(2000); } catch(e) {}
-    const res = await fetch('/api/health', opts);
-    _apiAvailable = res.ok;
-    return _apiAvailable;
-  } catch (e) {
-    _apiAvailable = false;
-    return false;
-  }
-}
-
-async function apiGetSaves() {
-  if (await checkApi()) {
-    try {
-      const res = await fetch('/api/saves');
-      const json = await res.json();
-      if (json.success) return json.data || [];
-    } catch (e) { console.warn('API getSaves failed, fallback to localStorage', e); }
-  }
-  try { return JSON.parse(localStorage.getItem('dl_saves')) || []; }
-  catch (e) { return []; }
-}
-
-async function apiSaveGame(summary, fullData) {
-  if (await checkApi()) {
-    try {
-      const res = await fetch('/api/saves', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ summary, fullData })
-      });
-      const json = await res.json();
-      if (json.success) return { ok: true, source: 'api' };
-    } catch (e) { console.warn('API save failed, fallback to localStorage', e); }
-  }
-  try {
-    let saves = JSON.parse(localStorage.getItem('dl_saves')) || [];
-    saves = saves.filter(s => s.id !== summary.id);
-    saves.unshift(summary);
-    if (saves.length > 20) saves = saves.slice(0, 20);
-    localStorage.setItem('dl_saves', JSON.stringify(saves));
-    if (fullData) {
-      const dataStr = JSON.stringify(fullData, (k, v) => {
-        if (typeof v === 'function') return undefined;
-        if (v instanceof HTMLElement) return undefined;
-        return v;
-      });
-      localStorage.setItem('dl_save_full_' + summary.id, dataStr);
-    }
-    return { ok: true, source: 'local' };
-  } catch (e) {
-    return { ok: false, error: e.message };
-  }
-}
-
-async function apiLoadGame(id) {
-  if (await checkApi()) {
-    try {
-      const res = await fetch('/api/saves/' + id);
-      const json = await res.json();
-      if (json.success) return { ok: true, data: json.data };
-    } catch (e) { console.warn('API load failed, fallback to localStorage', e); }
-  }
-  try {
-    const data = JSON.parse(localStorage.getItem('dl_save_full_' + id));
-    if (data) return { ok: true, data };
-  } catch (e) {}
-  return { ok: false, error: '存档不存在' };
-}
-
-async function apiDeleteGame(id) {
-  if (await checkApi()) {
-    try {
-      const res = await fetch('/api/saves/' + id, { method: 'DELETE' });
-      const json = await res.json();
-      if (json.success) return { ok: true };
-    } catch (e) { console.warn('API delete failed, fallback to localStorage', e); }
-  }
-  try {
-    let saves = JSON.parse(localStorage.getItem('dl_saves')) || [];
-    saves = saves.filter(s => s.id !== id);
-    localStorage.setItem('dl_saves', JSON.stringify(saves));
-    localStorage.removeItem('dl_save_full_' + id);
-    return { ok: true };
-  } catch (e) {
-    return { ok: false, error: e.message };
-  }
-}
-
 // GAME DATA
 // ============================================================
 const TIMELINES = [
@@ -1057,7 +599,7 @@ function checkSoulCoreFormation(){
   if(!G || !G.martialSoul) return null;
   let currentCore = G.soulCore || 0;
   let soulName = G.martialSoul.name || '';
-
+  
   if(G.timeline?.id === 'douluo2'){
     if(currentCore === 0 && G.soulPower >= 60){
       let attrs = ['力量','速度','精神','魂力','防御','攻击'];
@@ -1269,20 +811,19 @@ const ACHIEVEMENTS = [
   {id:'survive_500',name:'不死之身',cat:'生存',desc:'存活超过500岁',icon:'🛡️',check:s=>s.age>=500},
   {id:'survive_death',name:'九死一生',cat:'生存',desc:'从濒死边缘存活下来',icon:'💀',check:s=>s.yearEvents?.some(e=>e.text?.includes('濒死')||e.text?.includes('重伤'))&&s.alive},
   // 剧情类
-  {id:'fate_family',name:'成家立业',cat:'剧情',desc:'选择成家立业道路',icon:'💕',check:s=>s.chosenPath==='family'},
-  {id:'fate_god',name:'追求神位',cat:'剧情',desc:'选择追求神位道路',icon:'🌟',check:s=>s.chosenPath==='god'},
   {id:'fate_lover',name:'宿命姻缘',cat:'剧情',desc:'拥有道侣',icon:'💘',check:s=>s.hasSpouse},
   {id:'fate_nemesis',name:'宿命之敌',cat:'剧情',desc:'击败5个以上的强敌',icon:'⚔️',check:s=>s.enemies?.length>=5},
   {id:'fate_rich',name:'富甲天下',cat:'剧情',desc:'拥有1000以上金魂币',icon:'💰',check:s=>(s.gold||0)>=1000},
   {id:'fate_famous',name:'名震大陆',cat:'剧情',desc:'名声达到100',icon:'📜',check:s=>(s.merit||0)>=100},
+  {id:'fate_master',name:'名师指点',cat:'剧情',desc:'拜入名师门下',icon:'🏛️',check:s=>s.hasMaster},
+  {id:'fate_companion',name:'结伴同行',cat:'剧情',desc:'拥有3位以上伙伴',icon:'👥',check:s=>s.companions?.length>=3},
   // 稀有类
   {id:'dual_soul',name:'双生武魂',cat:'稀有',desc:'觉醒双生武魂',icon:'🔱',check:s=>s.martialSoul?.id==='dual'},
   {id:'gold_ring',name:'神级魂环',cat:'稀有',desc:'获得金色魂环',icon:'💫',check:s=>s.soulRings?.some(r=>r.css==='g')},
   {id:'innate_10',name:'先天满魂力',cat:'稀有',desc:'先天魂力达到10级',icon:'🔥',check:s=>s.innatePower>=10},
   {id:'innate_20',name:'先天二十',cat:'稀有',desc:'先天魂力达到20级',icon:'☄️',check:s=>s.innatePower>=20},
   {id:'all_rings',name:'九环大满贯',cat:'稀有',desc:'集齐九个魂环',icon:'🎯',check:s=>s.soulRings?.length>=9},
-  {id:'six_bones',name:'六骨斗罗',cat:'稀有',desc:'集齐六块魂骨',icon:'🦴',check:s=>s.soulBones?.length>=6},
-  {id:'four_bones',name:'全骨覆盖',cat:'稀有',desc:'集齐六块不同位置魂骨',icon:'🦿',check:s=>{let pos=new Set(s.soulBones?.map(b=>b.pos));return pos?.size>=6;}},
+  {id:'six_bones',name:'六骨斗罗',cat:'稀有',desc:'集齐六块不同位置魂骨（全骨覆盖）',icon:'🦴',check:s=>s.soulBones?.length>=6},
   {id:'beast_seventh',name:'武魂真身',cat:'稀有',desc:'获得第七魂环·武魂真身',icon:'🔄',check:s=>s.soulRings?.length>=7},
   {id:'custom_title',name:'自封封号',cat:'稀有',desc:'达到封号斗罗并自选封号',icon:'🛡️',check:s=>s.customTitle&&s.soulPower>=90},
   {id:'bloodline_skill',name:'血脉觉醒',cat:'稀有',desc:'觉醒血脉技能',icon:'🩸',check:s=>s.bloodlineSkills?.length>0},
@@ -1872,7 +1413,7 @@ const TIMELINE_CHARACTERS = {
   douluo2:[
     {name:'霍雨浩',soul:'灵眸 / 冰碧帝皇蝎',desc:'绝世唐门主角，精神系与冰系双生武魂的天才魂师，情绪之神传承者。',color:'#44ddff',weight:12,ageRange:[11,26],events:[
       {text:'霍雨浩在星斗大森林用精神探测与你共享视野，极北之地的极致冰寒也影响到了你，但你受益匪浅。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
-      {text:'霍雨浩带你去明德堂参观魂导器，十级魂导师的杰作让你对魂导科技大开眼界。',effect:(g)=>{g.gold=(g.gold||0)+60;g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'gold+60, sp+2';}},
+      {text:'霍雨浩带你去明德堂参观魂导器，十级魂导师的杰作让你对魂导科技大开眼界。',effect:(g)=>{g.battleArmor=Math.max(g.battleArmor||0,1);g.gold=(g.gold||0)+40;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'battleArmor+1, gold+40, sp+1';}},
       {text:'霍雨浩的天梦冰蚕与你交流精神力的运用，你感到精神之海在缓缓扩大。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}}
     ]},
     {name:'唐舞桐',soul:'光明龙神蝶 / 昊天锤',desc:'唐三与小舞之女，拥有光明女神蝶与昊天锤双生武魂，后继承蝶神神位。',color:'#ff66aa',weight:10,ageRange:[10,26],events:[
@@ -1892,7 +1433,7 @@ const TIMELINE_CHARACTERS = {
     ]},
     {name:'和菜头',soul:'雪茄',desc:'日月帝国前太子，后成为唐门成员，食物系魂导师。',color:'#44aa44',weight:7,ageRange:[12,26],events:[
       {text:'和菜头送你几枚自制的定装魂导炮弹，"当食物系魂师也能火力全开"。',effect:(g)=>{g.gold=(g.gold||0)+35;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+35, sp+1';}},
-      {text:'和菜头教你制作基础魂导器，日月帝国的魂导技术果然精妙。',effect:(g)=>{g.gold=(g.gold||0)+30;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+30, sp+1';}},
+      {text:'和菜头教你制作基础魂导器，日月帝国的魂导技术果然精妙。',effect:(g)=>{g.battleArmor=Math.max(g.battleArmor||0,1);return 'battleArmor+1';}},
       {text:'和菜头向你坦白了他的真实身份——日月帝国前太子徐和，你被他的隐忍所感动。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}}
     ]},
     {name:'玄老',soul:'饕餮神牛',desc:'史莱克学院海神阁宿老，后成为海神阁阁主，九十九级极限斗罗。',color:'#aa8844',weight:7,ageRange:[8,60],events:[
@@ -1947,7 +1488,7 @@ const TIMELINE_CHARACTERS = {
     ]},
     {name:'轩梓文',soul:'九级魂导核心',desc:'明德堂首席魂导师，九级魂导师，魂导器领域的巅峰人物。',color:'#44aaff',weight:6,ageRange:[18,50],events:[
       {text:'轩梓文向你展示九级魂导器的威力，魂导科技的巅峰之作让你叹为观止。',effect:(g)=>{g.gold=(g.gold||0)+50;g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'gold+50, sp+2';}},
-      {text:'轩梓文教你魂导核心的制作原理，你对魂导器的理解更加深入。',effect:(g)=>{g.gold=(g.gold||0)+40;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+40, sp+1';}},
+      {text:'轩梓文教你魂导核心的制作原理，你对魂导器的理解更加深入。',effect:(g)=>{g.battleArmor=Math.max(g.battleArmor||0,1);return 'battleArmor+1';}},
       {text:'轩梓文讲述了他与霍雨浩在魂导研究上的合作经历，天才的碰撞让你深受启发。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+4;return 'sp+1, merit+4';}}
     ]},
     {name:'张乐萱',soul:'月神',desc:'史莱克学院内院弟子，日辰斗罗，拥有月神武魂，史莱克七怪之一。',color:'#88aaff',weight:6,ageRange:[14,28],events:[
@@ -2261,8 +1802,12 @@ const SPIRIT_SOUL_NAMES = [
   '冰碧蝎','光明圣龙','暗金恐爪熊','三眼金猊','翡翠天鹅','妖眼魔树','泰坦巨猿','天青牛蟒',
   '地狱魔龙','山龙王','海龙王','雷鸣阎魔藤','火凤凰','冰凤凰','邪眸白虎','六翼天使',
   '蓝电霸王龙','深海魔鲸','金龙王','银龙王','时空双龙','混沌青牛','鸿蒙凤凰',
-  '金语','绮罗郁金香','霸王龙','雷鸣阎狱藤','邪魔虎鲸王','碧姬','赤王','冰碧帝皇蝎',
-  '冰天雪女','雪帝','冰帝','天梦冰蚕','八角玄冰草','烈火杏娇疏','幽香绮罗仙品'
+  '金语','绮罗郁金香','霸王龙','雷鸣阎狱藤','邪魔虎鲸王','碧姬','赤王',
+  '冰天雪女','天梦冰蚕','八角玄冰草','烈火杏娇疏','幽香绮罗仙品'
+];
+const SPIRIT_SOUL_HIGH_NAMES = [
+  '冰碧帝皇蝎','雪帝','冰帝','帝天','邪帝','碧姬','赤王','泰坦巨猿','天青牛蟒',
+  '深海魔鲸','金龙王','银龙王','邪魔虎鲸王','火凤凰','冰凤凰'
 ];
 const SPIRIT_SOUL_PREFIXES = ['十年（白）','百年（黄）','千年（紫）','万年（黑）','十万年（红）','凶兽（橙）','不屈','伴生','传承','本命'];
 
@@ -2271,32 +1816,38 @@ function buildSpiritSoulWheel(){
   if(ringNum >= 9) return null;
   let limit = getRingLimit(ringNum);
   let items = [];
+  let getName = (years) => {
+    if(years >= 100000){
+      return SPIRIT_SOUL_HIGH_NAMES[Math.floor(Math.random()*SPIRIT_SOUL_HIGH_NAMES.length)];
+    }
+    return SPIRIT_SOUL_NAMES[Math.floor(Math.random()*SPIRIT_SOUL_NAMES.length)];
+  };
   // Low tier spirit soul
   let lowYears = Math.floor(Math.random()*500 + 100);
   items.push({
     name: `低级魂灵\n(${lowYears}年)`, years: lowYears, weight: 25, color: '#448844',
-    soulName: SPIRIT_SOUL_PREFIXES[0] + SPIRIT_SOUL_NAMES[Math.floor(Math.random()*SPIRIT_SOUL_NAMES.length)],
+    soulName: SPIRIT_SOUL_PREFIXES[0] + getName(lowYears),
     tier: 'low', cost: 10
   });
   // Mid tier
   let midYears = Math.floor(Math.random()*(Math.min(5000,limit)-1000) + 1000);
   items.push({
     name: `中级魂灵\n(${midYears}年)`, years: midYears, weight: 30, color: '#4466aa',
-    soulName: SPIRIT_SOUL_PREFIXES[1] + SPIRIT_SOUL_NAMES[Math.floor(Math.random()*SPIRIT_SOUL_NAMES.length)],
+    soulName: SPIRIT_SOUL_PREFIXES[1] + getName(midYears),
     tier: 'mid', cost: 50
   });
   // High tier
   let highYears = Math.floor(Math.random()*(Math.min(50000,limit*1.5)-10000) + 10000);
   items.push({
     name: `高级魂灵\n(${highYears}年)`, years: highYears, weight: 25, color: '#aa44aa',
-    soulName: SPIRIT_SOUL_PREFIXES[2] + SPIRIT_SOUL_NAMES[Math.floor(Math.random()*SPIRIT_SOUL_NAMES.length)],
+    soulName: SPIRIT_SOUL_PREFIXES[2] + getName(highYears),
     tier: 'high', cost: 200
   });
   // Top tier / Random
   let topYears = Math.floor(Math.random()*(limit*2) + 50000);
   items.push({
     name: `顶级魂灵\n(${topYears}年)`, years: topYears, weight: 15, color: '#ffaa22',
-    soulName: SPIRIT_SOUL_PREFIXES[3] + SPIRIT_SOUL_NAMES[Math.floor(Math.random()*SPIRIT_SOUL_NAMES.length)],
+    soulName: SPIRIT_SOUL_PREFIXES[3] + getName(topYears),
     tier: 'top', cost: 1000
   });
   // Beast god / Special
@@ -2304,7 +1855,7 @@ function buildSpiritSoulWheel(){
     let beastYears = Math.floor(Math.random()*500000 + 100000);
     items.push({
       name: `凶兽魂灵\n(${beastYears}年)`, years: beastYears, weight: 5, color: '#ff2222',
-      soulName: SPIRIT_SOUL_PREFIXES[5] + SPIRIT_SOUL_NAMES[Math.floor(Math.random()*SPIRIT_SOUL_NAMES.length)],
+      soulName: SPIRIT_SOUL_PREFIXES[5] + getName(beastYears),
       tier: 'beastgod', cost: 5000
     });
   }
@@ -2356,7 +1907,7 @@ function spinSpiritSoulWheel(){
     spiritSoulWheelSpinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
-    let ringNum = G.soulRings.length;
+    let ringNum = G.soulRings.length + 1;
     let target = selected.years;
     let color = SOUL_RING_COLORS.find(c => target <= c.max) || SOUL_RING_COLORS[SOUL_RING_COLORS.length-1];
     let skills = generateRingSkills(ringNum, target, G.martialSoul);
@@ -2431,9 +1982,9 @@ function drawMiniWheel(items){
 function openSoulRingWheel(callback){
   // God realm: divine bestowed ring, no hunting needed
   if(G.timeline?.soulRingMode === 'divine' || G.identityType === 'god'){
-    let ringNum = G.soulRings.length;
-    if(ringNum >= 9){callback(null);return;}
-    let divineColor = SOUL_RING_COLORS.find(c => G.soulPower <= c.max * (ringNum+1)/9) || SOUL_RING_COLORS[SOUL_RING_COLORS.length-1];
+    let ringNum = G.soulRings.length + 1;
+    if(ringNum > 9){callback(null);return;}
+    let divineColor = SOUL_RING_COLORS.find(c => G.soulPower <= c.max * ringNum/9) || SOUL_RING_COLORS[SOUL_RING_COLORS.length-1];
     if(G.soulPower >= 120) divineColor = SOUL_RING_COLORS.find(c=>c.color==='gold') || SOUL_RING_COLORS[5];
     else if(G.soulPower >= 96) divineColor = SOUL_RING_COLORS.find(c=>c.color==='red') || SOUL_RING_COLORS[4];
     else if(G.soulPower >= 76) divineColor = SOUL_RING_COLORS.find(c=>c.color==='black') || SOUL_RING_COLORS[3];
@@ -2511,8 +2062,8 @@ function spinMiniWheel(){
         miniWheelSpinning = false;
         btn.classList.remove('btn-disabled');
         // Process result - all absorbs succeed, no death limit
-        let ringNum = G.soulRings.length;
-        let limit = getRingLimit(ringNum);
+        let ringNum = G.soulRings.length + 1;
+        let limit = getRingLimit(ringNum - 1);
         let area = document.getElementById('mini-wheel-result-area');
         let target = selected.years;
         let color = SOUL_RING_COLORS.find(c => target <= c.max) || SOUL_RING_COLORS[SOUL_RING_COLORS.length-1];
@@ -3060,43 +2611,50 @@ function calculateCombatPower(entity, isEnemy = false){
     let power = entity.power || 1;
     return Math.floor(level * 100 * power);
   }
-  let base = (G.soulPower || 0) * 100;
+  let base = (G.soulPower || 0) * 200;
   let ringBonus = 0;
   if(Array.isArray(G.soulRings) && G.soulRings.length > 0){
-    G.soulRings.forEach(r => {
+    G.soulRings.forEach((r, idx) => {
       let years = r.years || 0;
-      if(years >= 1000000) ringBonus += 500;
-      else if(years >= 100000) ringBonus += 200;
-      else if(years >= 10000) ringBonus += 80;
-      else if(years >= 1000) ringBonus += 30;
-      else if(years >= 100) ringBonus += 10;
-      else ringBonus += 3;
-      if(r.skills && r.skills.length) ringBonus += r.skills.length * 15;
+      let ringMultiplier = 1 + idx * 0.2;
+      if(years >= 1000000) ringBonus += 1200 * ringMultiplier;
+      else if(years >= 100000) ringBonus += 500 * ringMultiplier;
+      else if(years >= 10000) ringBonus += 200 * ringMultiplier;
+      else if(years >= 1000) ringBonus += 60 * ringMultiplier;
+      else if(years >= 100) ringBonus += 20 * ringMultiplier;
+      else ringBonus += 5 * ringMultiplier;
+      if(r.skills && r.skills.length){
+        r.skills.forEach(s => {
+          let skillBonus = s.type === 'control' ? 100 : (s.type === 'attack' ? 90 : (s.type === 'defense' ? 80 : (s.type === 'boost' ? 150 : 70)));
+          ringBonus += skillBonus;
+        });
+      }
     });
   }
   let boneBonus = 0;
   if(G.soulBones && G.soulBones.length > 0){
-    boneBonus = G.soulBones.length * 120;
-    if(G.soulBones.length >= 6) boneBonus += 300;
+    boneBonus = G.soulBones.length * 300;
+    if(G.soulBones.length >= 4) boneBonus += 500;
+    if(G.soulBones.length >= 6) boneBonus += 1000;
   }
   let customSkillBonus = 0;
   if(G.customSkills && G.customSkills.length > 0){
     G.customSkills.forEach(s => {
       let type = s.type || 'attack';
-      if(type === 'control') customSkillBonus += 80;
-      else if(type === 'attack') customSkillBonus += 70;
-      else if(type === 'defense') customSkillBonus += 60;
-      else if(type === 'boost') customSkillBonus += 50;
-      else customSkillBonus += 50;
+      if(type === 'control') customSkillBonus += 200;
+      else if(type === 'attack') customSkillBonus += 180;
+      else if(type === 'defense') customSkillBonus += 150;
+      else if(type === 'boost') customSkillBonus += 120;
+      else customSkillBonus += 100;
     });
   }
   let qualityBonus = 1;
   if(G.martialSoul?.quality){
     let q = G.martialSoul.quality;
-    if(q.includes('顶级')) qualityBonus = 1.5;
-    else if(q.includes('变异')) qualityBonus = 1.3;
+    if(q.includes('顶级')) qualityBonus = 1.6;
+    else if(q.includes('变异')) qualityBonus = 1.35;
     else if(q.includes('优秀')) qualityBonus = 1.15;
-    else if(q.includes('双生')) qualityBonus = 2.0;
+    else if(q.includes('双生')) qualityBonus = 2.2;
   }
   let bloodlineBonus = G.bloodline ? 1.3 : 1;
   // 血脉属性精细化加成
@@ -3125,9 +2683,9 @@ function calculateCombatPower(entity, isEnemy = false){
     if(typeof ba.alien === 'number') birthplaceBonus *= (1 + (ba.alien - 1) * 0.5);
   }
   let soulCoreBonus = 1;
-  if(G.soulCore >= 1) soulCoreBonus = 1.3;
-  if(G.soulCore >= 2) soulCoreBonus = 1.6;
-  if(G.soulCore >= 3) soulCoreBonus = 2.0;
+  if(G.soulCore >= 1) soulCoreBonus = 1.35;
+  if(G.soulCore >= 2) soulCoreBonus = 1.7;
+  if(G.soulCore >= 3) soulCoreBonus = 2.2;
   let coreAttrBonus = 1;
   if(Array.isArray(G.soulCores)){
     G.soulCores.forEach(core => {
@@ -3723,12 +3281,13 @@ function createDefaultState(){
     identity:null,identityType:'human',gender:{name:'男'},
     personality:null,appearance:null,
     martialSoul:null,soulPower:0,age:0,maxAge:120,maxLevel:99,
-    soulRings:[],soulBones:[],soulCore:0,soulCores:[],divineSkillsTotal:0,divineSkills:[],divineSkillsUnlocked:0,battleArmor:0,customSkills:[],crossSkills:[],
+    soulRings:[],soulBones:[],battleArmor:0,customSkills:[],crossSkills:[],
     companions:[],faction:'',factionReputation:0,hasMaster:false,masterBonus:false,
     hasSpouse:false,spouse:null,enemies:[],
     transformed:false,bloodline:null,birthplace:null,bloodlineSkills:[],
     alive:true,events:[],keyEvents:[],achievementsEarned:[],gold:0,merit:0,
-    yearEvents:[],autoMode:false
+    yearEvents:[],autoMode:false,soulCore:0,soulCores:[],
+    divineSkillsTotal:0,divineSkills:[],divineSkillsUnlocked:0
   };
 }
 
@@ -3770,7 +3329,7 @@ function onWheelResult(item){
       G={...createDefaultState(),timeline:item};
       area.innerHTML=`<div class="wheel-result"><h3>${item.name}</h3><p>${item.era}</p><p style="margin-top:8px;color:var(--gray)">${item.desc}</p></div>`;
       hint.textContent='时代已确定，接下来抽取身份种族...';
-      // Build identity type wheel: human/beast for normal, god for godrealm
+      // Build identity type wheel: human/beast for normal, god/divine_beast for godrealm
       let idTypePool;
       if(item.id==='godrealm'){idTypePool=[...IDENTITY_TYPES.god, ...IDENTITY_TYPES.divine_beast];}
       else{idTypePool=[...IDENTITY_TYPES.human,...IDENTITY_TYPES.soul_beast];}
@@ -4093,22 +3652,6 @@ function getActiveRings(){
   return soul.rings;
 }
 
-function renderGameLog(){
-  let log = document.getElementById('event-log');
-  if(!log) return;
-  log.innerHTML = '';
-  let typeNames = {cultivate:'修炼', social:'社交', battle:'战斗', fortune:'机缘', crisis:'危机'};
-  let events = G.yearEvents || [];
-  events.forEach((ev, idx) => {
-    let entry = document.createElement('div');
-    entry.className = 'event-entry';
-    entry.innerHTML = '<div class="event-year">' + G.timeline.name + ' · ' + ev.age + '岁</div>' +
-      '<span class="event-type ' + ev.type + '">' + (typeNames[ev.type] || ev.type) + '</span>' +
-      '<div class="event-text">' + ev.text + '</div>';
-    log.appendChild(entry);
-  });
-}
-
 function switchActiveSoul(index){
   if(!G.martialSoul || !G.martialSoul.souls || G.martialSoul.souls.length <= 1) return;
   if(index < 0 || index >= G.martialSoul.souls.length) return;
@@ -4147,9 +3690,9 @@ function showAwakening(){
     // 降生地点影响初始年限
     let birthAttr = G.birthplace?.attr || {};
     let initYears = 0;
-    if(birthAttr.power >= 1.3) initYears += 20;
+    if(birthAttr.power >= 1.3) initYears += 20;  // 高危地区起步年限更高
     if(birthAttr.risk >= 1.3) initYears += 15;
-    if(birthAttr.secret >= 1.3) initYears += 10;
+    if(birthAttr.secret >= 1.3) initYears += 10; // 神秘地区给予起步奖励
     G.beastYears = initYears;
     syncBeastSoulPower();
     G.innatePower = 0;
@@ -4197,7 +3740,7 @@ function showAwakening(){
     }
   }
 
-  // God initial level
+  // God initial level (神祇按神位等级决定初始神力)
   if(G.identityType==='god'){
     if(G.identity.id.includes('king'))G.soulPower=150;
     else if(G.identity.id.includes('_1'))G.soulPower=120;
@@ -4507,7 +4050,7 @@ function processPartnerEvent(){
     case 'douluo2':
       outcomes = [
         {text:`你与${spouse.name}在海神湖畔漫步，黄金树的见证下感情升温。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '魂力+2级';}},
-        {text:`${spouse.name}亲手为你制作了一件二级魂导器作为礼物。`,effect:()=>{G.gold=(G.gold||0)+40;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '获得40金魂币，魂力+1级';}},
+        {text:`${spouse.name}亲手为你制作了一件二级魂导器作为礼物。`,effect:()=>{G.battleArmor=Math.max(G.battleArmor||0,1);G.gold=(G.gold||0)+20;return '掌握魂导基础，获得20金魂币';}},
         {text:`你和${spouse.name}参加了海神缘相亲大会后的庆典，羡煞旁人。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);G.merit=(G.merit||0)+8;return '魂力+2级，名声+8';}},
         {text:`${spouse.name}在监察团任务中遇险，你火速赶往救援！`,effect:()=>{if(Math.random()<0.75){G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '成功救出！两人感情更加深厚，魂力+1级';}else{G.soulPower=Math.max(G.soulPower-2,1);return '营救过程中受伤，魂力-2级';}}},
         {text:`你和${spouse.name}一起研究魂导器到深夜，虽然疲惫但很充实。`,effect:()=>{return '平淡而幸福的一年。';}}
@@ -4645,7 +4188,7 @@ function processAuctionEvent(){
       items = [
         {name:'千年魂骨碎片',cost:50,effect:()=>{G.gold-=50;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '吸收了碎片中的魂力，魂力+1级';}},
         {name:'稀有药草·龙血参',cost:80,effect:()=>{G.gold-=80;G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '服用后魂力暴涨，魂力+2级';}},
-        {name:'日月帝国魂导器图纸',cost:60,effect:()=>{G.gold-=60;G.gold=(G.gold||0)+30;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '掌握了魂导器制作技术，获得30金魂币和魂力+1';}},
+        {name:'日月帝国魂导器图纸',cost:60,effect:()=>{G.gold-=60;G.battleArmor=Math.max(G.battleArmor,1);return '掌握了魂导器制作技术';}},
         {name:'上古武魂秘典',cost:100,effect:()=>{G.gold-=100;G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '领悟了上古修炼法门，魂力+3级';}},
         {name:'魂导美容仪',cost:50,effect:()=>{G.gold-=50;if(G.appearance){G.appearance={...G.appearance,attr:{...G.appearance.attr,charm:(G.appearance.attr?.charm||5)+1}};}return '使用后容貌提升，魅力+1';}}
       ];
@@ -4681,7 +4224,7 @@ function processAuctionEvent(){
       items = [
         {name:'千年魂骨碎片',cost:50,effect:()=>{G.gold-=50;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '吸收了碎片中的魂力，魂力+1级';}},
         {name:'稀有药草·龙血参',cost:80,effect:()=>{G.gold-=80;G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '服用后魂力暴涨，魂力+2级';}},
-        {name:'魂导器图纸',cost:60,effect:()=>{G.gold-=60;G.gold=(G.gold||0)+30;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '掌握了魂导器制作技术，获得30金魂币和魂力+1';}},
+        {name:'魂导器图纸',cost:60,effect:()=>{G.gold-=60;G.battleArmor=Math.max(G.battleArmor,1);return '掌握了魂导器制作技术';}},
         {name:'上古武魂秘典',cost:100,effect:()=>{G.gold-=100;G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '领悟了上古修炼法门，魂力+3级';}},
         {name:'美容养颜丹',cost:50,effect:()=>{G.gold-=50;if(G.appearance){G.appearance={...G.appearance,attr:{...G.appearance.attr,charm:(G.appearance.attr?.charm||5)+1}};}return '服用后容貌提升，魅力+1';}}
       ];
@@ -5054,13 +4597,30 @@ function processYearChain(idx, total, events){
     processYearChain(idx + 1, total, events);
     return;
   }
-  // Soul ring milestone check
+  // Soul ring milestone check（神和神兽没有魂环系统）
   if(G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast' && G.soulRings.length < 9){
     let nextRingLevel = RING_MILESTONES[G.soulRings.length];
     if(G.soulPower >= nextRingLevel){
       events.push({age:G.age, type:'fortune', text:`<b style="color:var(--gold);">【突破】</b> 魂力达到${G.soulPower}级，突破瓶颈！需要猎杀第${G.soulRings.length+1}魂环...`, ringMilestone:true});
       finishYearAdvance(events, true);
       return;
+    }
+  }
+  // Soul core formation check (绝世唐门特有魂核系统)
+  if(G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast' && G.martialSoul){
+    let soulCoreEvent = checkSoulCoreFormation();
+    if(soulCoreEvent){
+      events.push({age:G.age, type:'fortune', text:soulCoreEvent.text});
+      G.soulCore++;
+      if(soulCoreEvent.core){
+        if(!Array.isArray(G.soulCores)) G.soulCores = [];
+        G.soulCores.push(soulCoreEvent.core);
+      }
+      if(soulCoreEvent.sp){
+        G.soulPower = Math.min(G.soulPower + soulCoreEvent.sp, G.maxLevel);
+      }
+      renderSidebar(); checkAchievements();
+      if(!G.alive){ finishYearAdvance(events); return; }
     }
   }
   // 神力技能解锁（神和神兽专属）
@@ -5141,23 +4701,6 @@ function processYearChain(idx, total, events){
       }
       renderSidebar(); checkAchievements();
       if(!G.alive){ finishYearAdvance(events); return; }
-      // Soul core formation check (绝世唐门特有魂核系统)
-      if(G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast' && G.martialSoul){
-        let soulCoreEvent = checkSoulCoreFormation();
-        if(soulCoreEvent){
-          events.push({age:G.age, type:'fortune', text:soulCoreEvent.text});
-          G.soulCore++;
-          if(soulCoreEvent.core){
-            if(!Array.isArray(G.soulCores)) G.soulCores = [];
-            G.soulCores.push(soulCoreEvent.core);
-          }
-          if(soulCoreEvent.sp){
-            G.soulPower = Math.min(G.soulPower + soulCoreEvent.sp, G.maxLevel);
-          }
-          renderSidebar(); checkAchievements();
-          if(!G.alive){ finishYearAdvance(events); return; }
-        }
-      }
       // Douluo (90+) path choice check
       if(G.soulPower >= 91 && !G.chosenPath && G.identityType !== 'soul_beast'){
         events.push({age:G.age, type:'fortune', text:'<b style="color:var(--gold);">【封号斗罗】</b> 你的修为突破90级，成为封号斗罗！是时候选择未来的道路了...'});
@@ -6028,7 +5571,6 @@ async function loadSaveGame(idx){
   G._saveId = s.id;
   if(autoTimer){clearInterval(autoTimer);autoTimer=null;}
   let ob=document.getElementById('mini-auto-stop-btn');if(ob)ob.style.display='none';
-  // 全面修复存档数据：用 createDefaultState 补全缺失/类型错误字段
   let defaults=createDefaultState();
   for(let k in defaults){
     if(G[k]===undefined||G[k]===null){G[k]=defaults[k];continue;}
@@ -6037,17 +5579,15 @@ async function loadSaveGame(idx){
       if(typeof G[k]!=='object'||G[k]===null){G[k]=defaults[k];}
     }
   }
-  if(!G.timeline||typeof G.timeline!=='object')G.timeline={name:'未知',id:'unknown'};
-  if(!G.martialSoul||typeof G.martialSoul!=='object')G.martialSoul={name:'未知',quality:'普通'};
-  if(!G.gender||typeof G.gender!=='object')G.gender={name:'男'};
-  if(!G.identity||typeof G.identity!=='object')G.identity={name:'未知'};
-  if(G.timeline.id==='douluo4'){G.maxLevel=150;G.maxAge=200;}
-  else if(G.timeline.id==='godrealm'){G.maxLevel=200;G.maxAge=999;}
-  else{G.maxLevel=99;G.maxAge=150;}
   showScreen('screen-life');
   renderSidebar();
+  let log = document.getElementById('event-log');
+  if(G.yearEvents && G.yearEvents.length > 0){
+    log.innerHTML = G.yearEvents.map(e => `<div class="event-entry"><div class="event-year">${e.age}岁</div><div class="event-text">${e.text}</div></div>`).join('');
+  }else{
+    log.innerHTML = '<div class="event-entry"><div class="event-year">存档已加载</div><div class="event-text"><b style="color:var(--gold);">【读档成功】</b>继续你的传奇之路...</div></div>';
+  }
   renderControls();
-  renderGameLog();
 }
 
 // ============================================================
@@ -6061,12 +5601,4 @@ document.getElementById('mini-wheel-overlay').addEventListener('click', function
     closeMiniWheel();
   }
 });
-</script>
-</body>
-</html>
-
-
-
-
-
 

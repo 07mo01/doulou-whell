@@ -1,0 +1,165 @@
+{
+  "timeline": {
+    "id": "godrealm",
+    "name": "神界传说",
+    "era": "神界时代",
+    "desc": "唐三等飞升神界，守护斗罗位面。神祇体系完整，从神官到神王。",
+    "weight": 10,
+    "factions": [
+      "神界委员会",
+      "海神阁",
+      "毁灭之神阵营",
+      "生命女神阵营"
+    ],
+    "soulRingMode": "divine",
+    "maxLevel": 150,
+    "eraColor": "#ffdd44"
+  },
+  "innatePower": 0,
+  "innateRating": "",
+  "innateRatingColor": "#888",
+  "identity": {
+    "id": "god_3",
+    "name": "三级神祇",
+    "weight": 30,
+    "desc": "掌管一方小域的初级神祇。",
+    "eraColor": "hsl(52,50%,30%)"
+  },
+  "identityType": "god",
+  "gender": {
+    "id": "female",
+    "name": "女",
+    "weight": 48,
+    "desc": "标准女性身份，适用所有女性向剧情与势力。",
+    "eraColor": "hsl(140,50%,30%)"
+  },
+  "personality": {
+    "id": "cheerful",
+    "name": "开朗活泼",
+    "weight": 12,
+    "color": "#ffcc44",
+    "desc": "阳光开朗，充满活力，走到哪里都能带来欢笑。",
+    "traits": {
+      "social": 1.3,
+      "romance": 1.2,
+      "enemy": 0.7
+    }
+  },
+  "appearance": {
+    "id": "good",
+    "name": "清秀",
+    "weight": 25,
+    "color": "#88ccff",
+    "desc": "五官端正，眉眼清秀，看着很舒服。",
+    "attr": {
+      "charm": 6
+    }
+  },
+  "martialSoul": null,
+  "soulPower": 104,
+  "age": 8,
+  "maxAge": 999,
+  "maxLevel": 200,
+  "soulRings": [
+    {
+      "years": 0,
+      "color": "红色",
+      "css": "r",
+      "bg": "#ff0000",
+      "divine": true,
+      "skills": [
+        {
+          "name": "神圣毁灭（十万年魂技）",
+          "type": "attack",
+          "desc": "第0魂技。以自身魂力催动，爆发出毁灭性的攻击力量，足以撕裂空间。"
+        },
+        {
+          "name": "不死之身（十万年魂技）",
+          "type": "defense",
+          "desc": "第0魂技。凝聚十万年魂兽的防御本能，在周身形成坚固护盾。"
+        }
+      ]
+    },
+    {
+      "years": 0,
+      "color": "红色",
+      "css": "r",
+      "bg": "#ff0000",
+      "divine": true,
+      "skills": [
+        {
+          "name": "破灭之刃（十万年魂技）",
+          "type": "attack",
+          "desc": "第1魂技。将十万年魂兽的本源之力注入武魂，化为锋锐无匹的攻击。"
+        },
+        {
+          "name": "灵魂碾压（十万年魂技）",
+          "type": "control",
+          "desc": "第1魂技。释放强大的精神波动，干扰敌人感知，使其陷入短暂失控。"
+        }
+      ]
+    }
+  ],
+  "soulBones": [],
+  "battleArmor": 0,
+  "customSkills": [],
+  "crossSkills": [],
+  "companions": [],
+  "faction": "毁灭阵营",
+  "factionReputation": 0,
+  "hasMaster": false,
+  "masterBonus": false,
+  "hasSpouse": false,
+  "spouse": null,
+  "enemies": [],
+  "transformed": false,
+  "bloodline": null,
+  "birthplace": null,
+  "bloodlineSkills": [],
+  "alive": true,
+  "events": [],
+  "keyEvents": [],
+  "achievementsEarned": [],
+  "gold": 0,
+  "merit": 0,
+  "yearEvents": [
+    {
+      "age": 8,
+      "type": "fortune",
+      "text": "<b style=\"color:var(--green);\">【存档成功】</b> 游戏进度已保存。",
+      "time": "2026-07-22T11:20:49.863Z"
+    },
+    {
+      "age": 8,
+      "type": "fortune",
+      "text": "<b style=\"color:var(--gold);\">【突破】</b> 魂力达到102级，突破瓶颈！需要猎杀第2魂环..."
+    },
+    {
+      "age": 7,
+      "type": "fortune",
+      "text": "<b style=\"color:var(--gold);\">【突破】</b> 魂力达到100级，突破瓶颈！需要猎杀第1魂环..."
+    },
+    {
+      "age": 6,
+      "type": "cultivate",
+      "text": "你在神界觉醒了<b style=\"color:var(--gold)\">「月神」</b>神位，持有伪神器·月华镜，隶属于<b>毁灭阵营</b>。神力等级：三级神祇。",
+      "time": "2026-07-22T11:20:23.444Z"
+    }
+  ],
+  "autoMode": false,
+  "godPosition": {
+    "name": "月神",
+    "desc": "月光之力，清冷幽远。",
+    "color": "#aaccff",
+    "weight": 1,
+    "eraColor": "#aaccff"
+  },
+  "godArtifact": {
+    "name": "伪神器·月华镜",
+    "desc": "伪神器，映照月光的宝镜。",
+    "color": "#aaccff",
+    "weight": 1,
+    "eraColor": "#aaccff"
+  },
+  "_processing": false
+}
