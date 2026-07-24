@@ -93,6 +93,164 @@
     return cloneWheelItems(getBeastBirthplaces(G.timeline.id), item => ({ eraColor: item.color }));
   }
 
+  function getQualityWeightsForIdentity(identity, identityType) {
+    let base = { common: 45, good: 35, mutant: 12, top: 7, dual: 1 };
+    if (identityType === 'soul_beast') {
+      let yrs = G ? (G.beastYears || 0) : 0;
+      if (yrs >= 200000) return { common: 5, good: 15, mutant: 30, top: 45, dual: 5 };
+      if (yrs >= 100000) return { common: 10, good: 25, mutant: 30, top: 30, dual: 5 };
+      if (yrs >= 10000) return { common: 20, good: 35, mutant: 25, top: 18, dual: 2 };
+      if (yrs >= 1000) return { common: 35, good: 40, mutant: 15, top: 9, dual: 1 };
+      return { common: 50, good: 35, mutant: 10, top: 4, dual: 1 };
+    }
+    if (identityType === 'god') {
+      return { common: 0, good: 5, mutant: 15, top: 70, dual: 10 };
+    }
+    switch (identity.id) {
+      case 'commoner': return { common: 55, good: 32, mutant: 8, top: 4, dual: 1 };
+      case 'orphan': return { common: 45, good: 30, mutant: 15, top: 8, dual: 2 };
+      case 'rogue': return { common: 40, good: 35, mutant: 15, top: 8, dual: 2 };
+      case 'sect_disciple': return { common: 30, good: 42, mutant: 15, top: 11, dual: 2 };
+      case 'noble': return { common: 20, good: 40, mutant: 18, top: 18, dual: 4 };
+      case 'family_child': return { common: 10, good: 30, mutant: 22, top: 30, dual: 8 };
+      default: return base;
+    }
+  }
+
+  function buildQualityWheel() {
+    let weights = getQualityWeightsForIdentity(G.identity, G.identityType);
+    let items = [
+      { name: '普通武魂', tier: 'common', weight: weights.common, color: '#888888', desc: '铜铁之类，随处可见。' },
+      { name: '优秀武魂', tier: 'good', weight: weights.good, color: '#4488ff', desc: '材质上佳，战力不俗。' },
+      { name: '变异武魂', tier: 'mutant', weight: weights.mutant, color: '#aa66ff', desc: '基因异变，祸福难料。' },
+      { name: '顶级武魂', tier: 'top', weight: weights.top, color: '#ffdd44', desc: '世界顶尖，天生神级。' },
+      { name: '双生武魂', tier: 'dual', weight: weights.dual, color: '#ff4444', desc: '极其罕见，双魂觉醒。' }
+    ];
+    return items.filter(item => item.weight > 0);
+  }
+
+  function pickNameWheelItems(tier, count) {
+    let pool = buildSoulNamePool();
+    let source = pool[tier] || pool.common;
+    let shuffled = [...source].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, Math.min(count, shuffled.length));
+  }
+
+  function randomSoulName(tier) {
+    let pool = buildSoulNamePool();
+    let source = pool[tier] || pool.common;
+    return source[Math.floor(Math.random() * source.length)];
+  }
+
+  function generateRandomCharacter(forceType) {
+    let character = {};
+    character.timeline = weightedRandom(TIMELINES);
+    character.identityType = forceType;
+
+    if (forceType === 'human') {
+      character.identity = weightedRandom(HUMAN_BACKGROUNDS);
+      let genderPool = GENDERS.filter(gender => gender.id !== 'none');
+      character.gender = weightedRandom(genderPool);
+      character.personality = weightedRandom(PERSONALITIES);
+      character.appearance = weightedRandom(APPEARANCES);
+
+      let tempG = { identity: character.identity, identityType: 'human' };
+      let oldG = G;
+      G = tempG;
+
+      let qItems = buildQualityWheel();
+      let quality = weightedRandom(qItems);
+      if (quality.tier === 'dual') {
+        let soul1 = randomSoulName('top');
+        let soul2 = randomSoulName('top');
+        character.martialSoul = {
+          name: '双生武魂', type: '双生武魂', quality: '顶级+', qColor: '#ff4444',
+          example: `${soul1.name} / ${soul2.name}`, isDual: true, activeIndex: 0,
+          souls: [
+            { ...soul1, rings: [], skills: [], _baseName: soul1.name, evolutionStage: 0 },
+            { ...soul2, rings: [], skills: [], _baseName: soul2.name, evolutionStage: 0 }
+          ]
+        };
+      } else {
+        let soul = randomSoulName(quality.tier);
+        character.martialSoul = { ...soul, example: soul.name, rings: [], skills: [], _baseName: soul.name, evolutionStage: 0 };
+      }
+
+      let inatePools = QUICK_RANDOM_INNATE_POOLS.map(pool => ({ ...pool }));
+      if (quality.tier === 'top' || quality.tier === 'dual') inatePools[3].weight = 40;
+      else if (quality.tier === 'mutant') inatePools[2].weight = 45;
+      else if (quality.tier === 'good') inatePools[1].weight = 65;
+      let innate = weightedRandom(inatePools);
+      character.innatePower = innate.min === innate.max ? innate.min : innate.min + Math.floor(Math.random() * (innate.max - innate.min + 1));
+      character.innateRating = innate.name.replace('先天', '');
+      character.innateRatingColor = innate.ratingColor;
+      G = oldG;
+      character.soulPower = character.innatePower;
+    } else {
+      character.identity = weightedRandom(BEAST_RACES);
+      character.bloodline = weightedRandom(BEAST_BLOODLINES);
+      let birthplaces = getBeastBirthplaces(character.timeline.id);
+      character.birthplace = birthplaces.length > 0 ? weightedRandom(birthplaces) : { name: '未知之地', desc: '一片未知的区域。' };
+      character.personality = weightedRandom(PERSONALITIES);
+      character.appearance = weightedRandom(APPEARANCES);
+      character.beastYears = 0;
+      character.martialSoul = null;
+      character.innatePower = 0;
+      character.innateRating = '无';
+      character.innateRatingColor = '#888';
+      let bloodlinePower = character.bloodline?.attr?.power || 1.0;
+      character.soulPower = 1 + Math.floor((bloodlinePower - 1.0) * 5);
+    }
+
+    return character;
+  }
+
+  function rerollQuickRandom() {
+    _quickRandomHuman = generateRandomCharacter('human');
+    _quickRandomBeast = generateRandomCharacter('soul_beast');
+    renderQuickRandom();
+  }
+
+  function startGameFromQuick(type) {
+    let character = type === 'human' ? _quickRandomHuman : _quickRandomBeast;
+    G = createDefaultState();
+    G.timeline = character.timeline;
+    G.identityType = character.identityType;
+    G.identity = character.identity;
+    G.gender = character.gender || { name: '男' };
+    G.martialSoul = character.martialSoul;
+    G.soulRings = character.martialSoul?.rings || [];
+    G.soulBones = [];
+    G.innatePower = character.innatePower || 0;
+    G.innateRating = character.innateRating || '无';
+    G.innateRatingColor = character.innateRatingColor || '#888';
+    G.soulPower = character.soulPower || 1;
+    G.personality = character.personality;
+    G.appearance = character.appearance;
+    G.alive = true;
+    G.age = 6;
+    G.events = [];
+    G.keyEvents = [];
+    G.yearEvents = [];
+    G.companions = [];
+    G.enemies = [];
+    G.gold = 0;
+    G.merit = 0;
+
+    if (type === 'soul_beast') {
+      G.bloodline = character.bloodline;
+      G.birthplace = character.birthplace;
+      G.beastYears = 0;
+      syncBeastSoulPower();
+    }
+
+    if (G.timeline.id === 'douluo4') { G.maxLevel = 150; G.maxAge = 200; }
+    else if (G.timeline.id === 'godrealm') { G.maxLevel = 200; G.maxAge = 999; }
+    else { G.maxLevel = 99; G.maxAge = 150; }
+
+    showAwakening();
+  }
+
   function buildSoulQualityStep() {
     return queueCreationStep('soul_quality', { items: buildQualityWheel() });
   }
@@ -536,4 +694,7 @@
   };
 
   global.CharacterCreationFlow = CharacterCreationFlow;
+  global.generateRandomCharacter = generateRandomCharacter;
+  global.rerollQuickRandom = rerollQuickRandom;
+  global.startGameFromQuick = startGameFromQuick;
 })(window);

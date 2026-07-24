@@ -1,287 +1,3 @@
-function checkSoulEvolution() {
-  if (!G || !G.martialSoul || !G.martialSoul.name) return null;
-  if (G.martialSoul.isDual || G.martialSoul.id === 'multi') return null;
-  let baseName = G.martialSoul._baseName || G.martialSoul.name;
-  let evo = SOUL_EVOLUTIONS[baseName];
-  if (!evo) {
-    let t = G.martialSoul.type;
-    if (t === '器武魂') evo = SOUL_EVOLUTIONS['_DEFAULT_WEAPON_'];
-    else if (t === '兽武魂') evo = SOUL_EVOLUTIONS['_DEFAULT_BEAST_'];
-    else if (t === '变异武魂') evo = SOUL_EVOLUTIONS['_DEFAULT_MUTANT_'];
-  }
-  if (!evo) return null;
-  let stage = G.martialSoul.evolutionStage || 0;
-  if (stage >= evo.stages.length) return null;
-  if (G.soulPower >= evo.levels[stage] && G.age >= evo.ages[stage]) {
-    let newName;
-    if (evo.type === 'replace') newName = evo.stages[stage];
-    else if (evo.type === 'prefix') newName = evo.stages[stage] + baseName;
-    else newName = baseName + evo.stages[stage];
-    return { stage: stage + 1, newName: newName, bonusPower: evo.powers[stage], desc: evo.descs[stage] };
-  }
-  return null;
-}
-
-function checkSoulCoreFormation() {
-  if (!G || !G.martialSoul) return null;
-  let currentCore = G.soulCore || 0;
-  let soulName = G.martialSoul.name || '';
-
-  if (G.timeline?.id === 'douluo2') {
-    if (currentCore === 0 && G.soulPower >= 60) {
-      let attrs = SOUL_CORE_ATTRS;
-      let attr1 = attrs[Math.floor(Math.random() * attrs.length)];
-      let attr2 = attrs[Math.floor(Math.random() * attrs.length)];
-      return {
-        text: `<b style="color:var(--gold);">【魂核形成】</b> 在${soulName}的引导下，你成功凝聚出第一魂核——<span style="color:#88aa88;">普通魂核</span>！${attr1}+10%，${attr2}+5%！`,
-        core: { level: 1, type: '普通', color: '#88aa88', attrs: { [attr1]: 0.1, [attr2]: 0.05 } },
-        sp: 2
-      };
-    }
-    if (currentCore === 1 && G.soulPower >= 80) {
-      let attrs = SOUL_CORE_ATTRS;
-      let attr1 = attrs[Math.floor(Math.random() * attrs.length)];
-      let attr2 = attrs[Math.floor(Math.random() * attrs.length)];
-      while (attr2 === attr1) attr2 = attrs[Math.floor(Math.random() * attrs.length)];
-      return {
-        text: `<b style="color:var(--gold);">【魂核进化】</b> 第一魂核蜕变，进化为<span style="color:#aa88ff;">暗金魂核</span>！${attr1}+20%，${attr2}+10%，全属性+5%！`,
-        core: { level: 2, type: '暗金', color: '#aa88ff', attrs: { [attr1]: 0.2, [attr2]: 0.1, 全属性: 0.05 } },
-        sp: 3
-      };
-    }
-    if (currentCore === 2 && G.soulPower >= 90) {
-      let attrs = SOUL_CORE_ATTRS;
-      let attr1 = attrs[Math.floor(Math.random() * attrs.length)];
-      return {
-        text: `<b style="color:var(--gold);">【极致魂核】</b> 暗金魂核突破极限，进化为<span style="color:#ff8844;">极致魂核</span>！${attr1}+50%，全属性+20%，战力大幅飞跃！`,
-        core: { level: 3, type: '极致', color: '#ff8844', attrs: { [attr1]: 0.5, 全属性: 0.2 } },
-        sp: 5
-      };
-    }
-  } else {
-    if (currentCore === 0 && G.soulPower >= 60) {
-      return {
-        text: `<b style="color:var(--gold);">【魂核形成】</b> 在${soulName}的引导下，你成功凝聚出第一魂核！精神力大幅提升，战力+35%！`,
-        core: { level: 1, type: '魂核', color: '#88aa88' },
-        sp: 2
-      };
-    }
-    if (currentCore === 1 && G.soulPower >= 80) {
-      return {
-        text: `<b style="color:var(--gold);">【双魂核】</b> 你成功凝聚出第二魂核！双核共振产生强大的精神力增幅，战力+70%！`,
-        core: { level: 2, type: '双魂核', color: '#aa88ff' },
-        sp: 3
-      };
-    }
-    if (currentCore === 2 && G.soulPower >= 90) {
-      return {
-        text: `<b style="color:var(--gold);">【三魂核】</b> 极致的精神力突破，第三魂核凝聚成功！三核归一，战力+120%！`,
-        core: { level: 3, type: '三魂核', color: '#ff8844' },
-        sp: 5
-      };
-    }
-  }
-  return null;
-}
-
-function getEvolutionPotential(martialSoul) {
-  if (!martialSoul || martialSoul.isDual || martialSoul.id === 'multi') return null;
-  let baseName = martialSoul._baseName || martialSoul.name;
-  let evo = SOUL_EVOLUTIONS[baseName];
-  if (!evo) {
-    let t = martialSoul.type;
-    if (t === '器武魂') evo = SOUL_EVOLUTIONS['_DEFAULT_WEAPON_'];
-    else if (t === '兽武魂') evo = SOUL_EVOLUTIONS['_DEFAULT_BEAST_'];
-    else if (t === '变异武魂') evo = SOUL_EVOLUTIONS['_DEFAULT_MUTANT_'];
-  }
-  if (!evo) return null;
-  let last = evo.stages[evo.stages.length - 1];
-  let finalForm = evo.type === 'replace' ? last : (evo.type === 'prefix' ? last + baseName : baseName + last);
-  return `可进化 ${evo.stages.length} 次，最终形态：${finalForm}`;
-}
-
-// Get identity-adjusted quality weights
-function getQualityWeightsForIdentity(identity, identityType) {
-  let base = { common: 45, good: 35, mutant: 12, top: 7, dual: 1 };
-  if (identityType === 'soul_beast') {
-    // Beast: based on years (stored in G.beastYears)
-    let yrs = G ? (G.beastYears || 0) : 0;
-    if (yrs >= 200000) return { common: 5, good: 15, mutant: 30, top: 45, dual: 5 };
-    if (yrs >= 100000) return { common: 10, good: 25, mutant: 30, top: 30, dual: 5 };
-    if (yrs >= 10000) return { common: 20, good: 35, mutant: 25, top: 18, dual: 2 };
-    if (yrs >= 1000) return { common: 35, good: 40, mutant: 15, top: 9, dual: 1 };
-    return { common: 50, good: 35, mutant: 10, top: 4, dual: 1 };
-  }
-  if (identityType === 'god') {
-    return { common: 0, good: 5, mutant: 15, top: 70, dual: 10 };
-  }
-  // Human: based on identity
-  switch (identity.id) {
-    case 'commoner': return { common: 55, good: 32, mutant: 8, top: 4, dual: 1 };
-    case 'orphan': return { common: 45, good: 30, mutant: 15, top: 8, dual: 2 };
-    case 'rogue': return { common: 40, good: 35, mutant: 15, top: 8, dual: 2 };
-    case 'sect_disciple': return { common: 30, good: 42, mutant: 15, top: 11, dual: 2 };
-    case 'noble': return { common: 20, good: 40, mutant: 18, top: 18, dual: 4 };
-    case 'family_child': return { common: 10, good: 30, mutant: 22, top: 30, dual: 8 };
-    default: return base;
-  }
-}
-
-// Build quality-tier wheel items based on identity
-function buildQualityWheel() {
-  let weights = getQualityWeightsForIdentity(G.identity, G.identityType);
-  let items = [
-    { name: '普通武魂', tier: 'common', weight: weights.common, color: '#888888', desc: '铜铁之类，随处可见。' },
-    { name: '优秀武魂', tier: 'good', weight: weights.good, color: '#4488ff', desc: '材质上佳，战力不俗。' },
-    { name: '变异武魂', tier: 'mutant', weight: weights.mutant, color: '#aa66ff', desc: '基因异变，祸福难料。' },
-    { name: '顶级武魂', tier: 'top', weight: weights.top, color: '#ffdd44', desc: '世界顶尖，天生神级。' },
-    { name: '双生武魂', tier: 'dual', weight: weights.dual, color: '#ff4444', desc: '极其罕见，双魂觉醒。' }
-  ];
-  return items.filter(i => i.weight > 0);
-}
-
-// Pick N random names from a tier pool for the name wheel display
-function pickNameWheelItems(tier, count) {
-  let pool = buildSoulNamePool();
-  let source = pool[tier] || pool.common;
-  // Shuffle and pick
-  let shuffled = [...source].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, Math.min(count, shuffled.length));
-}
-
-// Randomly select one name from tier pool
-function randomSoulName(tier) {
-  let pool = buildSoulNamePool();
-  let source = pool[tier] || pool.common;
-  return source[Math.floor(Math.random() * source.length)];
-}
-function getRingLimit(ringNum) {
-  let base = BASE_RING_LIMITS[ringNum] || 100000;
-  let quality = G.martialSoul?.quality || '普通';
-  let mult = RING_QUALITY_MULTIPLIERS[quality] || 1.0;
-  // Evolution bonus: each stage adds 20% more
-  let evoStage = G.martialSoul?.evolutionStage || 0;
-  mult += evoStage * 0.2;
-  return Math.floor(base * mult);
-}
-
-// ============================================================
-// COMBAT POWER SYSTEM (战力系统)
-// ============================================================
-function calculateCombatPower(entity, isEnemy = false) {
-  if (isEnemy) {
-    let level = entity.level || 1;
-    let power = entity.power || 1;
-    return Math.floor(level * 100 * power);
-  }
-  let base = (G.soulPower || 0) * 200;
-  let ringBonus = 0;
-  if (Array.isArray(G.soulRings) && G.soulRings.length > 0) {
-    G.soulRings.forEach((r, idx) => {
-      let years = r.years || 0;
-      let ringMultiplier = 1 + idx * 0.2;
-      if (years >= 1000000) ringBonus += 1200 * ringMultiplier;
-      else if (years >= 100000) ringBonus += 500 * ringMultiplier;
-      else if (years >= 10000) ringBonus += 200 * ringMultiplier;
-      else if (years >= 1000) ringBonus += 60 * ringMultiplier;
-      else if (years >= 100) ringBonus += 20 * ringMultiplier;
-      else ringBonus += 5 * ringMultiplier;
-      if (r.skills && r.skills.length) {
-        r.skills.forEach(s => {
-          let skillBonus = s.type === 'control' ? 100 : (s.type === 'attack' ? 90 : (s.type === 'defense' ? 80 : (s.type === 'boost' ? 150 : 70)));
-          ringBonus += skillBonus;
-        });
-      }
-    });
-  }
-  let boneBonus = 0;
-  if (G.soulBones && G.soulBones.length > 0) {
-    boneBonus = G.soulBones.length * 300;
-    if (G.soulBones.length >= 4) boneBonus += 500;
-    if (G.soulBones.length >= 6) boneBonus += 1000;
-  }
-  let customSkillBonus = 0;
-  if (G.customSkills && G.customSkills.length > 0) {
-    G.customSkills.forEach(s => {
-      let type = s.type || 'attack';
-      if (type === 'control') customSkillBonus += 200;
-      else if (type === 'attack') customSkillBonus += 180;
-      else if (type === 'defense') customSkillBonus += 150;
-      else if (type === 'boost') customSkillBonus += 120;
-      else customSkillBonus += 100;
-    });
-  }
-  let qualityBonus = 1;
-  if (G.martialSoul?.quality) {
-    let q = G.martialSoul.quality;
-    if (q.includes('顶级')) qualityBonus = 1.6;
-    else if (q.includes('变异')) qualityBonus = 1.35;
-    else if (q.includes('优秀')) qualityBonus = 1.15;
-    else if (q.includes('双生')) qualityBonus = 2.2;
-  }
-  let bloodlineBonus = G.bloodline ? 1.3 : 1;
-  // 血脉属性精细化加成
-  let bloodlineAttrBonus = 1;
-  if (G.bloodline?.attr) {
-    let ba = G.bloodline.attr;
-    if (typeof ba.power === 'number') bloodlineAttrBonus *= ba.power;
-    if (typeof ba.defense === 'number') bloodlineAttrBonus *= (1 + (ba.defense - 1) * 0.5);
-    if (typeof ba.speed === 'number') bloodlineAttrBonus *= (1 + (ba.speed - 1) * 0.3);
-    if (typeof ba.control === 'number') bloodlineAttrBonus *= (1 + (ba.control - 1) * 0.4);
-    if (typeof ba.heal === 'number') bloodlineAttrBonus *= (1 + (ba.heal - 1) * 0.2);
-    if (typeof ba.space === 'number') bloodlineAttrBonus *= ba.space;
-    if (typeof ba.time === 'number') bloodlineAttrBonus *= ba.time;
-    if (typeof ba.devour === 'number') bloodlineAttrBonus *= ba.devour;
-  }
-  // 降生地点属性加成
-  let birthplaceBonus = 1;
-  if (G.birthplace?.attr) {
-    let ba = G.birthplace.attr;
-    if (typeof ba.power === 'number') birthplaceBonus *= ba.power;
-    if (typeof ba.risk === 'number') birthplaceBonus *= (1 + (ba.risk - 1) * 0.3);
-    if (typeof ba.secret === 'number') birthplaceBonus *= (1 + (ba.secret - 1) * 0.4);
-    if (typeof ba.divine === 'number') birthplaceBonus *= ba.divine;
-    if (typeof ba.tech === 'number') birthplaceBonus *= (1 + (ba.tech - 1) * 0.5);
-    if (typeof ba.spirit === 'number') birthplaceBonus *= (1 + (ba.spirit - 1) * 0.6);
-    if (typeof ba.alien === 'number') birthplaceBonus *= (1 + (ba.alien - 1) * 0.5);
-  }
-  let soulCoreBonus = 1;
-  if (G.soulCore >= 1) soulCoreBonus = 1.35;
-  if (G.soulCore >= 2) soulCoreBonus = 1.7;
-  if (G.soulCore >= 3) soulCoreBonus = 2.2;
-  let coreAttrBonus = 1;
-  if (Array.isArray(G.soulCores)) {
-    G.soulCores.forEach(core => {
-      if (core.attrs) {
-        Object.values(core.attrs).forEach(v => {
-          if (typeof v === 'number') coreAttrBonus *= (1 + v);
-        });
-      }
-    });
-  }
-  // 神力技能加成（神和神兽专属）
-  let divineSkillBonus = 1;
-  if ((G.identityType === 'god' || G.identityType === 'divine_beast') && Array.isArray(G.divineSkills)) {
-    divineSkillBonus = 1 + G.divineSkills.length * 0.15;
-  }
-  let total = Math.floor((base + ringBonus + boneBonus + customSkillBonus) * qualityBonus * bloodlineBonus * bloodlineAttrBonus * birthplaceBonus * soulCoreBonus * coreAttrBonus * divineSkillBonus);
-  return total;
-}
-
-function getCombatPowerRating(cp) {
-  if (cp >= 50000) return { name: '超神级', color: '#ff0000' };
-  if (cp >= 30000) return { name: '神级', color: '#ffdd44' };
-  if (cp >= 15000) return { name: '极限斗罗级', color: '#ff6644' };
-  if (cp >= 8000) return { name: '封号斗罗级', color: '#aa66ff' };
-  if (cp >= 4000) return { name: '魂斗罗级', color: '#44ddaa' };
-  if (cp >= 2000) return { name: '魂圣级', color: '#4488ff' };
-  if (cp >= 1000) return { name: '魂帝级', color: '#88aaff' };
-  if (cp >= 500) return { name: '魂王级', color: '#aaddaa' };
-  if (cp >= 200) return { name: '魂宗级', color: '#cccc66' };
-  if (cp >= 100) return { name: '魂尊级', color: '#aaaaaa' };
-  return { name: '魂士级', color: '#888888' };
-}
-
 // ============================================================
 // GAME STATE
 // ============================================================
@@ -290,20 +6,6 @@ let wheelQueue = [];
 let wheelIndex = 0;
 let currentWheelData = null;
 let isSpinning = false;
-let globalAchievements = [];
-
-function loadGlobalAchievements() {
-  try { globalAchievements = JSON.parse(localStorage.getItem('dl_achievements')) || []; } catch (e) { globalAchievements = []; }
-}
-function saveGlobalAchievements() {
-  localStorage.setItem('dl_achievements', JSON.stringify(globalAchievements));
-}
-function loadSaves() {
-  try { return JSON.parse(localStorage.getItem('dl_saves')) || []; } catch (e) { return []; }
-}
-function saveSaves(saves) {
-  localStorage.setItem('dl_saves', JSON.stringify(saves));
-}
 
 // ============================================================
 // PARTICLES
@@ -324,118 +26,6 @@ function initParticles() {
 // ============================================================
 // SCREEN MANAGEMENT
 // ============================================================
-// ============================================================
-function generateRandomCharacter(forceType) {
-  // forceType: 'human' or 'soul_beast'
-  let c = {};
-  c.timeline = weightedRandom(TIMELINES);
-  c.identityType = forceType;
-
-  if (forceType === 'human') {
-    c.identity = weightedRandom(HUMAN_BACKGROUNDS);
-    let genderPool = GENDERS.filter(g => g.id !== 'none');
-    c.gender = weightedRandom(genderPool);
-    c.personality = weightedRandom(PERSONALITIES);
-    c.appearance = weightedRandom(APPEARANCES);
-    // Generate martial soul
-    let tempG = { identity: c.identity, identityType: 'human' };
-    let oldG = G;
-    G = tempG;
-    let qItems = buildQualityWheel();
-    let q = weightedRandom(qItems);
-    if (q.tier === 'dual') {
-      let s1 = randomSoulName('top');
-      let s2 = randomSoulName('top');
-      c.martialSoul = {
-        name: '双生武魂', type: '双生武魂', quality: '顶级+', qColor: '#ff4444',
-        example: `${s1.name} / ${s2.name}`, isDual: true, activeIndex: 0,
-        souls: [
-          { ...s1, rings: [], skills: [], _baseName: s1.name, evolutionStage: 0 },
-          { ...s2, rings: [], skills: [], _baseName: s2.name, evolutionStage: 0 }
-        ]
-      };
-    } else {
-      let s = randomSoulName(q.tier);
-      c.martialSoul = { ...s, example: s.name, rings: [], skills: [], _baseName: s.name, evolutionStage: 0 };
-    }
-    // Innate power based on quality
-    let inatePools = QUICK_RANDOM_INNATE_POOLS.map(pool => ({ ...pool }));
-    if (q.tier === 'top' || q.tier === 'dual') inatePools[3].weight = 40;
-    else if (q.tier === 'mutant') inatePools[2].weight = 45;
-    else if (q.tier === 'good') inatePools[1].weight = 65;
-    let innate = weightedRandom(inatePools);
-    c.innatePower = innate.min === innate.max ? innate.min : innate.min + Math.floor(Math.random() * (innate.max - innate.min + 1));
-    c.innateRating = innate.name.replace('先天', '');
-    c.innateRatingColor = innate.ratingColor;
-    G = oldG;
-    c.soulPower = c.innatePower;
-  } else {
-    // Soul beast
-    c.identity = weightedRandom(BEAST_RACES);
-    c.bloodline = weightedRandom(BEAST_BLOODLINES);
-    // Birthplace filtered by timeline
-    let bps = getBeastBirthplaces(c.timeline.id);
-    c.birthplace = bps.length > 0 ? weightedRandom(bps) : { name: '未知之地', desc: '一片未知的区域。' };
-    c.personality = weightedRandom(PERSONALITIES);
-    c.appearance = weightedRandom(APPEARANCES);
-    c.beastYears = 0;
-    c.martialSoul = null;
-    c.innatePower = 0;
-    c.innateRating = '无';
-    c.innateRatingColor = '#888';
-    let bp = c.bloodline?.attr?.power || 1.0;
-    c.soulPower = 1 + Math.floor((bp - 1.0) * 5);
-  }
-  return c;
-}
-
-
-function rerollQuickRandom() {
-  _quickRandomHuman = generateRandomCharacter('human');
-  _quickRandomBeast = generateRandomCharacter('soul_beast');
-  renderQuickRandom();
-}
-
-function startGameFromQuick(type) {
-  let c = type === 'human' ? _quickRandomHuman : _quickRandomBeast;
-  G = createDefaultState();
-  G.timeline = c.timeline;
-  G.identityType = c.identityType;
-  G.identity = c.identity;
-  G.gender = c.gender || { name: '男' };
-  G.martialSoul = c.martialSoul;
-  G.soulRings = c.martialSoul?.rings || [];
-  G.soulBones = [];
-  G.innatePower = c.innatePower || 0;
-  G.innateRating = c.innateRating || '无';
-  G.innateRatingColor = c.innateRatingColor || '#888';
-  G.soulPower = c.soulPower || 1;
-  G.personality = c.personality;
-  G.appearance = c.appearance;
-  G.alive = true;
-  G.age = 6;
-  G.events = [];
-  G.keyEvents = [];
-  G.yearEvents = [];
-  G.companions = [];
-  G.enemies = [];
-  G.gold = 0;
-  G.merit = 0;
-
-  if (type === 'soul_beast') {
-    G.bloodline = c.bloodline;
-    G.birthplace = c.birthplace;
-    G.beastYears = 0;
-    syncBeastSoulPower();
-  }
-
-  if (G.timeline.id === 'douluo4') { G.maxLevel = 150; G.maxAge = 200; }
-  else if (G.timeline.id === 'godrealm') { G.maxLevel = 200; G.maxAge = 999; }
-  else { G.maxLevel = 99; G.maxAge = 150; }
-
-  showAwakening();
-}
-
 function createDefaultState() {
   return {
     timeline: null, innatePower: 0, innateRating: '', innateRatingColor: '#888',
@@ -650,10 +240,6 @@ function showAwakening() {
 function rerollAll() {
   showScreen('screen-title');
   G = null;
-}
-
-function getLevelName(level) {
-  for (let l of SOUL_LEVELS) { if (level >= l.min && level <= l.max) return l.name; } return '未知';
 }
 
 // ============================================================
@@ -1251,144 +837,6 @@ async function advanceYearsWithStateMachine() {
   await finishYearAdvanceAsync(eventsThisRound, stopReason);
 }
 
-function processYearChain(idx, total, events) {
-  if (idx >= total || !G.alive) {
-    finishYearAdvance(events);
-    return;
-  }
-  G.age++;
-  // Death check
-  let maxAge = G.maxAge;
-  if (G.soulPower >= 91) maxAge += 100;
-  if (G.soulPower >= 99) maxAge += 200;
-  if (G.soulPower >= 120) maxAge += 500;
-  if (G.age > maxAge) {
-    G.alive = false; G.deathReason = '寿终正寝';
-    finishYearAdvance(events);
-    return;
-  }
-  // Innate 0 special
-  if (G.innatePower === 0 && G.age === 12 && Math.random() < 0.1) {
-    G.innatePower = 3; G.innateRating = '普通'; G.innateRatingColor = '#aaa';
-    events.push({ age: G.age, type: 'fortune', text: '<b style="color:var(--gold);">【觉醒】</b> 在一次意外中，你突然感受到了魂力的存在！后天觉醒成功，先天魂力3级！' });
-    processYearChain(idx + 1, total, events);
-    return;
-  }
-  // Soul ring milestone check（神和神兽没有魂环系统）
-  if (G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast' && G.soulRings.length < 9) {
-    let nextRingLevel = RING_MILESTONES[G.soulRings.length];
-    if (G.soulPower >= nextRingLevel) {
-      events.push({ age: G.age, type: 'fortune', text: `<b style="color:var(--gold);">【突破】</b> 魂力达到${G.soulPower}级，突破瓶颈！需要猎杀第${G.soulRings.length + 1}魂环...`, ringMilestone: true });
-      finishYearAdvance(events, true);
-      return;
-    }
-  }
-  // Soul core formation check (绝世唐门特有魂核系统)
-  if (G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast' && G.martialSoul) {
-    let soulCoreEvent = checkSoulCoreFormation();
-    if (soulCoreEvent) {
-      events.push({ age: G.age, type: 'fortune', text: soulCoreEvent.text });
-      G.soulCore++;
-      if (soulCoreEvent.core) {
-        if (!Array.isArray(G.soulCores)) G.soulCores = [];
-        G.soulCores.push(soulCoreEvent.core);
-      }
-      if (soulCoreEvent.sp) {
-        G.soulPower = Math.min(G.soulPower + soulCoreEvent.sp, G.maxLevel);
-      }
-      renderSidebar(); checkAchievements();
-      if (!G.alive) { finishYearAdvance(events); return; }
-    }
-  }
-  // 神力技能解锁（神和神兽专属）
-  if ((G.identityType === 'god' || G.identityType === 'divine_beast') && G.divineSkillsTotal) {
-    G.divineSkillsUnlocked = G.divineSkillsUnlocked || 0;
-    G.divineSkills = G.divineSkills || [];
-    let targetUnlocked = 0;
-    for (let lv of DIVINE_SKILL_UNLOCK_THRESHOLDS) {
-      if (G.soulPower >= lv) targetUnlocked++;
-      else break;
-    }
-    targetUnlocked = Math.min(targetUnlocked, G.divineSkillsTotal);
-    if (targetUnlocked > G.divineSkillsUnlocked) {
-      let newlyUnlocked = targetUnlocked - G.divineSkillsUnlocked;
-      for (let i = 0; i < newlyUnlocked; i++) {
-        let availableSkills = DIVINE_SKILL_POOL.filter(s => !G.divineSkills.some(ds => ds.name === s.name));
-        if (availableSkills.length === 0) break;
-        let newSkill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
-        G.divineSkills.push(newSkill);
-        G.divineSkillsUnlocked++;
-        events.push({ age: G.age, type: 'fortune', text: `<b style="color:var(--gold);">【神力觉醒】</b> 神力突破瓶颈，觉醒新技能：<b style="color:var(--cyan);">${newSkill.name}</b>！${newSkill.desc}。(${G.divineSkillsUnlocked}/${G.divineSkillsTotal})` });
-      }
-      renderSidebar();
-    }
-  }
-  // Timeline progress event check - original story events by age
-  let progressEvent = getTimelineProgressEvent();
-  if (progressEvent) {
-    events.push({ age: G.age, type: 'fortune', text: progressEvent.text });
-    if (progressEvent.sp) {
-      G.soulPower = Math.min(G.soulPower + progressEvent.sp, G.maxLevel);
-    }
-    if (progressEvent.merit) {
-      G.merit = (G.merit || 0) + progressEvent.merit;
-    }
-    renderSidebar(); checkAchievements();
-    if (!G.alive) { finishYearAdvance(events); return; }
-    processYearChain(idx + 1, total, events);
-    return;
-  }
-  // Year event wheel
-  openYearEventWheel(function (result) {
-    if (result && result.event) {
-      events.push({ age: G.age, ...result.event });
-    }
-    function continueNext() {
-      // Soul evolution check
-      let evoResult = checkSoulEvolution();
-      if (evoResult) {
-        G.martialSoul.name = evoResult.newName;
-        G.martialSoul.example = evoResult.newName;
-        G.martialSoul.evolutionStage = evoResult.stage;
-        G.soulPower = Math.min(G.soulPower + evoResult.bonusPower, G.maxLevel);
-        events.push({ age: G.age, type: 'fortune', text: `<b style="color:var(--gold);">【武魂进化】</b> ${evoResult.desc} 武魂进化为「${evoResult.newName}」！魂力+${evoResult.bonusPower}级！` });
-      }
-      renderSidebar(); checkAchievements();
-      if (!G.alive) { finishYearAdvance(events); return; }
-      // Douluo (90+) path choice check
-      if (G.soulPower >= 91 && !G.chosenPath && G.identityType !== 'soul_beast') {
-        events.push({ age: G.age, type: 'fortune', text: '<b style="color:var(--gold);">【封号斗罗】</b> 你的修为突破90级，成为封号斗罗！是时候选择未来的道路了...' });
-        finishYearAdvance(events);
-        setTimeout(() => openDouluoPathChoice(), 600);
-        return;
-      }
-      // Godhood check (only for those who chose god path or haven't chosen yet)
-      if (G.soulPower >= G.maxLevel && !G.isGod && G.identityType !== 'soul_beast' && G.chosenPath !== 'family') {
-        events.push({ age: G.age, type: 'fortune', text: '<b style="color:var(--gold);">【成神之路】</b> 你的修为已达到当前位面的极限，感应到了神位的召唤...' });
-        finishYearAdvance(events);
-        setTimeout(() => openGodhoodChoice(), 600);
-        return;
-      }
-      processYearChain(idx + 1, total, events);
-    }
-    if (result && result.subWheel === 'enemy') {
-      openEnemyWheel(function () {
-        renderSidebar(); checkAchievements();
-        if (!G.alive) { finishYearAdvance(events); return; }
-        continueNext();
-      });
-    } else if (result && result.subWheel === 'timeline') {
-      openTimelineCharacterWheel(function () {
-        renderSidebar(); checkAchievements();
-        if (!G.alive) { finishYearAdvance(events); return; }
-        continueNext();
-      });
-    } else {
-      continueNext();
-    }
-  });
-}
-
 function openGodhoodChoice() {
   document.getElementById('godhood-panel').style.display = 'block';
   document.getElementById('godhood-result').style.display = 'none';
@@ -1508,34 +956,6 @@ function getRomanceCandidates() {
     let targetNames = isMale ? ROMANCE_CHARACTER_NAME_POOLS.malePlayerTargets : ROMANCE_CHARACTER_NAME_POOLS.femalePlayerTargets;
     return targetNames.some(target => name.includes(target));
   }).map(c => ({ name: c.name, soul: c.soul, color: c.color }));
-}
-
-function finishYearAdvance(events, hasRingMilestone) {
-  renderYearAdvanceEvents(events);
-  checkAchievements();
-  renderSidebar();
-  // Ring milestone
-  if (hasRingMilestone && G.alive) {
-    let lastRingEvent = events.find(e => e.ringMilestone);
-    if (lastRingEvent) {
-      openSoulRingWheel(function (ringSuccess) {
-        if (!G.alive) { G._processing = false; renderSidebar(); triggerDeath('猎杀魂环时陨落'); return; }
-        renderSidebar(); checkAchievements();
-        if (ringSuccess) {
-          openOpportunityWheel(function () {
-            G._processing = false; renderSidebar(); checkAchievements();
-            if (!G.alive) triggerDeath('遭遇不测');
-          });
-        } else {
-          G._processing = false;
-          if (!G.alive) triggerDeath('遭遇不测');
-        }
-      });
-      return;
-    }
-  }
-  G._processing = false;
-  if (!G.alive) triggerDeath(G.deathReason || '遭遇不测');
 }
 
 function renderYearAdvanceEvents(events) {
@@ -1738,42 +1158,6 @@ function leaveLegacy() {
 }
 
 // ============================================================
-// ACHIEVEMENTS
-// ============================================================
-function checkAchievements() {
-  if (!G) return;
-  ACHIEVEMENTS.forEach(a => {
-    if (!globalAchievements.includes(a.id) && a.check(G)) {
-      globalAchievements.push(a.id);
-      saveGlobalAchievements();
-      // Show achievement notification
-      showAchievementNotification(a);
-    }
-  });
-}
-
-function showAchievementNotification(ach) {
-  let n = document.createElement('div');
-  n.style.cssText = 'position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#2a2a6e,#1a1a4e);border:2px solid var(--gold);border-radius:12px;padding:15px 25px;z-index:200;animation:fadeUp .5s;font-size:14px;';
-  n.innerHTML = `<div style="color:var(--gold);font-weight:bold;">🏆 成就解锁！</div><div style="margin-top:4px;">${ach.icon} ${ach.name}</div><div style="color:var(--gray);font-size:12px;">${ach.desc}</div>`;
-  document.body.appendChild(n);
-  setTimeout(() => n.remove(), 3000);
-}
-
-// ============================================================
-
-function syncBeastSoulPower() {
-  if (G.identityType === 'soul_beast' && G.beastYears !== undefined) {
-    G.soulPower = beastYearsToLevel(G.beastYears);
-  }
-}
-
-function addBeastYears(amount) {
-  if (G.identityType !== 'soul_beast' || G.beastYears === undefined) return '';
-  G.beastYears += amount;
-  syncBeastSoulPower();
-  return ` · 年限+${formatYears(amount)}`;
-}
 
 function viewSave(idx) {
   let saves = loadSaves();
@@ -1827,147 +1211,43 @@ function closeSaveModal() {
 }
 
 async function deleteSave(idx) {
-  let saves = loadSaves();
-  let id = saves[idx]?.id;
-  // Also delete full game state if exists
-  if (id) {
-    try { localStorage.removeItem('dl_save_full_' + id); } catch (e) { }
-    await apiDeleteGame(id);
+  let result = await SaveService.deleteSaveByIndex(idx);
+  if (!result.ok) {
+    showSaveToast(result.error || '删除存档失败', 'var(--red)');
+    return;
   }
-  saves.splice(idx, 1);
-  saveSaves(saves);
   renderSaves();
 }
 
 function saveCurrentGame() {
-  if (!G || !G.timeline) { showSaveToast('无法保存：游戏未开始', 'var(--red)'); return; }
-  // 复用已有存档ID，避免读档后保存产生重复记录
-  let saveId = G._saveId || Date.now();
-  G._saveId = saveId;
-  let soulName = G.martialSoul?.example || (G.bloodline ? `${G.bloodline.name}魂兽` : '未知');
-  let summary = {
-    id: saveId,
-    timeline: G.timeline?.name || '未知',
-    identity: G.identity?.name || '未知',
-    identityType: G.identityType || 'human',
-    martialSoul: soulName,
-    soulPower: G.soulPower || 0,
-    age: G.age || 0,
-    rating: G.alive ? '进行中' : '',
-    epitaph: '...',
-    rings: (G.soulRings || []).length,
-    bones: (G.soulBones || []).length,
-    deathReason: G.alive ? '进行中' : (G.deathReason || '未知'),
-    innatePower: G.innatePower || 0,
-    beastYears: G.beastYears,
-    date: new Date().toLocaleString('zh-CN'),
-    isSave: true
-  };
-  let fullOk = false;
-  try {
-    const seen = new WeakSet();
-    let dataStr = JSON.stringify(G, function (key, val) {
-      if (typeof val === 'function') return undefined;
-      if (val instanceof HTMLElement) return undefined;
-      if (typeof val === 'object' && val !== null) {
-        if (seen.has(val)) return '[Circular]';
-        seen.add(val);
-      }
-      return val;
-    });
-    if (dataStr.length > 4 * 1024 * 1024) {
-      showSaveToast('存档过大(>4MB)，仅保存摘要', 'var(--orange)');
-    } else {
-      localStorage.setItem('dl_save_full_' + saveId, dataStr);
-      fullOk = true;
-    }
-  } catch (e) {
-    console.error('存档序列化失败', e);
-    showSaveToast('完整存档保存失败：' + e.message, 'var(--red)');
-  }
-  try {
-    let saves = loadSaves();
-    // 查找是否已存在同ID的存档，存在则更新，不存在则新增
-    let existIdx = saves.findIndex(s => s.id === saveId);
-    if (existIdx >= 0) {
-      saves[existIdx] = summary;
-    } else {
-      saves.unshift(summary);
-      if (saves.length > 20) saves = saves.slice(0, 20);
-    }
-    saveSaves(saves);
-  } catch (e) {
-    showSaveToast('存档列表保存失败', 'var(--red)');
+  let result = SaveService.saveCurrentGameState(G);
+  if (!result.ok) {
+    console.error('存档保存失败', result.error);
+    showSaveToast(result.message || '存档保存失败', 'var(--red)');
     return;
   }
-  if (fullOk) {
+
+  if (result.warningMessage) {
+    showSaveToast(result.warningMessage, 'var(--orange)');
+  }
+  if (result.fullOk) {
     showSaveToast('存档成功！进度已保存');
     addEventLog(G.age, 'fortune', '<b style="color:var(--green);">【存档成功】</b> 游戏进度已保存。');
   }
-  // Sync to backend (non-blocking)
-  try {
-    let fullData = null;
-    const seen = new WeakSet();
-    let dataStr = JSON.stringify(G, function (key, val) {
-      if (typeof val === 'function') return undefined;
-      if (val instanceof HTMLElement) return undefined;
-      if (typeof val === 'object' && val !== null) {
-        if (seen.has(val)) return '[Circular]';
-        seen.add(val);
-      }
-      return val;
-    });
-    if (dataStr.length <= 4 * 1024 * 1024) {
-      fullData = JSON.parse(dataStr);
-    }
-    apiSaveGame(summary, fullData).then(r => {
-      if (r.ok && r.source === 'api') {
-        console.log('存档已同步到服务器');
-      }
-    }).catch(e => { });
-  } catch (e) { }
+
+  SaveService.syncSaveToBackend(result.summary, result.fullData).catch(() => { });
 }
 
 async function loadSaveGame(idx) {
-  let saves = loadSaves();
-  let s = saves[idx];
-  if (!s) return;
-  if (s.deathReason !== '进行中') {
-    alert('该角色已死亡，无法继续游戏。');
+  let result = await SaveService.loadSaveGameState(idx, createDefaultState);
+  if (!result.ok) {
+    alert(result.error);
     return;
   }
-  // Try API first, fallback to localStorage
-  let result = await apiLoadGame(s.id);
-  let fullData = null;
-  if (result.ok && result.data) {
-    fullData = result.data;
-  } else {
-    let fullKey = 'dl_save_full_' + s.id;
-    try {
-      fullData = JSON.parse(localStorage.getItem(fullKey));
-    } catch (e) {
-      console.error('读取完整存档失败', e);
-    }
-  }
-  if (!fullData) {
-    alert('完整存档数据丢失，无法继续游戏。');
-    return;
-  }
-  G = fullData;
-  G._processing = false;
-  G.autoMode = false;
-  // 记录当前存档ID，保存时复用，避免产生重复记录
-  G._saveId = s.id;
+
+  G = result.gameState;
   if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
   let ob = document.getElementById('mini-auto-stop-btn'); if (ob) ob.style.display = 'none';
-  let defaults = createDefaultState();
-  for (let k in defaults) {
-    if (G[k] === undefined || G[k] === null) { G[k] = defaults[k]; continue; }
-    if (Array.isArray(defaults[k]) && !Array.isArray(G[k])) { G[k] = defaults[k]; continue; }
-    if (typeof defaults[k] === 'object' && !Array.isArray(defaults[k]) && defaults[k] !== null) {
-      if (typeof G[k] !== 'object' || G[k] === null) { G[k] = defaults[k]; }
-    }
-  }
   showScreen('screen-life');
   renderSidebar();
   let log = document.getElementById('event-log');

@@ -408,31 +408,6 @@ function showReview() {
   `;
 }
 
-function showAchievementNotification(ach) {
-  let n = document.createElement('div');
-  n.style.cssText = 'position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#2a2a6e,#1a1a4e);border:2px solid var(--gold);border-radius:12px;padding:15px 25px;z-index:200;animation:fadeUp .5s;font-size:14px;';
-  n.innerHTML = `<div style="color:var(--gold);font-weight:bold;">🏆 成就解锁！</div><div style="margin-top:4px;">${ach.icon} ${ach.name}</div><div style="color:var(--gray);font-size:12px;">${ach.desc}</div>`;
-  document.body.appendChild(n);
-  setTimeout(() => n.remove(), 3000);
-}
-
-// ============================================================
-// ACHIEVEMENTS
-
-function renderAchievements() {
-  loadGlobalAchievements();
-  const grid = document.getElementById('ach-grid');
-  grid.innerHTML = ACHIEVEMENTS.map(a => {
-    let unlocked = globalAchievements.includes(a.id);
-    return `<div class="ach-card ${unlocked ? 'unlocked' : 'locked'}">
-      <div class="ach-icon">${a.icon}</div>
-      <div class="ach-name">${a.name}</div>
-      <div class="ach-desc">${a.desc}</div>
-      <div class="ach-cat">${a.cat}</div>
-    </div>`;
-  }).join('');
-}
-
 // ============================================================
 // SAVE/LOAD
 
