@@ -2,18 +2,25 @@
 // API CLIENT - Frontend to Backend communication
 // Fallback to localStorage if server unavailable
 // ============================================================
-const API_BASE = '';
+const API_BASE = '/api';
 let _apiAvailable = null;
+
+async function apiRequest(method, path, body = null) {
+  let opts = { method, headers: { 'Content-Type': 'application/json' } };
+  try { opts.signal = AbortSignal.timeout(2000); } catch(e) {}
+  if (body) opts.body = JSON.stringify(body);
+  let res = await fetch(API_BASE + path, opts);
+  if (!res.ok) throw new Error(`API ${method} ${path} failed: ${res.status}`);
+  return res.json();
+}
 
 async function checkApi() {
   if (_apiAvailable !== null) return _apiAvailable;
   if (location.protocol === 'file:') { _apiAvailable = false; return false; }
   try {
-    let opts = { method: 'GET' };
-    try { opts.signal = AbortSignal.timeout(2000); } catch(e) {}
-    const res = await fetch('/api/health', opts);
-    _apiAvailable = res.ok;
-    return _apiAvailable;
+    await apiRequest('GET', '/health');
+    _apiAvailable = true;
+    return true;
   } catch (e) {
     _apiAvailable = false;
     return false;
@@ -24,8 +31,7 @@ async function checkApi() {
 async function apiGetSaves() {
   if (await checkApi()) {
     try {
-      const res = await fetch('/api/saves');
-      const json = await res.json();
+      const json = await apiRequest('GET', '/saves');
       if (json.success) return json.data || [];
     } catch (e) { console.warn('API getSaves failed, fallback to localStorage', e); }
   }
@@ -37,12 +43,7 @@ async function apiGetSaves() {
 async function apiSaveGame(summary, fullData) {
   if (await checkApi()) {
     try {
-      const res = await fetch('/api/saves', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ summary, fullData })
-      });
-      const json = await res.json();
+      const json = await apiRequest('POST', '/saves', { summary, fullData });
       if (json.success) return { ok: true, source: 'api' };
     } catch (e) { console.warn('API save failed, fallback to localStorage', e); }
   }
@@ -70,8 +71,7 @@ async function apiSaveGame(summary, fullData) {
 async function apiLoadGame(id) {
   if (await checkApi()) {
     try {
-      const res = await fetch('/api/saves/' + id);
-      const json = await res.json();
+      const json = await apiRequest('GET', '/saves/' + id);
       if (json.success) return { ok: true, data: json.data };
     } catch (e) { console.warn('API load failed, fallback to localStorage', e); }
   }
@@ -86,8 +86,7 @@ async function apiLoadGame(id) {
 async function apiDeleteGame(id) {
   if (await checkApi()) {
     try {
-      const res = await fetch('/api/saves/' + id, { method: 'DELETE' });
-      const json = await res.json();
+      const json = await apiRequest('DELETE', '/saves/' + id);
       if (json.success) return { ok: true };
     } catch (e) { console.warn('API delete failed, fallback to localStorage', e); }
   }

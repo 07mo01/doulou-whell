@@ -7,6 +7,8 @@
 // ============================================================
 // GAME DATA - Core Constants
 // ============================================================
+const BONE_TYPES = ['头部魂骨','躯干魂骨','左臂骨','右臂骨','左腿骨','右腿骨'];
+
 const TIMELINES = [
   {id:'godrealm',name:'神界传说',era:'唐三成神前的神界时代',desc:'唐三尚未飞升神界，神界秩序初定。神祇与神兽并存，法则运转，万灵共生。',weight:10,factions:['神界委员会','海神阁','毁灭之神阵营','生命女神阵营'],soulRingMode:'divine',maxLevel:150,eraColor:'#ffdd44'},
   {id:'douluo1',name:'斗罗大陆 I',era:'唐三时代（约万年前）',desc:'武魂殿势力庞大，三足鼎立。武魂觉醒、魂师大赛盛行，魂导器尚未普及。',weight:30,factions:['武魂殿','昊天宗','七宝琉璃宗','蓝电霸王龙家族','史莱克学院','天斗帝国','星罗帝国'],soulRingMode:'hunt',maxLevel:99,eraColor:'#4488ff'},
@@ -540,6 +542,75 @@ const SOUL_EVOLUTIONS = {
   '_DEFAULT_WEAPON_':{type:'prefix',stages:['灵·','圣·','神·'],levels:[25,50,80],ages:[18,30,45],powers:[2,5,10],descs:['器武魂经魂力蕴养，灵性初开','器武魂进化为圣器，威力倍增','器武魂进化为神器，毁天灭地']},
   '_DEFAULT_BEAST_':{type:'suffix',stages:['王','皇','帝'],levels:[25,50,80],ages:[18,30,45],powers:[2,5,10],descs:['兽武魂血脉觉醒，进化为王者','兽武魂王血沸腾，进化为皇者','兽武魂达到帝级，统御一方']},
   '_DEFAULT_MUTANT_':{type:'suffix',stages:['·觉醒','·完全体','·神话'],levels:[30,60,90],ages:[20,35,50],powers:[3,6,10],descs:['变异武魂基因稳定，展现真正力量','变异武魂达到完全体，潜力全部释放','变异武魂进化为神话级，超越极限']}
+};
+
+// ============================================================
+// FORTUNE EVENT TEXT POOLS
+// ============================================================
+const FORTUNE_TEXTS = {
+  douluo1: {
+    sp: ['你在一处隐秘山谷发现了一株万年灵芝，服用后魂力大涨！','你在猎魂森林深处发现了一处前人遗留的洞府，获得了一本上古修炼笔记。','一位游历的魂师看你资质不错，赠送了你一枚珍贵的魂骨碎片。','你在索托城偶遇一位神秘的封号斗罗，他随手指点了几句就让你茅塞顿开。','你参加了一场地下拍卖会，意外以低价拍下了一株龙血参。'],
+    gold: ['你意外发现了一处被魂兽守护的宝藏！','你帮助了一位商人，他赠予你大量金魂币作为谢礼。','你在斗魂场下注赢了，获得了丰厚的回报。','你在瀑布下修炼时发现水底有一道暗门，里面藏着前辈魂师留下的金币。'],
+    appearance: ['你服用了某种神奇的天材地宝，容貌发生了变化...','你修炼了一种养颜功法，气质越发出众。','你在冰火两仪眼附近采摘到一株仙品药草，不仅提升了修为，容貌也变得更加出众。'],
+    bone: ['你在秘境探险中意外发现了一块魂骨！','你猎杀了一只罕见魂兽，它竟然产出了一块魂骨！','你在星斗大森林核心区边缘捡到了一块前人遗留的魂骨！']
+  },
+  douluo2: {
+    sp: ['你在海神湖畔捡到一块奇特的魂导核心，里面蕴含着远古魂导技术！','你的精神探测意外触碰到黄金树的意识，获得了短暂的精神力洗礼。','你在日月帝国的边境发现了一处魂导师遗迹，获得了一本失传的修炼手册。','你遇到了一只濒死的天梦冰蚕（幼体），它自愿将部分精神力赠与你。'],
+    gold: ['你制作了一件魂导器并出售，赚了不少钱。','你在日月帝国的边境贸易中获利颇丰。','你发现了一批日月帝国流出的稀有金属，卖了个好价钱。'],
+    appearance: ['你使用了一款新型魂导美容仪，效果显著。','你修炼了唐门的玄天功，气质越发超凡脱俗。','海神湖畔的灵气洗涤了你的肌肤，魅力提升。'],
+    bone: ['你在监察团任务中发现了一块魂骨！','你在海神阁的藏宝库中获得了一块传承魂骨！','你剿灭邪魂师据点时，意外发现了一块被掠夺的魂骨！']
+  },
+  douluo3: {
+    sp: ['你在升灵台中意外触发了一个隐藏区域，魂灵获得了额外的成长能量！','你锻造时意外进入了一种奇妙的境界，魂力随之突破。','你在龙谷秘境的边缘捡到了一块龙骨碎片，龙族气息让你血脉沸腾。','你的魂灵在传灵塔的特殊培育舱中发生了良性变异。'],
+    gold: ['你锻造的一件合金作品被高价买走。','你在传灵塔的悬赏任务中获得了丰厚奖励。','你发现了一种新型稀有金属矿脉，联邦给予了奖励。'],
+    appearance: ['你使用了传灵塔最新研发的美容魂导器。','你的武魂二次觉醒，连带容貌也变得更加出众。','你在生命古树的树荫下修炼，生命能量让你的气质更加出众。'],
+    bone: ['你在古战场遗址中发现了一块上古魂骨！','你击杀了一只深渊生物，它掉落了一块奇特的魂骨！','你在龙谷秘境中找到了一块龙骨化成的魂骨！']
+  },
+  douluo4: {
+    sp: ['你在天龙星的龙族祭坛附近修炼，意外吸收了一丝纯净的龙力！','你在深红之域的边缘发现了一种奇异的能量晶体，对修炼大有裨益。','你探索龙界遗迹时，龙神的气息灌入体内，修为大增。','你在精灵星的生命古树下冥想，感受到了宇宙本源的生命能量。'],
+    gold: ['你发现了一颗富含稀有金属的小行星，获得了联邦的奖励。','你参加星际魂师大赛获得了高额奖金。','你帮龙马星系的商人解决了一个难题，获得了丰厚报酬。'],
+    appearance: ['你吸收了精灵星的生命能量，容貌变得更加完美。','你的龙神血脉觉醒了一丝，连带外貌也发生了变化。','你使用了天龙星龙族特有的养颜秘方，效果惊人。'],
+    bone: ['你在龙界遗迹中发现了一块龙族魂骨！','你探索未知星域时获得了一块外星生物的魂骨！','你在深红之域击败了一只强大的深红生物，获得了一块变异魂骨！']
+  },
+  godrealm: {
+    sp: ['你获得了一道神赐神力，修为突飞猛进！','你在神界法则中感悟到了宇宙的奥秘。','你吸收了一只神兽的神性精华。','唐三路过你的修炼之地，随口指点了一句就让你豁然开朗。'],
+    gold: ['你在神界集市中出售了一件多余的神器。','你完成了一项神界任务，获得了丰厚奖励。','你在神界天河中捡到了一块神金，价值连城。'],
+    appearance: ['生命女神赐予你一滴生命精华，你的容貌变得完美无瑕。','你在神光中洗涤肉身，气质变得超凡脱俗。','神界的法则之力重塑了你的形体，魅力提升。'],
+    bone: ['你在神界深渊中发现了一块神骨！','你在神域秘境中获得了一块传承神骨！','你协助神界委员会剿灭叛逆神兽，获得了一块神兽魂骨！']
+  }
+};
+
+const FORTUNE_BEAST_TEXTS = {
+  douluo1: {
+    sp: ['你发现了一株散发着浓郁灵气的万年灵芝，毫不犹豫地一口吞下，修为大涨！','你闯入了一处前人遗留的洞府，里面残留的能量被你尽数吸收。','一只重伤的千年魂兽倒在你面前，你本能地吞噬了它的魂力。','你在瀑布下发现了隐藏的灵泉，喝了几口后浑身舒畅。'],
+    gold: ['你发现了一处被遗弃的洞穴，里面散落着人类魂师留下的金币。','你在森林中捡到了一枚人类掉落的储物戒指，里面有一些金魂币。','你守护了一片药田，主人感激地赠予你财宝。'],
+    appearance: ['你吞噬了一颗奇异的果实，身上的毛发变得更加光亮...','你吸收了一缕月华之力，气质变得越发威严。','你在灵泉中泡了一晚，体型变得更加矫健威武。'],
+    bone: ['你发现了一只强大魂兽的遗骸，吞噬了它残留的能量精华！','你在洞穴深处发现了一块能量结晶，里面蕴含着浓郁的天地灵气！','你击败了一只入侵你领地的魂兽，吞噬了它的本源之力！']
+  },
+  douluo2: {
+    sp: ['你在海神湖畔发现了一块蕴含能量的魂导核心碎片，一口咬碎吞了下去！','黄金树的气息让你浑身舒泰，不自觉地靠近吸收了不少能量。','你在边境发现了一处废弃的魂导师实验室，里面残留的能量被你尽数吞噬。','你遇到了一只濒死的天梦冰蚕（幼体），本能地吞噬了它的精神力。'],
+    gold: ['你在人类城镇外围的废墟中发现了不少散落的金魂币。','你帮一只受伤的魂兽找到回家的路，它的族群赠予你一些人类金币作为谢礼。'],
+    appearance: ['你吸收了一缕海神湖畔的灵气，身上的鳞片/毛发变得更加鲜艳。','你吞噬了一种奇异的灵果，体型更加威武霸气。'],
+    bone: ['你发现了一处人类监察团的遗物，里面有一块蕴含能量的结晶！','你在海底发现了一枚遗落的魂导器核心，吞噬后获得了额外的能量！']
+  },
+  douluo3: {
+    sp: ['你在龙谷秘境边缘发现了一块龙骨碎片，龙族的气息让你血脉沸腾！','你在森林深处发现了一处灵泉，畅饮之后修为大涨。','你的血脉在月光下发生了微妙的共鸣，仿佛有远古的力量在觉醒。','你吞噬了一只闯入你领地的深渊生物，它的能量让你实力大增。'],
+    gold: ['你发现了一处人类采矿队遗弃的营地，里面有不少值钱的金属。','你在传灵塔外围的废墟中找到了一些人类掉落的金币。'],
+    appearance: ['你的生命能量得到了升华，外表变得更加威严霸气。','你的血脉之力微微觉醒，身上的气息变得更加慑人。'],
+    bone: ['你在古战场发现了一只远古魂兽的完整遗骸，吞噬后获得了巨大的能量！','你击败了一只挑战你的深渊生物，吞噬了它的核心！']
+  },
+  douluo4: {
+    sp: ['你在天龙星的龙族祭坛附近修炼，意外吸收了一丝纯净的龙力！','你在深红之域的边缘发现了一种奇异的能量晶体，一口咬碎吞了下去。','你探索龙界遗迹时，龙神的气息灌入体内，修为大增。','你在精灵星的生命古树下冥想，感受到了宇宙本源的生命能量。'],
+    gold: ['你发现了一颗小行星上人类遗落的物资，里面有不少值钱的东西。','你在星际港口附近捡到了一些人类掉落的货币。'],
+    appearance: ['你吸收了精灵星的生命能量，外表变得更加完美威严。','你的龙神血脉觉醒了一丝，体型变得更加庞大威武。'],
+    bone: ['你在龙界遗迹中发现了一只远古龙族的遗骸，吞噬后获得了龙族传承之力！','你在深红之域击败了一只强大的深红生物，吞噬了它的能量核心！']
+  },
+  godrealm: {
+    sp: ['你获得了一道神赐神力，修为突飞猛进！','你在神界法则中感悟到了宇宙的奥秘。','你吞噬了一只叛逆神兽的神性精华。','生命女神路过你的修炼之地，随手洒下了一滴生命甘露。'],
+    gold: ['你在神界森林中发现了前人遗留的神金。','你完成了一项神界任务，获得了丰厚奖励。','你在神界天河中捡到了一块蕴含神力的结晶。'],
+    appearance: ['生命女神赐予你一滴生命精华，你的外表变得完美无瑕。','你在神光中洗涤肉身，气质变得超凡脱俗。','神界的法则之力重塑了你的形体，魅力提升。'],
+    bone: ['你在神界深渊中发现了一只陨落神兽的遗骸，吞噬后获得了神性精华！','你协助神界委员会剿灭叛逆神兽，吞噬了它的神性本源！']
+  }
 };
 
 // ============================================================
@@ -1498,3 +1569,883 @@ const SPIRIT_SOUL_HIGH_NAMES = [
   '深海魔鲸','金龙王','银龙王','邪魔虎鲸王','火凤凰','冰凤凰'
 ];
 const SPIRIT_SOUL_PREFIXES = ['十年（白）','百年（黄）','千年（紫）','万年（黑）','十万年（红）','凶兽（橙）','不屈','伴生','传承','本命'];
+
+// ============================================================
+// JUSTICE EVENT SCENARIOS
+// ============================================================
+const JUSTICE_SCENARIOS = {
+  douluo1: [
+    {text:'路见不平，你看到一位老人被武魂殿的魂师欺负，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
+    {text:'你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
+    {text:'一位少女被魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
+    {text:'你撞见武魂殿的人在欺压平民，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
+    {text:'一伙强盗劫掠商队，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
+  ],
+  douluo2: [
+    {text:'你看到一位平民被日月帝国的魂导师欺压，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
+    {text:'你发现一群邪魂师在袭击村庄，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
+    {text:'一位少女被魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
+    {text:'你撞见圣灵教的人在抓捕平民进行邪恶实验，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
+    {text:'一伙强盗劫掠商队，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
+  ],
+  douluo3: [
+    {text:'你看到一位平民被传灵塔的执事欺压，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
+    {text:'你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
+    {text:'一位少女被魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
+    {text:'你撞见圣灵教的人在抓捕平民进行邪恶实验，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
+    {text:'一伙强盗劫掠商队，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
+  ],
+  douluo4: [
+    {text:'你看到一位平民被星际海盗欺压，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
+    {text:'你发现一群深红之域的生物在袭击殖民地，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
+    {text:'一位少女被外星魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
+    {text:'你撞见天龙星的龙族在欺压人类移民，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
+    {text:'一伙星际强盗劫掠商船，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
+  ],
+  godrealm: [
+    {text:'你看到一位神官被神兽欺负，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
+    {text:'你发现一群叛逆神兽在破坏神界秩序，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
+    {text:'一位神官被流放神兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
+    {text:'你撞见毁灭之神的部下在欺压弱小神祇，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
+    {text:'一伙神界流民劫掠集市，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
+  ],
+  default: [
+    {text:'路见不平，你看到一位老人被魂师欺负，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
+    {text:'你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
+    {text:'一位少女被魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
+    {text:'你撞见邪恶势力在欺压平民，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
+    {text:'一伙强盗劫掠商队，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
+  ]
+};
+
+const PARTNER_OUTCOMES = {
+  douluo1: [
+    {text:'你与{spouse}在星斗大森林中历练，两人并肩作战，默契大增。', sp:2},
+    {text:'{spouse}为你寻来了一株相思断肠红（仿品），助你稳固魂力。', sp:3},
+    {text:'你和{spouse}一同前往海神岛朝圣，在海神之光下共同修炼。', sp:2, rep:5},
+    {text:'{spouse}遭遇武魂殿余孽的袭击，你奋不顾身前去相救！', rescueChance:0.8, spWin:1, spLose:2},
+    {text:'你和{spouse}在索托城散步，享受难得的宁静时光。', sp:0},
+  ],
+  douluo2: [
+    {text:'你与{spouse}在海神湖畔漫步，黄金树的见证下感情升温。', sp:2},
+    {text:'{spouse}亲手为你制作了一件二级魂导器作为礼物。', effectType:'battleArmor', battleArmor:1, gold:20},
+    {text:'你和{spouse}参加了海神缘相亲大会后的庆典，羡煞旁人。', sp:2, rep:8},
+    {text:'{spouse}在监察团任务中遇险，你火速赶往救援！', rescueChance:0.75, spWin:1, spLose:2},
+    {text:'你和{spouse}一起研究魂导器到深夜，虽然疲惫但很充实。', sp:0},
+  ],
+  douluo3: [
+    {text:'你与{spouse}在史莱克学院的斗铠工坊一起制作合金，默契十足。', sp:2},
+    {text:'{spouse}陪你去传灵塔升灵台修炼，两人在虚拟世界中并肩作战。', sp:2},
+    {text:'你和{spouse}一同前往龙谷秘境探险，在龙骨山脉中许下了誓言。', sp:3, spLabel:'龙骨见证'},
+    {text:'{spouse}被圣灵教的人盯上，你挺身而出保护爱人！', rescueChance:0.7, spWin:1, spLose:2, repWin:5, winText:'成功击退敌人！名声+5，魂力+1级', loseText:'不敌邪魂师，受伤后魂力-2级'},
+    {text:'你和{spouse}在东海城的海边散步，谈论着未来的斗铠设计。', sp:0},
+  ],
+  douluo4: [
+    {text:'你与{spouse}在天龙星的龙族花园中约会，外星球的浪漫别有一番风味。', sp:2},
+    {text:'{spouse}驾驶飞船带你游览了斗罗联邦的星际疆域。', gold:40},
+    {text:'你和{spouse}一同探索了龙界遗迹，在龙神的气息中感情升华。', sp:3},
+    {text:'{spouse}在深红之域的探索中失联，你冒着生命危险前去寻找！', rescueChance:0.7, spWin:2, spLose:3, winText:'成功找到！两人在生死之间更加珍惜彼此，魂力+2级', loseText:'遭遇深红生物袭击，重伤后魂力-3级'},
+    {text:'你和{spouse}在精灵星的栖息地露营，欣赏着外星球的星空。', sp:0},
+  ],
+  godrealm: [
+    {text:'你与{spouse}在神界花园中漫步，神界的景色万年不变但身边有你足矣。', sp:3},
+    {text:'{spouse}用生命之力为你洗涤神魂，你的神力更加纯粹。', sp:4, spLabel:'神魂洗涤'},
+    {text:'你和{spouse}一同参加了神界委员会举办的论道大会，在诸神面前展示了你们的默契。', sp:3, rep:10},
+    {text:'{spouse}在神界深渊巡查时遇险，你冲入深渊营救！', rescueChance:0.8, spWin:2, spLose:2, winText:'成功救出！两人在神界也是令人羡慕的神仙眷侣，魂力+2级', loseText:'被神界乱流所伤，魂力-2级'},
+    {text:'你和{spouse}在神界天河旁静修，数万年的陪伴让你们的感情愈发深厚。', sp:0},
+  ],
+  default: [
+    {text:'你与{spouse}一同修炼，两人相辅相成，魂力精进。', sp:2},
+    {text:'{spouse}为你寻来一株稀有药草，助你突破瓶颈。', sp:3},
+    {text:'你和{spouse}共同游历大陆，增长见闻。', gold:50},
+    {text:'{spouse}遭遇危险，你奋不顾身前去相救！', rescueChance:0.7, spWin:0, spLose:2},
+    {text:'你和{spouse}感情平淡但温馨，携手走过这一年。', sp:0},
+  ]
+};
+
+const AUCTION_ITEMS = {
+  douluo1: [
+    {name:'千年魂骨碎片',cost:50,effectType:'sp',sp:1,desc:'吸收了碎片中的魂力，魂力+1级'},
+    {name:'稀有药草·龙血参',cost:80,effectType:'sp',sp:2,desc:'服用后魂力暴涨，魂力+2级'},
+    {name:'上古暗器图谱残卷',cost:60,effectType:'sp',sp:1,desc:'领悟了上古暗器的皮毛，魂力+1级'},
+    {name:'上古武魂秘典',cost:100,effectType:'sp',sp:3,desc:'领悟了上古修炼法门，魂力+3级'},
+    {name:'仙品药草·绮罗郁金香',cost:50,effectType:'charm',desc:'服用后容貌提升，魅力+1'}
+  ],
+  douluo2: [
+    {name:'千年魂骨碎片',cost:50,effectType:'sp',sp:1,desc:'吸收了碎片中的魂力，魂力+1级'},
+    {name:'稀有药草·龙血参',cost:80,effectType:'sp',sp:2,desc:'服用后魂力暴涨，魂力+2级'},
+    {name:'日月帝国魂导器图纸',cost:60,effectType:'battleArmor',battleArmor:1,desc:'掌握了魂导器制作技术'},
+    {name:'上古武魂秘典',cost:100,effectType:'sp',sp:3,desc:'领悟了上古修炼法门，魂力+3级'},
+    {name:'魂导美容仪',cost:50,effectType:'charm',desc:'使用后容貌提升，魅力+1'}
+  ],
+  douluo3: [
+    {name:'千年魂骨碎片',cost:50,effectType:'sp',sp:1,desc:'吸收了碎片中的魂力，魂力+1级'},
+    {name:'有灵合金配方',cost:80,effectType:'battleArmor',battleArmor:2,desc:'掌握了有灵合金技术'},
+    {name:'一字斗铠设计图',cost:60,effectType:'battleArmor',battleArmor:1,desc:'获得了一字斗铠设计图'},
+    {name:'上古武魂秘典',cost:100,effectType:'sp',sp:3,desc:'领悟了上古修炼法门，魂力+3级'},
+    {name:'传灵塔美容魂导器',cost:50,effectType:'charm',desc:'使用后容貌提升，魅力+1'}
+  ],
+  douluo4: [
+    {name:'千年魂骨碎片',cost:50,effectType:'sp',sp:1,desc:'吸收了碎片中的魂力，魂力+1级'},
+    {name:'龙力结晶',cost:80,effectType:'sp',sp:2,desc:'吸收龙力后魂力暴涨，魂力+2级'},
+    {name:'星际魂导器核心',cost:60,effectType:'battleArmor',battleArmor:2,desc:'获得了星际魂导器技术'},
+    {name:'上古武魂秘典',cost:100,effectType:'sp',sp:3,desc:'领悟了上古修炼法门，魂力+3级'},
+    {name:'天龙星养颜秘方',cost:50,effectType:'charm',desc:'使用后容貌提升，魅力+1'}
+  ],
+  godrealm: [
+    {name:'神骨碎片',cost:50,effectType:'sp',sp:1,desc:'吸收了神骨碎片中的神力，魂力+1级'},
+    {name:'神赐药草',cost:80,effectType:'sp',sp:2,desc:'服用后神力暴涨，魂力+2级'},
+    {name:'神器残片',cost:60,effectType:'sp',sp:1,desc:'领悟了神器中的法则，魂力+1级'},
+    {name:'神界秘典',cost:100,effectType:'sp',sp:3,desc:'领悟了神界法则，魂力+3级'},
+    {name:'生命精华',cost:50,effectType:'charm',desc:'使用后容貌提升，魅力+1'}
+  ],
+  default: [
+    {name:'千年魂骨碎片',cost:50,effectType:'sp',sp:1,desc:'吸收了碎片中的魂力，魂力+1级'},
+    {name:'稀有药草·龙血参',cost:80,effectType:'sp',sp:2,desc:'服用后魂力暴涨，魂力+2级'},
+    {name:'魂导器图纸',cost:60,effectType:'battleArmor',battleArmor:1,desc:'掌握了魂导器制作技术'},
+    {name:'上古武魂秘典',cost:100,effectType:'sp',sp:3,desc:'领悟了上古修炼法门，魂力+3级'},
+    {name:'美容养颜丹',cost:50,effectType:'charm',desc:'服用后容貌提升，魅力+1'}
+  ]
+};
+
+// ============================================================
+// TIMELINE SPECIFIC EVENTS - 时间线专属事件
+// ============================================================
+const TIMELINE_SPECIFIC_EVENTS = {
+  douluo1: {
+    cultivate: [
+      {text:'你在星斗大森林深处苦修，千年魂兽的气息环绕左右，魂力在生死边缘稳步提升。', sp:2},
+      {text:'武魂殿举行大型祭祀，你沐浴在圣光之下，武魂与天地共鸣，魂力大幅精进。', sp:3},
+      {text:'你前往海神岛历练，承受海浪冲刷三日三夜，如当年唐三修炼般肉体与精神同步蜕变。', sp:4, condition:s=>s.soulPower>=40},
+      {text:'在昊天宗锤法圣地，你日夜锤炼武魂，锤锤入骨，魂力增长喜人。', sp:2},
+      {text:'猎杀百年魂兽后，你吸收魂环残存的能量，魂力涌动不止。', sp:1},
+      {text:'你于落日森林深处采得仙草，服下后经脉通畅，修为精进。', sp:3, gold:-30},
+      {text:'七宝琉璃宗开放藏书阁，你日夜研读武魂理论，对魂力的理解加深。', sp:2, rep:3},
+      {text:'你在天斗帝国皇家学院闭关三年，名师指点下修为突飞猛进。', sp:4, condition:s=>s.age>=15},
+      {text:'星罗帝国边境，你在战火中修炼，以战养战，魂力在厮杀中攀升。', sp:2, rep:-2},
+      {text:'史莱克学院的魔鬼训练让你脱胎换骨，虽苦不堪言，但收获颇丰。', sp:3}
+    ],
+    social: [
+      {text:'你在史莱克学院结识了志同道合的伙伴，一起切磋武技，情谊深厚。', sp:1, rep:2},
+      {text:'武魂殿长老亲自召见你，对你的天赋赞赏有加。', rep:5, gold:100},
+      {text:'天斗帝国皇室宴请各路英才，你受邀出席，结识了众多人脉。', rep:3, gold:50},
+      {text:'你与星罗帝国戴家后人不打不相识，一番较量后成为挚友。', sp:1, rep:2},
+      {text:'七宝琉璃宗宗主亲自接见你，愿以宗门资源助你修炼。', gold:200, rep:4},
+      {text:'你在酒馆偶遇一位隐居的封号斗罗，他对你指点迷津。', sp:2}
+    ],
+    battle: [
+      {text:'武魂殿猎魂行动开始，你被卷入其中，必须做出选择！', choices:[
+        {text:'助武魂殿猎魂', spWin:3, spLose:-1, winChance:0.5, winText:'猎魂成功，获得丰厚奖赏！', loseText:'猎魂失败，受罚贬斥。'},
+        {text:'暗中帮助魂兽逃脱', sp:1, rep:-3}
+      ]},
+      {text:'全大陆高级魂师精英大赛开幕，各路天才汇聚天斗城！', choices:[
+        {text:'全力争胜', spWin:4, spLose:0, winChance:0.4, winText:'一路过关斩将，名震天下！', loseText:'遗憾落败，但积累了宝贵经验。'},
+        {text:'稳扎稳打', sp:1, rep:2}
+      ]},
+      {text:'你在星斗大森林外围遭遇千年魂兽袭击！', choices:[
+        {text:'迎击魂兽', spWin:3, spLose:-2, winChance:0.6, winText:'击杀千年魂兽，战力提升！', loseText:'不敌魂兽，重伤退避。'},
+        {text:'智取逃脱', sp:0}
+      ]},
+      {text:'昊天宗与武魂殿的矛盾升级，你被迫卷入宗门之争！', choices:[
+        {text:'站在昊天宗一方', spWin:2, spLose:-1, winChance:0.5, winText:'成功击退武魂殿来犯之敌！', loseText:'战斗失利，被迫撤退。'},
+        {text:'保持中立', sp:0, rep:-2}
+      ]},
+      {text:'你在斗魂场连胜十场，声名鹊起！', sp:2, rep:4, gold:80}
+    ],
+    fortune: [
+      {text:'你在冰火两仪眼附近发现了一株万年仙草！', choices:[
+        {text:'服下仙草', spWin:5, spLose:0, winChance:0.6, winText:'仙草入体，魂力暴涨！', loseText:'药力过猛，虽然痛苦但最终吸收。'},
+        {text:'出售仙草', gold:300, sp:1}
+      ]},
+      {text:'落日森林深处，你发现了一处远古封号斗罗的洞府！', choices:[
+        {text:'深入探索', spWin:4, spLose:-1, winChance:0.5, winText:'获得远古传承，修为大进！', loseText:'洞府崩塌，狼狈逃出。'},
+        {text:'谨慎离开', sp:0}
+      ]},
+      {text:'你在海神岛获得海神之光的庇佑！', condition:s=>s.soulPower>=50, sp:5, rep:5},
+      {text:'一位隐世匠人将毕生暗器绝学传授于你！', sp:2, gold:50, rep:3},
+      {text:'你在星斗大森林偶遇十万年魂兽化形，它赠予你一枚魂骨！', condition:s=>s.soulPower>=60, sp:3, rep:5}
+    ],
+    crisis: [
+      {text:'武魂殿发动清剿行动，你被列为目标！', choices:[
+        {text:'拼死抵抗', spWin:3, deathChance:0.25, deathText:'武魂殿强者围攻，命陨当场...'},
+        {text:'逃离大陆', sp:0, rep:-5}
+      ]},
+      {text:'修炼时魂力暴走，经脉几欲崩裂！', choices:[
+        {text:'强行引导', spWin:2, spLose:-3, winChance:0.5, winText:'成功引导暴走魂力归位，因祸得福！', loseText:'引导失败，魂力倒退。'},
+        {text:'停止修炼', sp:-1}
+      ]},
+      {text:'两大帝国开战，你所在的城镇沦为战场！', choices:[
+        {text:'投身战斗保护平民', spWin:2, deathChance:0.2, deathText:'敌军势大，你力竭而亡...'},
+        {text:'带着平民撤离', sp:0, rep:3}
+      ]},
+      {text:'你在猎杀魂兽时遭遇万年魂兽反噬！', choices:[
+        {text:'死战不退', spWin:4, deathChance:0.3, deathText:'万年魂兽最后一击，你倒在了血泊中...'},
+        {text:'全力撤退', sp:-1}
+      ]}
+    ]
+  },
+
+  douluo2: {
+    cultivate: [
+      {text:'你在史莱克学院海神阁旁修炼，感悟前人留下的气息，魂力精进。', sp:2},
+      {text:'日月帝国魂导器技术令你大开眼界，你将魂导原理融入修炼，效果显著。', sp:2, rep:2},
+      {text:'传灵塔中你与灵兽共鸣，魂力在灵力的滋养下大幅提升。', sp:3, condition:s=>s.soulPower>=30},
+      {text:'你在极北之地冰原上苦修，极寒锻炼意志，魂力与精神力同步成长。', sp:3},
+      {text:'唐门暗器与毒术双修，你在修炼中打通了新的经脉通路。', sp:2, rep:1},
+      {text:'你获得了一枚日月帝国产的高级魂导核心，借助其能量修炼。', sp:2, gold:-80},
+      {text:'在海神阁前辈的指引下，你开始修炼精神力，神识大增。', sp:3, condition:s=>s.soulPower>=50},
+      {text:'你参加了传灵塔的升灵仪式，魂灵与武魂深度融合，修为精进。', sp:4, condition:s=>s.soulPower>=40},
+      {text:'天魂帝国的灵能矿脉让你流连忘返，在矿脉深处修炼一日千里。', sp:2}
+    ],
+    social: [
+      {text:'你加入唐门，与同门师兄弟情同手足，共同对抗外敌。', rep:4, sp:1},
+      {text:'史莱克学院海神阁中，一位神秘长老对你青眼有加。', sp:1, rep:3},
+      {text:'日月帝国皇室对魂师极为优待，你获得了帝国资助。', gold:200, rep:2},
+      {text:'你与传灵塔的灵使者建立了深厚友谊，此后获取魂灵更加便利。', rep:4, sp:1},
+      {text:'一位邪魂师向你伸出橄榄枝，意图拉你入伙。', choices:[
+        {text:'严词拒绝', rep:3, sp:1},
+        {text:'虚与委蛇', gold:100, rep:-2}
+      ]},
+      {text:'斗灵帝国商队途经你所在的城镇，你与商队护卫切磋武技，获益良多。', sp:1, gold:30}
+    ],
+    battle: [
+      {text:'邪魂师突袭城镇，你奉命迎敌！', choices:[
+        {text:'正面迎击', spWin:3, spLose:-1, winChance:0.55, winText:'击退邪魂师，守护了城镇！', loseText:'邪魂师诡异至极，你虽败犹荣。'},
+        {text:'设伏偷袭', spWin:2, spLose:0, winChance:0.7, winText:'偷袭成功，邪魂师猝不及防！', loseText:'伏击被识破，未能得手。'}
+      ]},
+      {text:'日月帝国与天魂帝国边境冲突不断，你被卷入前线！', choices:[
+        {text:'奋勇杀敌', spWin:3, spLose:-1, winChance:0.5, winText:'战场上建功立业，声名远播！', loseText:'敌军势大，被迫后撤。'},
+        {text:'固守阵地', sp:1, rep:2}
+      ]},
+      {text:'全大陆魂师大赛再度开启，史莱克学院志在卫冕！', choices:[
+        {text:'为学院出战', spWin:4, spLose:0, winChance:0.35, winText:'助史莱克学院再夺桂冠！', loseText:'功亏一篑，但积累了经验。'},
+        {text:'场外助威', sp:1}
+      ]},
+      {text:'你遭遇了一名邪魂师的围猎，对方手段诡异！', choices:[
+        {text:'拼死一战', spWin:4, deathChance:0.2, deathText:'邪魂师的禁术太过恐怖，你陨落了...'},
+        {text:'边战边退', sp:0}
+      ]},
+      {text:'你在斗灵大赛中连胜，声名鹊起！', sp:2, rep:3, gold:60}
+    ],
+    fortune: [
+      {text:'你在冰原深处发现了一处万年冰髓矿脉！', choices:[
+        {text:'吸收冰髓', spWin:5, spLose:0, winChance:0.6, winText:'冰髓入体，魂力暴涨！', loseText:'冰髓寒气过重，虽痛苦但最终吸收。'},
+        {text:'出售冰髓', gold:400}
+      ]},
+      {text:'传灵塔特批你参与升灵仪式，获得稀有魂灵！', condition:s=>s.soulPower>=40, sp:4, rep:3},
+      {text:'你在日月帝国皇宫密库中发现了失传的魂导器图纸！', sp:2, gold:100, rep:2},
+      {text:'唐门地下宝库向你敞开，暗器与丹药任你取用！', condition:s=>s.faction==='唐门', sp:3, gold:150},
+      {text:'你在极北之地偶遇冰帝残魂，获得冰属性传承！', condition:s=>s.soulPower>=60, sp:5, rep:5}
+    ],
+    crisis: [
+      {text:'邪魂师组织大举入侵，你的城镇首当其冲！', choices:[
+        {text:'誓死抵抗', spWin:3, deathChance:0.25, deathText:'邪魂师禁术覆盖全场，你化为灰烬...'},
+        {text:'紧急撤离', sp:0, rep:-3}
+      ]},
+      {text:'日月帝国向史莱克学院施压，你作为学院成员被通缉！', condition:s=>s.faction==='史莱克学院', choices:[
+        {text:'据理力争', spWin:2, spLose:0, winChance:0.4, winText:'成功为自己辩护，洗清冤屈！', loseText:'申诉失败，被迫转入地下。'},
+        {text:'潜伏逃亡', sp:-1, rep:-2}
+      ]},
+      {text:'传灵塔实验失控，魂灵暴走，你被困其中！', choices:[
+        {text:'强行突围', spWin:2, deathChance:0.2, deathText:'暴走魂灵的力量远超想象，你被吞噬...'},
+        {text:'寻找出口', sp:0}
+      ]},
+      {text:'你被诬陷为邪魂师同伙，全大陆通缉！', choices:[
+        {text:'自证清白', spWin:1, spLose:-2, winChance:0.4, winText:'真相大白，沉冤得雪！', loseText:'证据不足，仍然被追杀。'},
+        {text:'隐姓埋名', sp:-1, rep:-5}
+      ]}
+    ]
+  },
+
+  douluo3: {
+    cultivate: [
+      {text:'你在锻造室中锤炼有灵合金，千锤百炼之下，对金属的理解反哺了武魂修炼。', sp:2},
+      {text:'传灵塔升灵台内修炼，灵力充沛，魂力增长迅速。', sp:3, condition:s=>s.soulPower>=30},
+      {text:'你潜心锻造斗铠，一字斗铠成型之时，魂力也随之突破。', sp:3, condition:s=>s.soulPower>=40},
+      {text:'在史莱克学院内门修炼室中，你借助高浓度灵力舱修炼，一日千里。', sp:2, gold:-100},
+      {text:'龙谷遗迹中你感悟龙族传承，血脉中沉睡的力量被唤醒。', sp:4, condition:s=>s.soulPower>=50},
+      {text:'你在锻造师协会接受圣匠指导，锻造技艺与魂力相辅相成。', sp:2, rep:3},
+      {text:'深渊裂缝附近修炼，你以深渊气息磨砺自身，如淬火炼钢。', sp:3, condition:s=>s.soulPower>=60},
+      {text:'你完成了二字斗铠的锻造，斗铠与武魂共鸣，战力飙升！', sp:4, condition:s=>s.soulPower>=50},
+      {text:'唐门锻造密室中，你以唐门秘法锻造斗铠核心，功力大增。', sp:2, rep:2}
+    ],
+    social: [
+      {text:'你加入锻造师协会，与各路锻造名匠切磋技艺。', rep:4, sp:1},
+      {text:'史莱克学院海神阁阁主亲自接见你，委以重任。', rep:5, sp:1},
+      {text:'传灵塔邀请你参加升灵仪式，在塔中结识了众多同辈翘楚。', sp:2, rep:3},
+      {text:'你与联邦军方的斗铠师建立了深厚友谊，互通有无。', gold:100, rep:3},
+      {text:'唐门长老对你寄予厚望，将唐门秘辛对你倾囊相授。', condition:s=>s.faction==='唐门', sp:2, rep:4},
+      {text:'你在天海城大比中结识了来自各大势力的年轻天才。', sp:1, rep:2}
+    ],
+    battle: [
+      {text:'深渊生物从裂缝中涌出，你奉命前往前线阻击！', choices:[
+        {text:'冲锋在前', spWin:4, deathChance:0.2, deathText:'深渊领主的气息太过恐怖，你被吞噬...'},
+        {text:'配合团队作战', spWin:2, spLose:0, winChance:0.7, winText:'团队配合默契，成功封堵裂缝！', loseText:'裂缝太过庞大，只能暂时压制。'}
+      ]},
+      {text:'圣灵教邪魂师出没，你与同伴设伏围剿！', choices:[
+        {text:'正面强攻', spWin:3, spLose:-1, winChance:0.5, winText:'击杀邪魂师，为民除害！', loseText:'邪魂师逃遁，但你也受了伤。'},
+        {text:'以斗铠碾压', spWin:3, spLose:0, winChance:0.65, winText:'斗铠加持之下实力碾压！', loseText:'斗铠能量耗尽，未能取胜。'}
+      ]},
+      {text:'传灵塔内比武大会，各路斗铠师一决高下！', choices:[
+        {text:'全力参战', spWin:3, spLose:0, winChance:0.45, winText:'你一路过关斩将，夺得佳绩！', loseText:'虽败犹荣，积累了斗铠实战经验。'},
+        {text:'观摩学习', sp:1, rep:1}
+      ]},
+      {text:'你在野外遭遇了失控的万年魂灵暴走！', choices:[
+        {text:'以斗铠硬抗', spWin:3, deathChance:0.15, deathText:'魂灵暴走的力量远超斗铠承受极限...'},
+        {text:'呼叫传灵塔支援', sp:1, rep:1}
+      ]},
+      {text:'联邦军事演习中，你率领小队完成艰巨任务！', sp:2, rep:4, gold:80}
+    ],
+    fortune: [
+      {text:'龙谷遗迹中，你发现了一块蕴含龙族血脉的万年魂骨！', choices:[
+        {text:'吸收龙骨', spWin:5, spLose:0, winChance:0.55, winText:'龙族血脉觉醒，魂力暴涨！', loseText:'龙骨力量太过狂暴，勉强吸收。'},
+        {text:'上交传灵塔', gold:500, rep:5}
+      ]},
+      {text:'锻造时灵光乍现，你成功锻造出有灵合金！', condition:s=>s.soulPower>=40, sp:3, rep:4},
+      {text:'深渊裂缝中，你截获了一件来自深渊的神秘斗铠核心！', sp:3, rep:2},
+      {text:'史莱克学院奖励你入海神阁密室修炼的机会！', condition:s=>s.faction==='史莱克学院', sp:4, rep:3},
+      {text:'你在传灵塔升灵台深处获得了罕见的十万年魂灵！', condition:s=>s.soulPower>=60, sp:5, rep:5}
+    ],
+    crisis: [
+      {text:'深渊领主降临，你所在的城市首当其冲！', choices:[
+        {text:'誓死迎战', spWin:4, deathChance:0.3, deathText:'深渊领主之力不可阻挡，你化为虚无...'},
+        {text:'掩护平民撤退', sp:0, rep:4}
+      ]},
+      {text:'圣灵教对你发动暗杀！', choices:[
+        {text:'以斗铠迎战', spWin:2, deathChance:0.2, deathText:'圣灵教的禁术出乎意料，你未能幸免...'},
+        {text:'紧急撤离', sp:-1, rep:-2}
+      ]},
+      {text:'锻造斗铠时核心失控，有灵合金暴走！', choices:[
+        {text:'全力压制', spWin:2, spLose:-3, winChance:0.5, winText:'成功压制暴走，斗铠品质反而提升！', loseText:'压制失败，锻造材料尽毁。'},
+        {text:'放弃这批材料', gold:-100, sp:0}
+      ]},
+      {text:'传灵塔内部权力斗争波及到你，你被迫选边站队！', choices:[
+        {text:'支持改革派', spWin:1, spLose:-2, winChance:0.5, winText:'改革派胜出，你获得了更多资源！', loseText:'站错队，遭到打压。'},
+        {text:'保持中立', rep:-3}
+      ]}
+    ]
+  },
+
+  douluo4: {
+    cultivate: [
+      {text:'你在斗罗联邦太空基地借助零重力修炼室修炼，灵魂与肉身达到前所未有的协调。', sp:2},
+      {text:'星际航行中你感悟宇宙法则，在星海深处魂力突破了瓶颈。', sp:3, condition:s=>s.soulPower>=40},
+      {text:'天龙星上的龙族传承令你大开眼界，龙神血脉隐隐躁动。', sp:4, condition:s=>s.soulPower>=50},
+      {text:'你在联邦战舰上以精神力操控系统修炼，神识日益强大。', sp:2, rep:2},
+      {text:'深红之域边缘感悟到生命与毁灭的平衡法则，修为大进。', sp:3, condition:s=>s.soulPower>=60},
+      {text:'母星之上的自然灵力让你忆起修炼初心，返璞归真。', sp:2},
+      {text:'你利用星际魂导器将外星能量转化为魂力，修炼效率倍增。', sp:3, gold:-150},
+      {text:'龙马星系的龙力结晶助你打通经脉，魂力如洪流般涌动。', sp:4, condition:s=>s.soulPower>=50},
+      {text:'在联邦最高修炼塔中，你借助人造魂灵加速修炼。', sp:2, rep:1}
+    ],
+    social: [
+      {text:'你加入斗罗联邦军方，与星际战士并肩作战。', rep:4, sp:1},
+      {text:'天龙星使者访问母星，你作为接待人员结识了龙族贵族。', rep:3, gold:100},
+      {text:'史莱克学院星际分校中，你与来自各殖民星的天才切磋交流。', sp:1, rep:2},
+      {text:'唐门太空基地向你敞开，你结识了唐门的星际谍报精英。', condition:s=>s.faction==='唐门', sp:2, rep:4},
+      {text:'你在星际港口偶遇一位来自龙马星系的旅者，他讲述了外星文明的奥秘。', sp:1, rep:2},
+      {text:'传灵塔总部邀你参与跨星系魂灵研究项目。', sp:2, rep:3, gold:80}
+    ],
+    battle: [
+      {text:'龙马星系与斗罗联邦冲突升级，你被派往边境！', choices:[
+        {text:'驾驶战舰出击', spWin:3, spLose:-1, winChance:0.5, winText:'星际空战中你大显身手，击落敌舰！', loseText:'敌军火力太猛，战舰受损撤退。'},
+        {text:'地面防守', spWin:2, spLose:0, winChance:0.6, winText:'成功守住阵地！', loseText:'防线被突破，被迫后撤。'}
+      ]},
+      {text:'深红之域的吞噬者入侵殖民星，你奉命迎敌！', choices:[
+        {text:'以龙神之力迎战', spWin:5, deathChance:0.25, deathText:'深红之域的力量超乎想象，你被吞噬...'},
+        {text:'配合舰队作战', spWin:2, spLose:0, winChance:0.65, winText:'舰队火力覆盖之下成功击退入侵！', loseText:'入侵者太过强大，只能暂时击退。'}
+      ]},
+      {text:'星际海盗劫持了你的飞船！', choices:[
+        {text:'武力反击', spWin:2, spLose:-1, winChance:0.6, winText:'击退海盗，还缴获了战利品！', loseText:'海盗人多势众，被迫交出物资。'},
+        {text:'谈判周旋', sp:0, gold:-50}
+      ]},
+      {text:'联邦内部军事演习，你代表所属舰队出战！', choices:[
+        {text:'全力以赴', spWin:3, spLose:0, winChance:0.45, winText:'力压群雄，夺得演习冠军！', loseText:'遗憾落败，但积累了实战经验。'},
+        {text:'稳中求胜', sp:1, rep:2}
+      ]},
+      {text:'你在母星防御战中立下赫赫战功！', sp:3, rep:5, gold:120}
+    ],
+    fortune: [
+      {text:'你在龙马星系发现了一颗蕴含龙神之力的龙力结晶！', choices:[
+        {text:'吸收龙力结晶', spWin:5, spLose:0, winChance:0.55, winText:'龙神之力灌体，魂力暴涨！', loseText:'龙力过于狂暴，勉强承受。'},
+        {text:'上交联邦研究', gold:500, rep:5}
+      ]},
+      {text:'深红之域边缘，你获得了一件来自远古龙神的传承之物！', condition:s=>s.soulPower>=60, sp:5, rep:4},
+      {text:'星际考古队在远古遗迹中发现了适合你的神器碎片！', sp:3, rep:3},
+      {text:'母星上一处被封印的修炼圣地对你开放！', condition:s=>s.soulPower>=50, sp:4, rep:3},
+      {text:'你截获了一艘满载稀有资源的深红之域飞船！', sp:2, gold:300, rep:2}
+    ],
+    crisis: [
+      {text:'深红之域大举入侵，你的殖民星首当其冲！', choices:[
+        {text:'誓死守护', spWin:4, deathChance:0.3, deathText:'深红母舰的主炮轰下，你化为星尘...'},
+        {text:'带领民众撤离', sp:0, rep:4}
+      ]},
+      {text:'龙马星系龙族对你发出龙神试炼！', choices:[
+        {text:'接受试炼', spWin:4, deathChance:0.25, deathText:'龙神试炼远超你的承受极限...'},
+        {text:'婉拒试炼', sp:0, rep:-3}
+      ]},
+      {text:'联邦内部叛乱，你所在的舰队被策反！', choices:[
+        {text:'镇压叛乱', spWin:2, deathChance:0.2, deathText:'叛军的暗算防不胜防，你倒在了同袍的枪下...'},
+        {text:'脱离舰队', sp:-1, rep:-2}
+      ]},
+      {text:'星际跃迁时引擎失控，你被困在亚空间裂缝中！', choices:[
+        {text:'以魂力强行稳定跃迁', spWin:3, spLose:-2, winChance:0.45, winText:'魂力与跃迁引擎共鸣，成功脱出！', loseText:'稳定失败，在亚空间中漂流许久才获救。'},
+        {text:'等待救援', sp:0}
+      ]}
+    ]
+  },
+
+  godrealm: {
+    cultivate: [
+      {text:'你在生命之湖畔感悟生命法则，神力如涓涓细流般增长。', sp:2},
+      {text:'神界委员会赐下神位传承，你在领悟中神性大幅提升。', sp:3, condition:s=>s.soulPower>=80},
+      {text:'修罗神殿中你以杀证道，杀戮法则与自身神位融合。', sp:4, condition:s=>s.soulPower>=90},
+      {text:'你在神兽领域中与神兽共修，感悟天地至理，神力精进。', sp:2, rep:2},
+      {text:'生命女神亲自为你讲解生命法则，你对法则的理解深入一层。', sp:3, condition:s=>s.soulPower>=70},
+      {text:'毁灭之神的毁灭法则令你战栗，你在毁灭中重塑自身神力。', sp:3, condition:s=>s.soulPower>=80},
+      {text:'神界法则潮汐来临，你借法则之力突破神位瓶颈。', sp:4, condition:s=>s.soulPower>=100},
+      {text:'你在天界花园中冥想千年，神识与法则共鸣，修为大进。', sp:2},
+      {text:'神兽坐骑与你合修，神力与兽力交融，实力飙升。', sp:3, condition:s=>s.soulPower>=70}
+    ],
+    social: [
+      {text:'神界委员会召开众神大会，你与各路神祇论道切磋。', rep:4, sp:1},
+      {text:'修罗神殿殿主对你青睐有加，传授你修罗剑意。', condition:s=>s.soulPower>=80, sp:2, rep:4},
+      {text:'生命之湖畔你与自然诸神结为挚友，共享生命法则感悟。', sp:1, rep:3},
+      {text:'一位远古神王转世与你相识，你们惺惺相惜。', sp:2, rep:4},
+      {text:'神兽领域的上古神兽向你效忠，愿为坐骑。', condition:s=>s.soulPower>=90, sp:2, rep:5},
+      {text:'你在神界集市中与各系神祇交换修炼心得。', sp:1, rep:2}
+    ],
+    battle: [
+      {text:'神界外域魔神入侵，你奉命镇守神界边境！', choices:[
+        {text:'以神器迎敌', spWin:4, deathChance:0.2, deathText:'魔神之力不可抵挡，神格碎裂...'},
+        {text:'联合诸神布阵', spWin:3, spLose:0, winChance:0.7, winText:'诸神合力封印了魔神入侵！', loseText:'阵法被破，勉强守住。'}
+      ]},
+      {text:'修罗神殿试炼开启，你进入修罗场接受考验！', choices:[
+        {text:'挑战修罗试炼', spWin:5, deathChance:0.25, deathText:'修罗试炼超出了你的极限...'},
+        {text:'选择温和试炼', spWin:2, spLose:0, winChance:0.8, winText:'顺利通过温和试炼，修为精进！', loseText:'试炼艰难，但最终通过。'}
+      ]},
+      {text:'神兽暴走，你在神兽领域内与失控神兽激战！', choices:[
+        {text:'以法则压制', spWin:3, spLose:-1, winChance:0.6, winText:'法则之力镇压暴走神兽！', loseText:'神兽太过强大，你被击退。'},
+        {text:'以神力硬抗', spWin:2, deathChance:0.15, deathText:'神兽最后一击击碎了你的神体...'}
+      ]},
+      {text:'神位之争，另一位神祇觊觎你的神位！', choices:[
+        {text:'应战捍卫', spWin:3, spLose:-2, winChance:0.5, winText:'成功捍卫神位，地位更加稳固！', loseText:'神位动摇，勉强保住。'},
+        {text:'以德服人', spWin:1, spLose:0, winChance:0.4, winText:'以德行感化了对方，化敌为友！', loseText:'对方不为所动，你颜面尽失。'}
+      ]},
+      {text:'你在神界比武大会中力压群雄，名震诸天！', sp:3, rep:5}
+    ],
+    fortune: [
+      {text:'生命之湖中浮现了一滴生命女神的本源精华！', choices:[
+        {text:'吸收精华', spWin:5, spLose:0, winChance:0.55, winText:'生命法则灌体，神力暴涨！', loseText:'精华过于庞大，勉强承受。'},
+        {text:'奉献给生命女神', rep:8, sp:1}
+      ]},
+      {text:'你在神界禁地中发现了一件远古神器！', condition:s=>s.soulPower>=90, sp:4, rep:5},
+      {text:'神界法则潮汐中，你悟得了新的法则碎片！', condition:s=>s.soulPower>=80, sp:5, rep:3},
+      {text:'一只上古神兽幼崽认你为主！', condition:s=>s.soulPower>=70, sp:3, rep:4},
+      {text:'神界委员会赐予你一块法则结晶，你的法则感悟突飞猛进！', condition:s=>s.soulPower>=100, sp:6, rep:5}
+    ],
+    crisis: [
+      {text:'神界法则崩坏，虚空裂缝蔓延至你的神域！', choices:[
+        {text:'以神力封印裂缝', spWin:3, deathChance:0.25, deathText:'虚空裂缝中涌出的混沌之力将你吞噬...'},
+        {text:'求援神界委员会', sp:0, rep:-2}
+      ]},
+      {text:'魔神降世，你的神域首当其冲！', choices:[
+        {text:'誓死迎战', spWin:4, deathChance:0.3, deathText:'魔神之力不可匹敌，神格崩碎...'},
+        {text:'暂时放弃神域', sp:-2, rep:-4}
+      ]},
+      {text:'神性失控，你面临堕魔的危险！', choices:[
+        {text:'以意志镇压', spWin:2, spLose:-3, winChance:0.5, winText:'意志坚定，成功压制魔性！', loseText:'镇压失败，神性受损。'},
+        {text:'请求生命女神净化', sp:0, rep:-1}
+      ]},
+      {text:'神界委员会对你的神位提出质疑！', choices:[
+        {text:'以实力证明', spWin:3, spLose:-2, winChance:0.45, winText:'以绝对实力捍卫了神位！', loseText:'证明失败，神位降级。'},
+        {text:'谦卑接受审查', sp:-1, rep:2}
+      ]}
+    ]
+  }
+};
+
+// ============================================================
+// TIMELINE BEAST EVENTS — 各时间线独立魂兽事件集
+// ============================================================
+const TIMELINE_BEAST_EVENTS = {
+  douluo1: {
+    cultivate: [
+      {text:'你在星斗大森林深处吸收月华之力，修为稳步增长。', sp:1, years:25},
+      {text:'落日森林的灵气浓郁，你在古树下吐纳修炼，年限缓缓提升。', sp:1, years:30},
+      {text:'冰火两仪眼的灵力余波波及你的领地，你借机参悟水火之道。', sp:2, years:50},
+      {text:'星斗大森林核心区域灵气如潮，你沉浸在修炼中不知岁月。', sp:2, years:60},
+      {text:'你在一处万年灵泉旁安顿下来，日日汲取灵液修炼。', sp:1, years:40},
+      {text:'月光如水倾洒，你在湖心小岛上感悟自然之力，修为大进。', sp:1, years:35},
+      {text:'你偶然发现一处隐秘洞窟，地脉灵力充沛，闭关数年。', sp:2, years:55}
+    ],
+    social: [
+      {text:'同类魂兽闯入你的领地，你们在星斗大森林的边界发生了争端。', choices:[
+        {text:'击退来者', spWin:2, yearsWin:80, deathChance:0.1, deathText:'不敌同类，被迫让出领地一角...'},
+        {text:'共享领地', sp:0, yearsLose:15}
+      ]},
+      {text:'一只万年魂兽向你求助，它被猎魂师追杀受了重伤。', choices:[
+        {text:'出手相救', spWin:1, yearsWin:60, deathChance:0.15, deathText:'猎魂师人数众多，你也被围杀...'},
+        {text:'冷眼旁观', sp:0, yearsLose:5}
+      ]},
+      {text:'森林深处传来魂兽潮的骚动，大量魂兽正在迁徙。', choices:[
+        {text:'加入兽潮', spWin:1, yearsWin:40},
+        {text:'坚守领地', sp:0, yearsLose:10}
+      ]},
+      {text:'一只年长的魂兽前辈传授你修炼心得，你们结为忘年之交。', sp:1, years:30},
+      {text:'你与邻近领地的魂兽争夺一处灵泉的所有权。', choices:[
+        {text:'以力服人', spWin:2, yearsWin:70, deathChance:0.15, deathText:'对方实力远超预期，你败下阵来...'},
+        {text:'谈判分享', sp:0, yearsLose:20}
+      ]}
+    ],
+    battle: [
+      {text:'一队猎魂师闯入星斗大森林，你成了他们的目标！', choices:[
+        {text:'正面迎战', spWin:3, yearsWin:100, deathChance:0.2, deathText:'不敌猎魂师，命丧黄泉...'},
+        {text:'逃入深林', sp:0, yearsLose:10}
+      ]},
+      {text:'武魂殿的猎魂小队正在搜捕万年魂兽，你被锁定了！', choices:[
+        {text:'殊死一搏', spWin:2, yearsWin:80, deathChance:0.25, deathText:'猎魂小队配合默契，你寡不敌众...'},
+        {text:'借助地形脱身', sp:0, yearsLose:15}
+      ]},
+      {text:'你与一只同为万年级别的魂兽因领地爆发激战。', choices:[
+        {text:'全力出击', spWin:2, yearsWin:90, deathChance:0.15, deathText:'两败俱伤，对方略胜一筹...'},
+        {text:'战略性撤退', sp:0, yearsLose:10}
+      ]},
+      {text:'落日森林中遭遇凶猛魂兽，它觊觎你的修为！', choices:[
+        {text:'反杀对手', spWin:2, yearsWin:70, deathChance:0.2, deathText:'对方实力惊人，你败下阵来...'},
+        {text:'绕道而走', sp:0, yearsLose:5}
+      ]},
+      {text:'魂兽潮中与人类魂师正面遭遇，战况激烈！', choices:[
+        {text:'冲锋陷阵', spWin:3, yearsWin:120, deathChance:0.25, deathText:'魂师团队火力太猛，你倒在血泊中...'},
+        {text:'随大部队撤退', sp:0, yearsLose:8}
+      ]}
+    ],
+    fortune: [
+      {text:'你在星斗大森林深处发现了一处隐秘的冰火两仪眼支脉，灵力惊人！', sp:3, years:100},
+      {text:'一棵万年灵药生长在你的领地边缘，你将其吞噬，修为大涨。', sp:2, years:80},
+      {text:'星斗大森林核心传来远古呼唤，你感受到血脉深处的觉醒。', sp:2, years:60},
+      {text:'你在一处落日森林的隐秘山谷中发现了大量灵药，如获至宝。', sp:2, years:70},
+      {text:'月光精华凝聚成液态，你在湖中饮下，本源之力增强。', sp:1, years:50},
+      {text:'你偶然踏入一处上古魂兽的陨落之地，残留的魂力被你吸收。', sp:3, years:120}
+    ],
+    crisis: [
+      {text:'猎魂师在你领地设下陷阱，你中了圈套！', choices:[
+        {text:'强行挣脱', spWin:1, yearsWin:30, deathChance:0.2, deathText:'陷阱上的封印太强，你未能挣脱...'},
+        {text:'割尾求生', sp:0, yearsLose:40}
+      ]},
+      {text:'天劫降临！乌云密布，雷劫即将劈下！', choices:[
+        {text:'硬抗天劫', spWin:3, yearsWin:150, deathChance:0.3, deathText:'天劫威力远超预期，魂飞魄散...'},
+        {text:'借地物抵挡', sp:0, yearsLose:20}
+      ]},
+      {text:'武魂殿发出悬赏，你的魂环被高价标价！', choices:[
+        {text:'主动出击先下手为强', spWin:2, yearsWin:60, deathChance:0.25, deathText:'对方早有防备，你落入圈套...'},
+        {text:'转移领地躲避', sp:0, yearsLose:30}
+      ]},
+      {text:'星斗大森林深处传来十万年魂兽的威压，它要将你驱逐！', choices:[
+        {text:'据理力争', spWin:1, yearsWin:40, deathChance:0.2, deathText:'十万年魂兽一掌将你拍飞...'},
+        {text:'恭敬退让', sp:0, yearsLose:25}
+      ]},
+      {text:'一场罕见的灵气枯竭席卷你的领地，修炼几近停滞。', sp:0, yearsLose:35}
+    ]
+  },
+
+  douluo2: {
+    cultivate: [
+      {text:'极北之地的寒冰灵气渗入体内，你的冰系血脉得到滋养。', sp:1, years:30},
+      {text:'传灵塔划定的保护区灵力尚可，你在其中安心修炼。', sp:1, years:25},
+      {text:'极北之地深处发现一处冰晶洞窟，灵力充沛。', sp:2, years:50},
+      {text:'你在魂兽保护区的灵脉节点处打坐，修为缓缓增长。', sp:1, years:35},
+      {text:'传灵塔偶尔释放的灵力波动恰好被你吸收，意外受益。', sp:1, years:20},
+      {text:'极夜降临，你在永夜中感悟黑暗与冰寒之道。', sp:2, years:45}
+    ],
+    social: [
+      {text:'传灵塔的传灵师前来观察你的状态，你被标记为重点保护对象。', sp:1, years:15},
+      {text:'一只来自极北之地的冰系魂兽前来拜访，你们交流修炼心得。', sp:1, years:25},
+      {text:'保护区内的魂兽因资源不足发生争端，你被卷入其中。', choices:[
+        {text:'以实力仲裁', spWin:2, yearsWin:50, deathChance:0.1, deathText:'争端升级，你反被围攻...'},
+        {text:'退避三舍', sp:0, yearsLose:10}
+      ]},
+      {text:'日月帝国的魂导器部队在保护区边缘驻扎，魂兽们人心惶惶。', choices:[
+        {text:'前去探查', spWin:1, yearsWin:30, deathChance:0.15, deathText:'被魂导器扫描发现，遭到攻击...'},
+        {text:'深藏不出', sp:0, yearsLose:5}
+      ]},
+      {text:'一只邪魂师控制的傀儡魂兽混入了保护区！', choices:[
+        {text:'揭穿并驱逐', spWin:2, yearsWin:60, deathChance:0.2, deathText:'邪魂师本人现身，你中了他的邪术...'},
+        {text:'向传灵塔报告', sp:0, yearsLose:5}
+      ]}
+    ],
+    battle: [
+      {text:'日月帝国的魂导师团闯入保护区猎杀魂兽！', choices:[
+        {text:'全力抵抗', spWin:2, yearsWin:80, deathChance:0.2, deathText:'魂导器火力太猛，你被轰杀...'},
+        {text:'向保护区深处撤退', sp:0, yearsLose:10}
+      ]},
+      {text:'邪魂师盯上了你的魂环，他在暗处设伏！', choices:[
+        {text:'正面迎击', spWin:2, yearsWin:70, deathChance:0.2, deathText:'邪魂术诡异莫测，你中了暗算...'},
+        {text:'逃入极北深处', sp:0, yearsLose:15}
+      ]},
+      {text:'保护区边界与一只被驱赶的凶兽发生冲突。', choices:[
+        {text:'击退凶兽', spWin:2, yearsWin:60, deathChance:0.15, deathText:'凶兽暴走，你未能招架...'},
+        {text:'退让领地', sp:0, yearsLose:20}
+      ]},
+      {text:'传灵塔组织魂兽与魂师的配合训练，你在对抗中磨砺自身。', sp:1, years:40},
+      {text:'极北之地深处两只万年魂兽为争夺冰灵泉激战，你被波及。', choices:[
+        {text:'趁乱夺取灵泉', spWin:3, yearsWin:100, deathChance:0.25, deathText:'被两大万年魂兽联手轰杀...'},
+        {text:'绕道离开', sp:0, yearsLose:5}
+      ]}
+    ],
+    fortune: [
+      {text:'传灵塔特批你进入核心灵脉修炼，灵力远超平常。', sp:2, years:80},
+      {text:'极北之地深处发现万载玄冰髓，吞噬后冰系血脉大幅强化。', sp:3, years:100},
+      {text:'保护区的灵力因传灵塔的阵法汇聚而异常浓郁，你趁机修炼。', sp:2, years:60},
+      {text:'一只即将化形的十万年魂兽将毕生修为凝练的精华赠予你。', sp:3, years:120},
+      {text:'极光降临时，你在极北之地吸收了天地间最纯净的冰元素。', sp:2, years:70},
+      {text:'你在保护区发现一处上古冰系魂兽的传承之地。', sp:2, years:90}
+    ],
+    crisis: [
+      {text:'传灵塔的"净化行动"波及到你的栖息地，你面临被强制传灵的风险！', choices:[
+        {text:'抵抗传灵', spWin:2, yearsWin:50, deathChance:0.25, deathText:'传灵塔派出精锐镇压，你寡不敌众...'},
+        {text:'暂时接受传灵', sp:0, yearsLose:40}
+      ]},
+      {text:'邪魂师组织对你发动突袭，他们觊觎你的魂环！', choices:[
+        {text:'拼死反击', spWin:2, yearsWin:60, deathChance:0.25, deathText:'邪魂术侵蚀了你的意识...'},
+        {text:'逃向传灵塔求援', sp:0, yearsLose:20}
+      ]},
+      {text:'极北之地暴风雪肆虐，灵力完全枯竭，生存变得艰难。', sp:0, yearsLose:35},
+      {text:'保护区内的灵脉突然枯竭，所有魂兽面临生存危机。', choices:[
+        {text:'深入极北寻找新灵脉', spWin:1, yearsWin:40, deathChance:0.2, deathText:'极北深处危险重重，你没能回来...'},
+        {text:'向传灵塔求助', sp:0, yearsLose:25}
+      ]},
+      {text:'天劫在极北之地上空凝聚，你必须直面雷劫！', choices:[
+        {text:'渡劫突破', spWin:3, yearsWin:150, deathChance:0.3, deathText:'天劫威力恐怖，你化为飞灰...'},
+        {text:'借助冰层减缓', sp:0, yearsLose:30}
+      ]}
+    ]
+  },
+
+  douluo3: {
+    cultivate: [
+      {text:'龙谷中残留的龙族气息滋养了你的血脉，修为缓缓增长。', sp:1, years:25},
+      {text:'升灵台模拟的灵力环境虽是虚假，但修炼效果尚可。', sp:1, years:20},
+      {text:'龙谷深处发现一处龙脉遗存，你在其中吸收龙气修炼。', sp:2, years:50},
+      {text:'传灵塔分发的低级灵力丹药效果有限，但你仍坚持服用。', sp:1, years:15},
+      {text:'你在荒野中找到一处未被开发的灵泉，闭关修炼数年。', sp:2, years:45},
+      {text:'龙谷中远古龙族的墓穴散发出微弱龙威，你从中参悟修炼。', sp:2, years:55},
+      {text:'深渊裂缝边缘的混沌灵气对你的修炼有奇效，但危险相伴。', sp:2, years:60}
+    ],
+    social: [
+      {text:'传灵塔的传灵师例行检查你的状态，你被编入管理档案。', sp:0, years:5},
+      {text:'龙谷中的龙族后裔邀请你加入龙族联盟，共御外敌。', choices:[
+        {text:'加入联盟', spWin:1, yearsWin:40},
+        {text:'保持独立', sp:0, yearsLose:10}
+      ]},
+      {text:'深渊气息从裂缝中渗出，附近的魂兽纷纷逃离。', choices:[
+        {text:'协助抵抗深渊气息', spWin:2, yearsWin:50, deathChance:0.2, deathText:'深渊气息侵蚀了你的意识...'},
+        {text:'随众撤离', sp:0, yearsLose:15}
+      ]},
+      {text:'一只被传灵塔驯化的魂灵向你诉说失去自由的痛苦。', choices:[
+        {text:'安慰并鼓励', sp:0, yearsLose:5},
+        {text:'沉默不语', sp:0, yearsLose:3}
+      ]},
+      {text:'升灵台中你遇到了其他魂兽的意识，你们短暂交流。', sp:0, years:10}
+    ],
+    battle: [
+      {text:'深渊生物从裂缝中涌出，正在侵蚀你的领地！', choices:[
+        {text:'正面抵抗深渊生物', spWin:3, yearsWin:100, deathChance:0.2, deathText:'深渊生物数量太多，你力竭而亡...'},
+        {text:'向传灵塔求援', sp:0, yearsLose:10}
+      ]},
+      {text:'传灵塔要将你强制转化为魂灵，你拒绝了！', choices:[
+        {text:'反抗传灵塔', spWin:2, yearsWin:60, deathChance:0.25, deathText:'传灵塔派出精锐魂师，你无力抵抗...'},
+        {text:'被迫接受', sp:0, yearsLose:50}
+      ]},
+      {text:'一只深渊化魂兽向你发起疯狂攻击，它已经失去理智！', choices:[
+        {text:'击杀深渊化魂兽', spWin:2, yearsWin:70, deathChance:0.15, deathText:'深渊化魂兽爆发力惊人，你未能幸免...'},
+        {text:'设法制服净化', spWin:1, yearsWin:30, deathChance:0.2, deathText:'净化失败，反被深渊侵蚀...'}
+      ]},
+      {text:'龙谷外围遭到盗猎者的入侵，他们在猎取魂兽！', choices:[
+        {text:'驱逐盗猎者', spWin:2, yearsWin:50, deathChance:0.15, deathText:'盗猎者装备精良，你中弹倒地...'},
+        {text:'退入龙谷深处', sp:0, yearsLose:15}
+      ]},
+      {text:'升灵台中遭遇强大的模拟魂兽，这是一场意识层面的对决。', choices:[
+        {text:'正面交锋', spWin:2, yearsWin:60, deathChance:0.1, deathText:'意识被击溃，你从升灵台中被弹出...'},
+        {text:'巧妙周旋', spWin:1, yearsWin:30}
+      ]}
+    ],
+    fortune: [
+      {text:'龙谷深处发现龙族遗宝，一股纯正的龙脉之力涌入你的体内！', sp:3, years:120},
+      {text:'传灵塔意外释放出大量纯净灵力，你幸运地吸收了一部分。', sp:2, years:60},
+      {text:'你在升灵台的深层区域获得了远古魂兽的修炼传承。', sp:2, years:80},
+      {text:'深渊裂缝中偶尔溢出的混沌之力被你炼化，血脉得到强化。', sp:2, years:70},
+      {text:'龙谷中的一处龙血池还在流淌，你浸泡其中，龙族血脉觉醒！', sp:3, years:100},
+      {text:'你找到了传灵塔遗失的一批高纯度灵力结晶，修为大增。', sp:2, years:90}
+    ],
+    crisis: [
+      {text:'大规模深渊入侵！暗紫色能量覆盖了天空！', choices:[
+        {text:'加入抵抗军', spWin:3, yearsWin:100, deathChance:0.25, deathText:'深渊大军势不可挡，你壮烈牺牲...'},
+        {text:'向后方撤退', sp:0, yearsLose:25}
+      ]},
+      {text:'传灵塔决定清剿你所在的区域，所有野生魂兽都在清除名单上！', choices:[
+        {text:'突围逃亡', spWin:1, yearsWin:30, deathChance:0.25, deathText:'传灵塔的包围圈太严密了...'},
+        {text:'躲入龙谷', sp:0, yearsLose:20}
+      ]},
+      {text:'深渊气息侵蚀了你的意识，你感到一股黑暗力量在蚕食本源！', choices:[
+        {text:'以意志抵抗', spWin:2, yearsWin:40, deathChance:0.2, deathText:'深渊侵蚀太深，你彻底堕落...'},
+        {text:'寻求传灵塔净化', sp:0, yearsLose:40}
+      ]},
+      {text:'龙谷的龙脉突然枯竭，龙族圣地正在衰亡！', sp:0, yearsLose:45},
+      {text:'升灵台出现严重故障，你的意识被困其中！', choices:[
+        {text:'强行突破', spWin:1, yearsWin:20, deathChance:0.15, deathText:'意识被数据洪流冲散...'},
+        {text:'耐心等待救援', sp:0, yearsLose:30}
+      ]}
+    ]
+  },
+
+  douluo4: {
+    cultivate: [
+      {text:'母星保护区的灵力日渐稀薄，你只能勉强维持修炼。', sp:1, years:15},
+      {text:'你在龙马星系的荒野中找到了一处灵脉，灵力充沛。', sp:2, years:50},
+      {text:'外星球的灵气环境与母星截然不同，你花了很长时间适应。', sp:1, years:20},
+      {text:'龙马星系的龙族气息唤醒了你血脉中沉睡的龙族因子。', sp:2, years:55},
+      {text:'你在母星保护区的地下灵脉中闭关，感受逐渐复苏的自然灵力。', sp:1, years:30},
+      {text:'星际航行中你吸收了太空中的星辰之力，修为略有增长。', sp:1, years:25},
+      {text:'龙马星系的一处龙巢遗址中残留着浓郁龙气，你在此修炼。', sp:2, years:60}
+    ],
+    social: [
+      {text:'龙马星系的龙族遣使来访，对你的血脉表示关注。', choices:[
+        {text:'与之结交', spWin:1, yearsWin:40},
+        {text:'保持距离', sp:0, yearsLose:5}
+      ]},
+      {text:'母星保护区的工作人员前来登记你的信息。', sp:0, years:5},
+      {text:'外星球上遇到了同样流浪的同胞魂兽，你们互诉离乡之苦。', sp:1, years:15},
+      {text:'龙马星系的龙族向你提出挑战，这是他们的待客之道。', choices:[
+        {text:'接受挑战', spWin:2, yearsWin:60, deathChance:0.15, deathText:'龙族实力深不可测，你败下阵来...'},
+        {text:'婉拒挑战', sp:0, yearsLose:10}
+      ]},
+      {text:'深红之域的使者在星域间游说，试图拉拢魂兽。', choices:[
+        {text:'严词拒绝', spWin:1, yearsWin:20},
+        {text:'虚与委蛇', sp:0, yearsLose:5}
+      ]}
+    ],
+    battle: [
+      {text:'深红之域的掠食者入侵了你所在的星球！', choices:[
+        {text:'迎战入侵者', spWin:3, yearsWin:100, deathChance:0.25, deathText:'深红之域的强者太恐怖，你化为星尘...'},
+        {text:'乘坐飞船撤离', sp:0, yearsLose:15}
+      ]},
+      {text:'外星球上的野生魂兽对你发起领地挑战！', choices:[
+        {text:'应战', spWin:2, yearsWin:60, deathChance:0.15, deathText:'外星魂兽的攻击方式超出你的经验...'},
+        {text:'退让领地', sp:0, yearsLose:20}
+      ]},
+      {text:'龙马星系的叛乱龙族向你发动袭击！', choices:[
+        {text:'击退叛龙', spWin:2, yearsWin:70, deathChance:0.2, deathText:'叛龙数量太多，你寡不敌众...'},
+        {text:'请求龙族援军', sp:0, yearsLose:10}
+      ]},
+      {text:'星际海盗试图捕捉你贩卖到黑市！', choices:[
+        {text:'摧毁海盗船', spWin:2, yearsWin:50, deathChance:0.15, deathText:'海盗的武器太先进，你被捕获...'},
+        {text:'隐蔽脱身', sp:0, yearsLose:5}
+      ]},
+      {text:'母星保护区的盗猎者使用高科技装备猎杀魂兽！', choices:[
+        {text:'反击盗猎者', spWin:1, yearsWin:30, deathChance:0.2, deathText:'高科技武器的威力超出想象...'},
+        {text:'躲入保护区核心', sp:0, yearsLose:15}
+      ]}
+    ],
+    fortune: [
+      {text:'龙马星系的龙族长老赐予你一滴真龙之血，血脉大幅觉醒！', sp:3, years:120},
+      {text:'你在外星球发现了一处远古龙族的星际遗迹，获得传承。', sp:3, years:100},
+      {text:'母星保护区的生态正在复苏，你感受到久违的充沛灵力。', sp:2, years:60},
+      {text:'星际间飘荡的一颗灵力陨石被你捕获，内部蕴含巨量灵能。', sp:2, years:80},
+      {text:'龙马星系的天龙族与你结盟，分享了修炼龙气的秘法。', sp:2, years:70},
+      {text:'深红之域退去后留下的残余能量被你炼化，修为暴涨。', sp:2, years:90}
+    ],
+    crisis: [
+      {text:'深红之域大举入侵龙马星系，战火蔓延到你的栖息地！', choices:[
+        {text:'加入联合抵抗', spWin:3, yearsWin:100, deathChance:0.3, deathText:'深红之域的毁灭之力太过恐怖...'},
+        {text:'星际逃亡', sp:0, yearsLose:25}
+      ]},
+      {text:'母星保护区被商业集团盯上，他们要开发这片土地！', choices:[
+        {text:'联合反抗', spWin:1, yearsWin:30, deathChance:0.15, deathText:'商业集团的雇佣军太强大了...'},
+        {text:'被迫迁徙', sp:0, yearsLose:30}
+      ]},
+      {text:'星际辐射风暴来袭，灵力紊乱，修炼完全中断！', sp:0, yearsLose:40},
+      {text:'外星魂兽疫病蔓延，你被感染了！', choices:[
+        {text:'以自身修为抵抗', spWin:1, yearsWin:20, deathChance:0.2, deathText:'疫病侵蚀了你的本源...'},
+        {text:'寻找星际医疗', sp:0, yearsLose:35}
+      ]},
+      {text:'龙马星系内部势力倾轧，你被卷入龙族内战！', choices:[
+        {text:'选择阵营参战', spWin:2, yearsWin:60, deathChance:0.25, deathText:'内战的规模远超你的承受...'},
+        {text:'保持中立躲避', sp:0, yearsLose:20}
+      ]}
+    ]
+  },
+
+  godrealm: {
+    cultivate: [
+      {text:'神界天河的神力滋润你的神性，修为在法则加持下稳步增长。', sp:2, years:40},
+      {text:'你在神兽领域的专属修炼地感悟天地法则，神性更加纯粹。', sp:2, years:50},
+      {text:'神界的灵气由法则凝成，你吞吐之间修为大进。', sp:2, years:45},
+      {text:'某位友善神祇赐予你一缕神力作为修炼资粮。', sp:1, years:30},
+      {text:'你在神界天河畔冥想，感悟时间法则的流转。', sp:2, years:55},
+      {text:'神兽领域中的上古神兽遗迹散发着神性光辉，你从中参悟修炼。', sp:3, years:70}
+    ],
+    social: [
+      {text:'神界天河两岸的神兽族群举行百兽会，你受邀参加。', sp:1, years:20},
+      {text:'一位神祇座下的神兽前来巡视神兽领域，对你的修为做出点评。', sp:1, years:15},
+      {text:'叛逆神兽在神兽领域制造骚乱，你被波及。', choices:[
+        {text:'协助平乱', spWin:2, yearsWin:60, deathChance:0.15, deathText:'叛逆神兽的禁术远超你想象...'},
+        {text:'退避自保', sp:0, yearsLose:10}
+      ]},
+      {text:'你的领地与另一位神兽的领地发生重叠，引发了争端。', choices:[
+        {text:'以神性威压定胜负', spWin:2, yearsWin:50, deathChance:0.1, deathText:'对方神性更强，你败下阵来...'},
+        {text:'协商划分', sp:0, yearsLose:15}
+      ]},
+      {text:'神界天河中出现异象，各路神兽齐聚围观。', sp:1, years:25}
+    ],
+    battle: [
+      {text:'叛逆神兽向你发起挑战，它们要推翻神界的秩序！', choices:[
+        {text:'维护神界秩序', spWin:3, yearsWin:100, deathChance:0.2, deathText:'叛逆神兽实力惊人，你壮烈战死...'},
+        {text:'呼叫神祇支援', sp:0, yearsLose:10}
+      ]},
+      {text:'一只堕入魔道的神兽入侵你的领域！', choices:[
+        {text:'以神性净化', spWin:2, yearsWin:70, deathChance:0.2, deathText:'魔性太强，反被侵蚀...'},
+        {text:'召唤神界执法者', sp:0, yearsLose:15}
+      ]},
+      {text:'神兽领域的边界遭到域外凶兽侵袭！', choices:[
+        {text:'独自迎战', spWin:2, yearsWin:80, deathChance:0.2, deathText:'域外凶兽凶悍异常，你力战而亡...'},
+        {text:'联合其他神兽', spWin:1, yearsWin:40}
+      ]},
+      {text:'两位神祇之争波及到你，你被迫选边站。', choices:[
+        {text:'加入一方作战', spWin:2, yearsWin:60, deathChance:0.15, deathText:'你成了神祇之争的牺牲品...'},
+        {text:'保持中立', sp:0, yearsLose:20}
+      ]},
+      {text:'天劫在神界降临，这次的雷劫带有神性法则！', choices:[
+        {text:'硬抗神性天劫', spWin:3, yearsWin:150, deathChance:0.25, deathText:'神性雷劫威力无匹，你化为劫灰...'},
+        {text:'借神器抵挡', sp:0, yearsLose:30}
+      ]}
+    ],
+    fortune: [
+      {text:'神界天河中的一滴天河水精华被你吞服，神性大幅提升！', sp:3, years:120},
+      {text:'一位高等神祇赐福于你，你的神性得到加持。', sp:3, years:100},
+      {text:'神兽领域中发现一处上古神兽的传承圣地，你获得了远古神性。', sp:3, years:110},
+      {text:'神界法则碎片落入你的领地，参悟后修为大进。', sp:2, years:80},
+      {text:'天劫过后留下的神性雷液被你炼化，修为暴涨。', sp:2, years:70},
+      {text:'你在神界天河底发现了沉睡的远古神器，神器认可了你的神性。', sp:3, years:130}
+    ],
+    crisis: [
+      {text:'叛逆神兽组织对你发动围攻，它们要夺取你的神性！', choices:[
+        {text:'以神性力战群敌', spWin:2, yearsWin:60, deathChance:0.25, deathText:'叛逆神兽人数太多，你寡不敌众...'},
+        {text:'遁入神界天河', sp:0, yearsLose:25}
+      ]},
+      {text:'神界法则波动异常，神性修炼被打断，甚至有反噬风险！', choices:[
+        {text:'强行稳住神性', spWin:1, yearsWin:30, deathChance:0.2, deathText:'法则反噬太强，神性崩碎...'},
+        {text:'暂时停止修炼', sp:0, yearsLose:35}
+      ]},
+      {text:'一位神祇对你产生误解，降下神罚！', choices:[
+        {text:'以神性抗争', spWin:2, yearsWin:50, deathChance:0.25, deathText:'神罚之下，你终究无法抗衡...'},
+        {text:'跪地请罪', sp:0, yearsLose:40}
+      ]},
+      {text:'神兽领域遭到域外力量侵蚀，你的领地正在被蚕食。', sp:0, yearsLose:45},
+      {text:'神界天河水倒灌，你的修炼洞府被淹没！', choices:[
+        {text:'在天河洪流中修炼', spWin:2, yearsWin:60, deathChance:0.2, deathText:'天河洪流中灵力过于狂暴，你被冲散...'},
+        {text:'迁往高处重建', sp:0, yearsLose:25}
+      ]}
+    ]
+  }
+};

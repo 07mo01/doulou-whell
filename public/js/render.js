@@ -194,50 +194,13 @@ function showAwakening(){
 // ============================================================
 // SIDEBAR & CONTROLS
 // ============================================================
-function renderSidebar(){
-  const sb=document.getElementById('life-sidebar');
-  let levelName=getLevelName(G.soulPower);
-  let maxForBar=G.timeline?.id==='douluo4'?150:G.timeline?.id==='godrealm'?200:99;
-  let pct=Math.min(G.soulPower/maxForBar*100,100);
+function updateSidebarSection(sectionName,html){
+  let el=document.querySelector(`#life-sidebar [data-section="${sectionName}"]`);
+  if(el) el.innerHTML=html;
+}
 
-  let ringsHtml='<div class="ring-slots">';
-  for(let i=0;i<9;i++){
-    if(Array.isArray(G.soulRings) && i<G.soulRings.length){
-      let r=G.soulRings[i];
-      let tip = r.divine ? '神赐魂环' : `${r.years}年`;
-      let skillTip = r.skills ? r.skills.map(s=>s.name).join(', ') : '';
-      ringsHtml+=`<div class="ring-slot ${r.css}" title="${tip} - ${r.color}${skillTip?' | '+skillTip:''}"></div>`;
-    }else{
-      ringsHtml+=`<div class="ring-slot empty" title="空"></div>`;
-    }
-  }
-  ringsHtml+='</div>';
-  // Show skills list for all rings
-  let allSkillsHtml = '';
-  if(Array.isArray(G.soulRings)&&G.soulRings.some(r=>r.skills)){
-    allSkillsHtml = '<div style="margin-top:6px;max-height:120px;overflow-y:auto;">';
-    G.soulRings.forEach((r,i) => {
-      if(r.skills){
-        r.skills.forEach(s => {
-          allSkillsHtml += `<div style="font-size:11px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:${r.bg};">第${i+1}环</span> <span style="color:var(--gold)">${s.name}</span></div>`;
-        });
-      }
-    });
-    allSkillsHtml += '</div>';
-  }
-
-  let bonesHtml=G.soulBones.length>0?G.soulBones.map(b=>`<span style="color:var(--gold);font-size:12px;">${b}</span>`).join(' '):'<span style="color:var(--gray);font-size:12px;">无</span>';
-
-  let armorName='';
-  if(G.battleArmor>0){
-    let names=['','一字','二字','三字','四字','五字','六字'];
-    armorName=names[G.battleArmor]+'斗铠';
-  }
-
-  sb.innerHTML=`
-    <div class="sidebar-title">${G.timeline.name}</div>
-    <div class="sidebar-section">
-      <h4>基本信息</h4>
+function renderBasicInfoSection(){
+  return `<h4>基本信息</h4>
       <div style="font-size:13px;line-height:1.8;">
         <div>年龄：<span style="color:var(--gold)">${G.age}岁</span>${G.transformed?`<span style="color:var(--gray);font-size:11px;">（化形前：${formatYears(G.transformedBeastYears||0)}）</span>`:''}</div>
         <div>身份：<span style="color:var(--cyan)">${G.identity.name}</span></div>
@@ -253,10 +216,14 @@ function renderSidebar(){
         ${G.identityType==='soul_beast'&&G.beastYears!==undefined?`<div>年限：<span style="color:var(--gold)">${formatYears(G.beastYears)}</span></div>`:''}
         ${G.customTitle&&G.soulPower>=90?`<div>封号：<span style="color:var(--gold);font-weight:bold;">${G.customTitle}斗罗</span></div>`:''}
         ${G.chosenPath==='family'?`<div>道路：<span style="color:#ff66aa;">成家立业</span></div>`:G.chosenPath==='god'?`<div>道路：<span style="color:var(--gold);">追求神位</span></div>`:''}
-      </div>
-    </div>
-    <div class="sidebar-section">
-      <h4>${G.identityType==='soul_beast'?'修为年限':'魂力等级'}</h4>
+      </div>`;
+}
+
+function renderSoulPowerSection(){
+  let levelName=getLevelName(G.soulPower);
+  let maxForBar=G.timeline?.id==='douluo4'?150:G.timeline?.id==='godrealm'?200:99;
+  let pct=Math.min(G.soulPower/maxForBar*100,100);
+  return `<h4>${G.identityType==='soul_beast'?'修为年限':'魂力等级'}</h4>
       <div style="font-size:13px;">
         ${G.identityType==='soul_beast'?`
           <span style="color:var(--gold);font-size:16px;font-weight:bold;">${formatYears(G.beastYears||0)}</span>
@@ -267,18 +234,22 @@ function renderSidebar(){
         `}
         ${G.transformed?`<div style="color:var(--cyan);font-size:11px;margin-top:2px;">🦋 化形修为：${formatYears(G.transformedBeastYears||0)}（已化形）</div>`:''}
       </div>
-      ${G.identityType!=='soul_beast'?`<div class="sp-bar"><div class="sp-fill" style="width:${pct}%" data-text="${G.soulPower}/${maxForBar}"></div></div>`:''}
-    </div>
-    <div class="sidebar-section">
-      <h4>战力评估</h4>
+      ${G.identityType!=='soul_beast'?`<div class="sp-bar"><div class="sp-fill" style="width:${pct}%" data-text="${G.soulPower}/${maxForBar}"></div></div>`:''}`;
+}
+
+function renderCombatSection(){
+  return `<h4>战力评估</h4>
       <div style="font-size:13px;">
         ${(() => { let cp = getCachedCombatPower(); let rating = getCombatPowerRating(cp); return `<span style="color:${rating.color};font-size:16px;font-weight:bold;">${cp}</span><span style="color:var(--gray);margin-left:8px;font-size:12px;">${rating.name}</span>`; })()}
-      </div>
-    </div>
-    ${G.isGod?`<div class="sidebar-section"><h4>神位</h4><div style="color:var(--gold);font-size:15px;font-weight:bold;">✦ ${G.godTitle}</div></div>`:''}
-    ${G.identityType!=='soul_beast'&&G.identityType!=='god'&&G.identityType!=='divine_beast'?`
-    <div class="sidebar-section">
-      <h4>武魂</h4>
+      </div>`;
+}
+
+function renderGodSection(){
+  return `<h4>神位</h4><div style="color:var(--gold);font-size:15px;font-weight:bold;">✦ ${G.godTitle}</div>`;
+}
+
+function renderMartialSection(){
+  return `<h4>武魂</h4>
       <div style="font-size:13px;">
         ${G.martialSoul?.souls && G.martialSoul.souls.length > 1 ? G.martialSoul.souls.map((s,i)=>`
           <div style="margin-bottom:4px;${i === (G.martialSoul.activeIndex||0) ? '' : 'opacity:0.4'}">
@@ -291,40 +262,114 @@ function renderSidebar(){
         <span style="color:var(--gray);font-size:11px;"> ${G.martialSoul?.quality||''}</span>
         ${(getActiveSoul()?.evolutionStage) ? `<span style="color:var(--gold);font-size:11px;margin-left:4px;">[第${getActiveSoul().evolutionStage}阶]</span>` : ''}
       </div>
-      ${(()=>{let as=getActiveSoul();return as && as._baseName && as._baseName !== as.name ? `<div style="font-size:11px;color:var(--cyan);margin-top:2px;">${as._baseName} → ${as.name}</div>` : ''})()}
-    </div>
-    `:''}
-    ${G.identityType!=='soul_beast'&&G.identityType!=='god'&&G.identityType!=='divine_beast'?`
-    <div class="sidebar-section">
-      <h4>魂环 (${G.soulRings.length}/9) ${G.martialSoul?.souls && G.martialSoul.souls.length > 1 ? `<span style="font-size:10px;color:var(--gray);">[${getActiveSoul()?.name || ''}]</span>` : ''}</h4>
+      ${(()=>{let as=getActiveSoul();return as && as._baseName && as._baseName !== as.name ? `<div style="font-size:11px;color:var(--cyan);margin-top:2px;">${as._baseName} → ${as.name}</div>` : ''})()}`;
+}
+
+function renderRingsSection(){
+  let ringsHtml='<div class="ring-slots">';
+  for(let i=0;i<9;i++){
+    if(Array.isArray(G.soulRings) && i<G.soulRings.length){
+      let r=G.soulRings[i];
+      let tip = r.divine ? '神赐魂环' : `${r.years}年`;
+      let skillTip = r.skills ? r.skills.map(s=>s.name).join(', ') : '';
+      ringsHtml+=`<div class="ring-slot ${r.css}" title="${tip} - ${r.color}${skillTip?' | '+skillTip:''}"></div>`;
+    }else{
+      ringsHtml+=`<div class="ring-slot empty" title="空"></div>`;
+    }
+  }
+  ringsHtml+='</div>';
+  let allSkillsHtml = '';
+  if(Array.isArray(G.soulRings)&&G.soulRings.some(r=>r.skills)){
+    allSkillsHtml = '<div style="margin-top:6px;max-height:120px;overflow-y:auto;">';
+    G.soulRings.forEach((r,i) => {
+      if(r.skills){
+        r.skills.forEach(s => {
+          allSkillsHtml += `<div style="font-size:11px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:${r.bg};">第${i+1}环</span> <span style="color:var(--gold)">${s.name}</span></div>`;
+        });
+      }
+    });
+    allSkillsHtml += '</div>';
+  }
+  return `<h4>魂环 (${G.soulRings.length}/9) ${G.martialSoul?.souls && G.martialSoul.souls.length > 1 ? `<span style="font-size:10px;color:var(--gray);">[${getActiveSoul()?.name || ''}]</span>` : ''}</h4>
       ${ringsHtml}
-      ${allSkillsHtml}
-    </div>
-    <div class="sidebar-section">
-      <h4>魂骨 (${G.soulBones.length}/6)</h4>
-      ${bonesHtml}
-    </div>
-    ${(G.soulCore||0)>0?`<div class="sidebar-section"><h4>魂核 (${G.soulCore}/3)</h4><div style="font-size:12px;">${Array.isArray(G.soulCores)?G.soulCores.map(c=>`<div><span style="color:${c.color||'#88aa88'}">${c.type}</span>${c.attrs?' · '+Object.entries(c.attrs).map(([k,v])=>k+'+'+(v*100)+'%').join(', '):''}</div>`).join(''):'魂核已激活'}</div></div>`:''}
-    `:''}
-    ${(G.identityType==='god'||G.identityType==='divine_beast')?`<div class="sidebar-section"><h4>神力技能 (${G.divineSkillsUnlocked||0}/${G.divineSkillsTotal||20})</h4><div style="font-size:12px;">${(G.divineSkills&&G.divineSkills.length>0)?G.divineSkills.map(s=>`<div><span style="color:var(--cyan);">${s.name}</span><span style="color:var(--gray);font-size:11px;"> - ${s.desc}</span></div>`).join(''):'<span style="color:var(--gray);">尚未觉醒神力技能</span>'}</div></div>`:''}
-    ${armorName&&G.identityType!=='soul_beast'&&G.identityType!=='god'&&G.identityType!=='divine_beast'?`<div class="sidebar-section"><h4>斗铠</h4><div style="color:var(--cyan);font-size:13px;">${armorName}</div></div>`:''}
-    ${G.customSkills&&G.customSkills.length>0?`<div class="sidebar-section"><h4>自创魂技 (${G.customSkills.length})</h4><div style="font-size:12px;">${G.customSkills.map(s=>{let t=s.type||'attack';let c={attack:'#ff4444',defense:'#4488ff',control:'#aa66ff',boost:'#22aa44'}[t]||'#ff4444';let n=s.name||s;return `<span style="color:${c};">${n}</span>`;}).join('<br>')}</div></div>`:''}
-    ${G.crossSkills?.length>0?`<div class="sidebar-section"><h4>跨界技能</h4><div>${G.crossSkills.map(s=>`<span style="color:var(--purple);font-size:12px;">[${s.source}] ${s.skill}</span>`).join('<br>')}</div></div>`:''}
-    <div class="sidebar-section">
-      <h4>伙伴 (${G.companions?.length||0})</h4>
-      <div style="font-size:12px;color:var(--gray);">${(G.companions?.length>0)?G.companions.join('、'):'暂无'}</div>
-    </div>
-    ${G.enemies&&G.enemies.length>0?`<div class="sidebar-section">
-      <h4>强敌 (${G.enemies.length})</h4>
-      <div style="font-size:12px;">${G.enemies.slice(0,5).map(e=>`<div style="color:var(--red);margin:2px 0;">${e.name}（${e.level}级）${e.defeated?' ☠':''}</div>`).join('')}${G.enemies.length>5?'<div style="color:var(--gray);">...共'+G.enemies.length+'位</div>':''}</div>
-    </div>`:''}
-    <div class="sidebar-section">
-      <h4>资源</h4>
+      ${allSkillsHtml}`;
+}
+
+function renderBonesSection(){
+  let bonesHtml=G.soulBones.length>0?G.soulBones.map(b=>`<span style="color:var(--gold);font-size:12px;">${b}</span>`).join(' '):'<span style="color:var(--gray);font-size:12px;">无</span>';
+  return `<h4>魂骨 (${G.soulBones.length}/6)</h4>
+      ${bonesHtml}`;
+}
+
+function renderSoulCoreSection(){
+  return `<h4>魂核 (${G.soulCore}/3)</h4><div style="font-size:12px;">${Array.isArray(G.soulCores)?G.soulCores.map(c=>`<div><span style="color:${c.color||'#88aa88'}">${c.type}</span>${c.attrs?' · '+Object.entries(c.attrs).map(([k,v])=>k+'+'+(v*100)+'%').join(', '):''}</div>`).join(''):'魂核已激活'}</div>`;
+}
+
+function renderDivineSkillsSection(){
+  return `<h4>神力技能 (${G.divineSkillsUnlocked||0}/${G.divineSkillsTotal||20})</h4><div style="font-size:12px;">${(G.divineSkills&&G.divineSkills.length>0)?G.divineSkills.map(s=>`<div><span style="color:var(--cyan);">${s.name}</span><span style="color:var(--gray);font-size:11px;"> - ${s.desc}</span></div>`).join(''):'<span style="color:var(--gray);">尚未觉醒神力技能</span>'}</div>`;
+}
+
+function renderArmorSection(){
+  let armorName='';
+  if(G.battleArmor>0){
+    let names=['','一字','二字','三字','四字','五字','六字'];
+    armorName=names[G.battleArmor]+'斗铠';
+  }
+  return `<h4>斗铠</h4><div style="color:var(--cyan);font-size:13px;">${armorName}</div>`;
+}
+
+function renderCustomSkillsSection(){
+  return `<h4>自创魂技 (${G.customSkills.length})</h4><div style="font-size:12px;">${G.customSkills.map(s=>{let t=s.type||'attack';let c={attack:'#ff4444',defense:'#4488ff',control:'#aa66ff',boost:'#22aa44'}[t]||'#ff4444';let n=s.name||s;return `<span style="color:${c};">${n}</span>`;}).join('<br>')}</div>`;
+}
+
+function renderCrossSkillsSection(){
+  return `<h4>跨界技能</h4><div>${G.crossSkills.map(s=>`<span style="color:var(--purple);font-size:12px;">[${s.source}] ${s.skill}</span>`).join('<br>')}</div>`;
+}
+
+function renderCompanionsSection(){
+  return `<h4>伙伴 (${G.companions?.length||0})</h4>
+      <div style="font-size:12px;color:var(--gray);">${(G.companions?.length>0)?G.companions.join('、'):'暂无'}</div>`;
+}
+
+function renderEnemiesSection(){
+  return `<h4>强敌 (${G.enemies.length})</h4>
+      <div style="font-size:12px;">${G.enemies.slice(0,5).map(e=>`<div style="color:var(--red);margin:2px 0;">${e.name}（${e.level}级）${e.defeated?' ☠':''}</div>`).join('')}${G.enemies.length>5?'<div style="color:var(--gray);">...共'+G.enemies.length+'位</div>':''}</div>`;
+}
+
+function renderResourcesSection(){
+  return `<h4>资源</h4>
       <div style="font-size:13px;">
         <div>金魂币：<span style="color:var(--gold)">${G.gold}</span></div>
         ${G.merit?`<div>功勋：<span style="color:var(--blue)">${G.merit}</span></div>`:''}
-      </div>
-    </div>
+      </div>`;
+}
+
+function renderSidebar(){
+  const sb=document.getElementById('life-sidebar');
+  let armorName='';
+  if(G.battleArmor>0){
+    let names=['','一字','二字','三字','四字','五字','六字'];
+    armorName=names[G.battleArmor]+'斗铠';
+  }
+  sb.innerHTML=`
+    <div class="sidebar-title">${G.timeline.name}</div>
+    <div class="sidebar-section" data-section="basic">${renderBasicInfoSection()}</div>
+    <div class="sidebar-section" data-section="soulpower">${renderSoulPowerSection()}</div>
+    <div class="sidebar-section" data-section="combat">${renderCombatSection()}</div>
+    ${G.isGod?`<div class="sidebar-section" data-section="god">${renderGodSection()}</div>`:''}
+    ${G.identityType!=='soul_beast'&&G.identityType!=='god'&&G.identityType!=='divine_beast'?`
+    <div class="sidebar-section" data-section="martial">${renderMartialSection()}</div>
+    <div class="sidebar-section" data-section="rings">${renderRingsSection()}</div>
+    <div class="sidebar-section" data-section="bones">${renderBonesSection()}</div>
+    ${(G.soulCore||0)>0?`<div class="sidebar-section" data-section="soulcore">${renderSoulCoreSection()}</div>`:''}
+    `:''}
+    ${(G.identityType==='god'||G.identityType==='divine_beast')?`<div class="sidebar-section" data-section="divineskills">${renderDivineSkillsSection()}</div>`:''}
+    ${armorName&&G.identityType!=='soul_beast'&&G.identityType!=='god'&&G.identityType!=='divine_beast'?`<div class="sidebar-section" data-section="armor">${renderArmorSection()}</div>`:''}
+    ${G.customSkills&&G.customSkills.length>0?`<div class="sidebar-section" data-section="customskills">${renderCustomSkillsSection()}</div>`:''}
+    ${G.crossSkills?.length>0?`<div class="sidebar-section" data-section="crossskills">${renderCrossSkillsSection()}</div>`:''}
+    <div class="sidebar-section" data-section="companions">${renderCompanionsSection()}</div>
+    ${G.enemies&&G.enemies.length>0?`<div class="sidebar-section" data-section="enemies">${renderEnemiesSection()}</div>`:''}
+    <div class="sidebar-section" data-section="resources">${renderResourcesSection()}</div>
   `;
 }
 
@@ -365,86 +410,25 @@ function showEventModal(age,type,text,choices){
   window._currentEventType=type;
 }
 
+function closeEventModal(){
+  document.getElementById('modal-event').classList.remove('active');
+}
+
 // ============================================================
 // DEATH REVIEW SCREEN
 // ============================================================
 function showReview(){
   showScreen('screen-review');
 
-  // Calculate rating
-  let score=0;
-  score+=Math.min(G.soulPower,150);
-  score+=G.age/5;
-  score+=G.soulRings.length*10;
-  score+=G.soulBones.length*15;
-  score+=(G.companions||[]).length*5;
-  score+=(G.customSkills||[]).length*8;
-  if(G.crossSkills?.length)score+=30;
-  if(G.hasSpouse)score+=5;
-  if(G.bloodline)score+=15;
-  if(G.battleArmor)score+=G.battleArmor*10;
-  if(G.achievementsEarned)score+=G.achievementsEarned.length*10;
+  let reviewData = calculateReviewRating(G);
+  let { rating, ratingColors, epitaph, keyEventsHtml } = reviewData;
 
-  let rating='D';
-  if(score>=500)rating='SS';
-  else if(score>=350)rating='S';
-  else if(score>=250)rating='A';
-  else if(score>=150)rating='B';
-  else if(score>=80)rating='C';
+  saveGameResult(G, rating, epitaph);
 
-  let ratingColors={SS:'#ffdd44',S:'#ff8844',A:'#44dd88',B:'#4488ff',C:'#aaaaaa',D:'#888888'};
+  let fateData = generateFateSeedData(G);
+  let { seed, routeLabel, routeValue, nameLabel, nameValue, bloodlineValue, title, domain } = fateData;
 
-  // Generate epitaph
-  let epitaphs={
-    SS:`${G.timeline.name}的传说——${G.martialSoul?.example||G.beastName||'无名者'}。以${getLevelName(G.soulPower)}之境，${G.deathAge}岁之龄，留下了不可磨灭的印记。后人传颂，万世不灭。`,
-    S:`${G.identity.name}${G.martialSoul?.example||G.beastName||''}，一生波澜壮阔，在${G.timeline.name}书写了属于自己的传奇。`,
-    A:`${G.martialSoul?.example||G.beastName||'一位魂师'}，在${G.timeline.name}中历经风雨，终成一方强者。`,
-    B:`${G.identity.name}的一生，虽有遗憾，但也有精彩。在斗罗大陆留下了自己的足迹。`,
-    C:`在${G.timeline.name}中默默无闻地度过了一生。`,
-    D:`${G.deathReason==='寿终正寝'?'安详地':G.deathReason}离开了这个世界，未能实现心中的理想。`
-  };
-
-  // Collect key events for timeline from saved history
-  let keyEventsHtml='';
-  let events=G.yearEvents||[];
-  for(let i=0;i<Math.min(events.length,12);i++){
-    let ev=events[i];
-    keyEventsHtml+=`<div class="review-node"><div class="year">${G.timeline.name} · ${ev.age}岁</div><div class="desc">${ev.text}</div></div>`;
-  }
-
-  // Save to saves
-  let saves=loadSaves();
-  saves.unshift({
-    id:Date.now(),
-    timeline:G.timeline.name,
-    identity:G.identity.name,
-    martialSoul:G.martialSoul?.example||G.beastName||'',
-    soulPower:G.soulPower,
-    age:G.deathAge,
-    rating:rating,
-    epitaph:epitaphs[rating],
-    rings:G.soulRings.length,
-    bones:G.soulBones.length,
-    deathReason:G.deathReason,
-    innatePower:G.innatePower,
-    date:new Date().toLocaleString('zh-CN')
-  });
-  if(saves.length>20)saves=saves.slice(0,20);
-  saveSaves(saves);
-
-  // Check and save achievements
-  checkAchievements();
-
-  let seed=generateFateSeed();
-   let isBeast=G.identityType==='soul_beast';
-   let routeLabel=isBeast?'魂兽路线':'人类路线';
-   let beastYearStr = isBeast && G.beastYears!==undefined ? ` · ${formatYears(G.beastYears)}` : '';
-   let routeValue=isBeast?`${G.identity?.name||'未知种族'}${beastYearStr} · ${G.birthplace?.name||'未知之地'}`:`${G.identity?.name||'未知身份'}`;
-   let nameLabel=isBeast?'魂兽名号':'觉醒武魂';
-   let nameValue=isBeast?(G.bloodline?`${G.bloodline.name}${G.identity?.name||'魂兽'}（${formatYears(G.beastYears||0)}）`:'无名魂兽'):(G.martialSoul?.example||'未知');
-   let bloodlineValue=G.bloodline?(G.bloodline.name||G.bloodline.type):'无';
-   let title=generateTitle(G.martialSoul);
-   let domain=generateDomain();
+  let isBeast = G.identityType === 'soul_beast';
 
   let container=document.getElementById('review-container');
   container.innerHTML=`
@@ -493,7 +477,7 @@ function showReview(){
         </div>
       </div>
     </div>
-    <div class="review-epitaph">${epitaphs[rating]}</div>
+    <div class="review-epitaph">${epitaph}</div>
     ${G.soulPower>=91||isBeast&&G.soulPower>=91?`
     <div class="legacy-options">
       <h3 style="color:var(--gold);margin-bottom:10px;font-size:16px;">传承选项</h3>

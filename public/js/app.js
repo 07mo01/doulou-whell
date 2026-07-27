@@ -1,31 +1,3 @@
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
 function checkSoulEvolution(){
   if(!G || !G.martialSoul || !G.martialSoul.name) return null;
   if(G.martialSoul.isDual || G.martialSoul.id === 'multi') return null;
@@ -49,8 +21,6 @@ function checkSoulEvolution(){
   }
   return null;
 }
-
-// [Data moved to data.js]
 
 // 战力缓存（避免renderSidebar每次都重新计算）
 let _combatPowerCache = null;
@@ -203,23 +173,6 @@ function randomSoulName(tier){
   return source[Math.floor(Math.random() * source.length)];
 }
 
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
 function generateRingSkills(ringNum, years, martialSoul){
   // 7th ring is always Wu Hun Zhen Shen (Martial Soul True Body)
   if(ringNum === 7){
@@ -304,12 +257,6 @@ function generateSkillDesc(name, type, ringNum, years){
   return pool[Math.floor(Math.random()*pool.length)];
 }
 
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
-// [Data moved to data.js]
-
 function getTimelineProgressEvent(){
   let timelineId = G.timeline?.id || 'douluo1';
   let progress = TIMELINE_PROGRESS[timelineId];
@@ -325,20 +272,27 @@ function getTimelineProgressEvent(){
   return event;
 }
 
-// [Data moved to data.js]
+const wheelState = {
+  data: null,
+  spinning: false,
+  callback: null,
+  type: null,
+  extra: null
+};
 
-let miniWheelData = null;
-let miniWheelSpinning = false;
-let miniWheelCallback = null;
-
-// Year event wheel globals
-let yearEventWheelData = null;
-let yearEventWheelSpinning = false;
-let yearEventWheelCallback = null;
-let yearEventResult = null;
-let timelineCharWheelData = null;
-let timelineCharWheelSpinning = false;
-let timelineCharWheelCallback = null;
+let pendingTimers = [];
+function managedTimeout(fn, delay) {
+  let id = setTimeout(() => {
+    pendingTimers = pendingTimers.filter(t => t !== id);
+    fn();
+  }, delay);
+  pendingTimers.push(id);
+  return id;
+}
+function clearAllTimers() {
+  pendingTimers.forEach(id => clearTimeout(id));
+  pendingTimers = [];
+}
 
 function buildSoulRingWheel(){
   let ringNum = G.soulRings.length;
@@ -373,8 +327,6 @@ function buildSoulRingWheel(){
   });
   return items;
 }
-
-// [Data moved to data.js]
 
 function buildSpiritSoulWheel(){
   let ringNum = G.soulRings.length;
@@ -427,49 +379,29 @@ function buildSpiritSoulWheel(){
   return items;
 }
 
-let spiritSoulWheelData = null;
-let spiritSoulWheelSpinning = false;
-let spiritSoulWheelCallback = null;
+
 
 function openSpiritSoulWheel(callback){
-  spiritSoulWheelData = buildSpiritSoulWheel();
-  if(!spiritSoulWheelData){callback(false);return;}
-  spiritSoulWheelCallback = callback;
+  wheelState.data = buildSpiritSoulWheel();
+  if(!wheelState.data){callback(false);return;}
+  wheelState.callback = callback;
+  wheelState.type = 'spirit';
   let ringNum = G.soulRings.length + 1;
   let eraName = G.timeline.id === 'douluo4' ? '传灵塔/联邦' : '传灵塔';
-  document.getElementById('mini-wheel-label').textContent = `第${ringNum}魂环 · ${eraName}魂灵契约`;
-  document.getElementById('mini-wheel-hint').textContent = '魂兽濒临灭绝，通过传灵塔契约魂灵获取魂环';
-  document.getElementById('mini-wheel-result-area').innerHTML = '';
-  let spinBtn = document.getElementById('mini-wheel-spin-btn');
-  spinBtn.style.display = '';
-  spinBtn.classList.remove('btn-disabled');
-  spinBtn.onclick = spinSpiritSoulWheel;
-  drawMiniWheel(spiritSoulWheelData);
-  let canvas = document.getElementById('mini-wheel-canvas');
-  canvas.style.transition = 'none';
-  canvas.style.transform = 'rotate(0deg)';
-  void canvas.offsetWidth;
-  document.getElementById('mini-wheel-overlay').classList.add('active');
+  openWheelBase(`第${ringNum}魂环 · ${eraName}魂灵契约`, '魂兽濒临灭绝，通过传灵塔契约魂灵获取魂环', wheelState.data, spinSpiritSoulWheel);
 }
 
 function spinSpiritSoulWheel(){
-  if(spiritSoulWheelSpinning) return;
-  spiritSoulWheelSpinning = true;
+  if(wheelState.spinning) return;
+  wheelState.spinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let total = spiritSoulWheelData.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(spiritSoulWheelData);
-  let selectedIdx = spiritSoulWheelData.indexOf(selected);
-  let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += spiritSoulWheelData[i].weight;
-  let sectorAngle = (selected.weight / total) * 360;
-  let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
-  let finalAngle = 360 * 6 + (360 - targetCenter + 270);
+  let { selected, finalAngle } = calcWheelSpinResult(wheelState.data);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
-  setTimeout(() => {
-    spiritSoulWheelSpinning = false;
+  managedTimeout(() => {
+    wheelState.spinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
     let ringNum = G.soulRings.length + 1;
@@ -481,11 +413,11 @@ function spinSpiritSoulWheel(){
     // Soul bone chance for high tier
     let boneHtml = '';
     if(selected.tier === 'beastgod'){
-      let allBones = ['头部魂骨','躯干魂骨','左臂骨','右臂骨','左腿骨','右腿骨'];
+      let allBones = BONE_TYPES;
       allBones.forEach(b => {if(!G.soulBones.includes(b)) G.soulBones.push(b);});
       boneHtml = `<br><span style="color:var(--gold)">【凶兽魂灵附赠：全套六块魂骨！】</span>`;
     }else if(selected.tier === 'top' && Math.random() < 0.5){
-      let boneTypes = ['头部魂骨','躯干魂骨','左臂骨','右臂骨','左腿骨','右腿骨'];
+      let boneTypes = BONE_TYPES;
       let available = boneTypes.filter(b => !G.soulBones.includes(b));
       if(available.length > 0){
         let bt = available[Math.floor(Math.random()*available.length)];
@@ -502,11 +434,39 @@ function spinSpiritSoulWheel(){
   }, 4800);
 }
 
-function drawMiniWheel(items){
-  const canvas = document.getElementById('mini-wheel-canvas');
+function openWheelBase(label, hint, data, spinHandler) {
+  document.getElementById('mini-wheel-label').textContent = label;
+  document.getElementById('mini-wheel-hint').textContent = hint;
+  document.getElementById('mini-wheel-result-area').innerHTML = '';
+  let spinBtn = document.getElementById('mini-wheel-spin-btn');
+  spinBtn.style.display = '';
+  spinBtn.classList.remove('btn-disabled');
+  spinBtn.onclick = spinHandler;
+  drawMiniWheel(data);
+  let canvas = document.getElementById('mini-wheel-canvas');
+  canvas.style.transition = 'none';
+  canvas.style.transform = 'rotate(0deg)';
+  void canvas.offsetWidth;
+  document.getElementById('mini-wheel-overlay').classList.add('active');
+}
+
+function calcWheelSpinResult(items, spins = 6) {
+  let total = items.reduce((s,i) => s + i.weight, 0);
+  let selected = weightedRandom(items);
+  let selectedIdx = items.indexOf(selected);
+  let cumWeight = 0;
+  for(let i = 0; i < selectedIdx; i++) cumWeight += items[i].weight;
+  let sectorAngle = (selected.weight / total) * 360;
+  let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
+  let finalAngle = 360 * spins + (360 - targetCenter + 270);
+  return { selected, selectedIdx, total, finalAngle };
+}
+
+function drawWheelCanvas(canvas, items, options = {}){
+  const { labelKey='name', colorKey=null, radius=280, fontSize=18, textX=15, textY=5, ringGap=4, ringWidth=3, decoration=false, maxLabel=0 } = options;
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
-  const cx = w/2, cy = h/2, r = 280;
+  const cx = w/2, cy = h/2, r = radius;
   ctx.clearRect(0,0,w,h);
   let total = items.reduce((s,i) => s + i.weight, 0);
   let startAngle = 0;
@@ -517,7 +477,8 @@ function drawMiniWheel(items){
     ctx.moveTo(cx, cy);
     ctx.arc(cx, cy, r, startAngle, endAngle);
     ctx.closePath();
-    ctx.fillStyle = item.color;
+    let color = colorKey ? (item[colorKey] || `hsl(${(i/items.length)*360},60%,30%)`) : item.color;
+    ctx.fillStyle = color;
     ctx.fill();
     ctx.strokeStyle = 'rgba(255,215,0,0.3)';
     ctx.lineWidth = 1;
@@ -528,20 +489,36 @@ function drawMiniWheel(items){
     ctx.rotate(startAngle + sliceAngle/2);
     ctx.textAlign = 'right';
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 18px Microsoft YaHei';
+    ctx.font = `bold ${fontSize}px Microsoft YaHei`;
     ctx.shadowColor = 'rgba(0,0,0,0.8)';
-    ctx.shadowBlur = 3;
-    let label = item.name.split('\n')[0];
-    ctx.fillText(label, r - 15, 5);
+    ctx.shadowBlur = fontSize > 20 ? 4 : 3;
+    let label = item[labelKey] ? item[labelKey].split('\n')[0] : '';
+    if(maxLabel && label.length > maxLabel) label = label.substring(0, maxLabel) + '…';
+    ctx.fillText(label, r - textX, textY);
     ctx.restore();
     startAngle = endAngle;
   });
   // Outer ring
   ctx.beginPath();
-  ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
+  ctx.arc(cx, cy, r + ringGap, 0, Math.PI * 2);
   ctx.strokeStyle = 'rgba(255,215,0,0.5)';
-  ctx.lineWidth = 3;
+  ctx.lineWidth = ringWidth;
   ctx.stroke();
+  // Inner decoration
+  if(decoration){
+    for(let i=0;i<items.length;i++){
+      let angle=(i/items.length)*Math.PI*2;
+      ctx.beginPath();
+      ctx.arc(cx,cy,r+ringGap,angle,angle+0.02);
+      ctx.strokeStyle='rgba(255,215,0,0.8)';
+      ctx.lineWidth=6;
+      ctx.stroke();
+    }
+  }
+}
+
+function drawMiniWheel(items){
+  drawWheelCanvas(document.getElementById('mini-wheel-canvas'), items);
 }
 
 function openSoulRingWheel(callback){
@@ -560,18 +537,12 @@ function openSoulRingWheel(callback){
     G.soulRings.push({years:0,color:divineColor.cn,css:divineColor.css,bg:divineColor.bg,divine:true,skills:skills});
     G.soulPower = Math.min(G.soulPower + 2, G.maxLevel);
     let skillsHtml = skills.map(s => `<div style="text-align:left;padding:4px 0;border-bottom:1px solid var(--dark)"><span style="color:var(--gold)">${s.name}</span><br><span style="font-size:12px;color:var(--gray)">${s.desc}</span></div>`).join('');
-    let overlay = document.getElementById('mini-wheel-overlay');
-    document.getElementById('mini-wheel-label').textContent = `第${ringNum+1}魂环 · 神赐魂环`;
-    document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
-    document.getElementById('mini-wheel-result-area').innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--gold)">神赐魂环降临！</h3><p>神界之力为你凝聚第${ringNum+1}魂环</p><p>获得 <span style="color:${divineColor.bg}">${divineColor.cn}神赐魂环</span></p><p style="margin-top:8px;color:var(--cyan)">魂环随等级提升而自动成长</p><div style="margin-top:10px;text-align:left">${skillsHtml}</div></div>`;
+    let wheelData = [{name:'神赐',weight:1,color:'#ffdd44'},{name:'魂环',weight:1,color:'#aa66ff'},{name:'降临',weight:1,color:'#44ddff'}];
+    wheelState.type = 'mini';
+    wheelState.callback = function(){ callback(true); };
+    openWheelBase(`第${ringNum+1}魂环 · 神赐魂环`, '点击任意处继续', wheelData, null);
     document.getElementById('mini-wheel-spin-btn').style.display = 'none';
-    drawMiniWheel([{name:'神赐',weight:1,color:'#ffdd44'},{name:'魂环',weight:1,color:'#aa66ff'},{name:'降临',weight:1,color:'#44ddff'}]);
-    let canvas = document.getElementById('mini-wheel-canvas');
-    canvas.style.transition = 'none';
-    canvas.style.transform = 'rotate(0deg)';
-    void canvas.offsetWidth;
-    overlay.classList.add('active');
-    miniWheelCallback = function(){ callback(true); };
+    document.getElementById('mini-wheel-result-area').innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--gold)">神赐魂环降临！</h3><p>神界之力为你凝聚第${ringNum+1}魂环</p><p>获得 <span style="color:${divineColor.bg}">${divineColor.cn}神赐魂环</span></p><p style="margin-top:8px;color:var(--cyan)">魂环随等级提升而自动成长</p><div style="margin-top:10px;text-align:left">${skillsHtml}</div></div>`;
     return;
   }
 
@@ -582,49 +553,30 @@ function openSoulRingWheel(callback){
   }
 
   // Normal hunting
-  miniWheelSpinning = false; // reset stuck state
-  miniWheelData = buildSoulRingWheel();
-  if(!miniWheelData){callback(false);return;}
-  miniWheelCallback = function(){ callback(G._ringSuccess || false); };
+  wheelState.spinning = false;
+  wheelState.data = buildSoulRingWheel();
+  if(!wheelState.data){callback(false);return;}
+  wheelState.callback = function(){ callback(G._ringSuccess || false); };
+  wheelState.type = 'mini';
   let ringNum = G.soulRings.length + 1;
   let limit = getRingLimit(G.soulRings.length);
   let qualityBonus = G.martialSoul?.quality || '普通';
-  document.getElementById('mini-wheel-label').textContent = `第${ringNum}魂环 · 承受极限${limit}年(${qualityBonus}武魂)`;
-  document.getElementById('mini-wheel-hint').textContent = '选择猎杀策略，转盘决定你的猎杀目标';
-  document.getElementById('mini-wheel-result-area').innerHTML = '';
-  let spinBtn = document.getElementById('mini-wheel-spin-btn');
-  spinBtn.style.display = '';
-  spinBtn.classList.remove('btn-disabled');
-  spinBtn.onclick = spinMiniWheel; // explicitly bind
-  drawMiniWheel(miniWheelData);
-  let canvas = document.getElementById('mini-wheel-canvas');
-  canvas.style.transition = 'none';
-  canvas.style.transform = 'rotate(0deg)';
-  void canvas.offsetWidth;
-  document.getElementById('mini-wheel-overlay').classList.add('active');
+  openWheelBase(`第${ringNum}魂环 · 承受极限${limit}年(${qualityBonus}武魂)`, '选择猎杀策略，转盘决定你的猎杀目标', wheelState.data, spinMiniWheel);
 }
 
 function spinMiniWheel(){
-  if(miniWheelSpinning) return;
-  miniWheelSpinning = true;
+  if(wheelState.spinning) return;
+  wheelState.spinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
   try{
-    let total = miniWheelData.reduce((s,i) => s + i.weight, 0);
-    let selected = weightedRandom(miniWheelData);
-    let selectedIdx = miniWheelData.indexOf(selected);
-    if(selectedIdx < 0) selectedIdx = 0;
-    let cumWeight = 0;
-    for(let i = 0; i < selectedIdx; i++) cumWeight += miniWheelData[i].weight;
-    let sectorAngle = (selected.weight / total) * 360;
-    let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
-    let finalAngle = 360 * 6 + (360 - targetCenter + 270);
+    let { selected, finalAngle } = calcWheelSpinResult(wheelState.data);
     canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
     canvas.style.transform = `rotate(${finalAngle}deg)`;
-    setTimeout(() => {
+    managedTimeout(() => {
       try{
-        miniWheelSpinning = false;
+        wheelState.spinning = false;
         btn.classList.remove('btn-disabled');
         // Process result - all absorbs succeed, no death limit
         let ringNum = G.soulRings.length + 1;
@@ -644,11 +596,11 @@ function spinMiniWheel(){
         // Soul bone: 100k guarantee 1 bone, 1M guarantee full set (6), others by chance
         let boneHtml = '';
         if(target >= 1000000){
-          let allBones = ['头部魂骨','躯干魂骨','左臂骨','右臂骨','左腿骨','右腿骨'];
+          let allBones = BONE_TYPES;
           allBones.forEach(b => {if(!G.soulBones.includes(b)) G.soulBones.push(b);});
           boneHtml = `<br><span style="color:var(--gold)">【百万年魂兽：获得全套六块魂骨！】</span>`;
         }else if(target >= 100000){
-          let boneTypes = ['头部魂骨','躯干魂骨','左臂骨','右臂骨','左腿骨','右腿骨'];
+          let boneTypes = BONE_TYPES;
           let available = boneTypes.filter(b => !G.soulBones.includes(b));
           if(available.length > 0){
             let bt = available[Math.floor(Math.random()*available.length)];
@@ -658,7 +610,7 @@ function spinMiniWheel(){
         }else{
           let boneChance = target >= 10000 ? 0.2 : target >= 1000 ? 0.05 : 0.01;
           if(Math.random() < boneChance){
-            let boneTypes = ['头部魂骨','躯干魂骨','左臂骨','右臂骨','左腿骨','右腿骨'];
+            let boneTypes = BONE_TYPES;
             let bt = boneTypes[Math.floor(Math.random()*boneTypes.length)];
             if(!G.soulBones.includes(bt)){G.soulBones.push(bt);}
             boneHtml = `<br><span style="color:var(--gold)">【额外掉落：${bt}！】</span>`;
@@ -681,7 +633,7 @@ function spinMiniWheel(){
     document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
         }catch(err){
           console.error('魂环转盘结果处理出错:',err);
-          miniWheelSpinning = false;
+          wheelState.spinning = false;
           document.getElementById('mini-wheel-result-area').innerHTML = '<div class="mini-wheel-result"><h3 style="color:var(--red)">出错</h3><p>转盘处理异常，请关闭后重试。</p></div>';
           document.getElementById('mini-wheel-spin-btn').style.display = 'none';
           document.getElementById('mini-wheel-hint').textContent = '点击任意处关闭';
@@ -689,7 +641,7 @@ function spinMiniWheel(){
       }, 4800);
     }catch(err){
       console.error('魂环转盘旋转出错:',err);
-      miniWheelSpinning = false;
+      wheelState.spinning = false;
       btn.classList.remove('btn-disabled');
       alert('转盘异常，请重试。');
     }
@@ -720,47 +672,29 @@ function buildYearEventWheel(){
 }
 
 function openYearEventWheel(callback){
-  yearEventWheelData = buildYearEventWheel();
-  yearEventResult = null;
-  yearEventWheelCallback = function(){ callback(yearEventResult); };
-  document.getElementById('mini-wheel-label').textContent = '年度事件';
-  document.getElementById('mini-wheel-hint').textContent = '命运的齿轮转动，这一年将会发生什么？';
-  document.getElementById('mini-wheel-result-area').innerHTML = '';
-  let spinBtn = document.getElementById('mini-wheel-spin-btn');
-  spinBtn.style.display = '';
-  spinBtn.classList.remove('btn-disabled');
-  spinBtn.onclick = spinYearEventWheel;
-  drawMiniWheel(yearEventWheelData);
-  let canvas = document.getElementById('mini-wheel-canvas');
-  canvas.style.transition = 'none';
-  canvas.style.transform = 'rotate(0deg)';
-  void canvas.offsetWidth;
-  document.getElementById('mini-wheel-overlay').classList.add('active');
+  wheelState.data = buildYearEventWheel();
+  wheelState.extra = null;
+  wheelState.callback = function(){ callback(wheelState.extra); };
+  wheelState.type = 'year';
+  openWheelBase('年度事件', '命运的齿轮转动，这一年将会发生什么？', wheelState.data, spinYearEventWheel);
 }
 
 function spinYearEventWheel(){
-  if(yearEventWheelSpinning) return;
-  yearEventWheelSpinning = true;
+  if(wheelState.spinning) return;
+  wheelState.spinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let total = yearEventWheelData.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(yearEventWheelData);
-  let selectedIdx = yearEventWheelData.indexOf(selected);
-  let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += yearEventWheelData[i].weight;
-  let sectorAngle = (selected.weight / total) * 360;
-  let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
-  let finalAngle = 360 * 6 + (360 - targetCenter + 270);
+  let { selected, finalAngle } = calcWheelSpinResult(wheelState.data);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
-  setTimeout(() => {
-    yearEventWheelSpinning = false;
+  managedTimeout(() => {
+    wheelState.spinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
     let result = {event: null, subWheel: null};
     switch(selected.eventType){
-      case 'normal':{let ev=processNormalEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p><div style="margin-top:8px;">${ev.text}</div></div>`;break;}
+      case 'normal':{let ev=processNormalEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p>${ev._hasChoices?'<p style="color:var(--gold);margin-top:8px;">请在弹窗中做出选择...</p>':'<div style="margin-top:8px;">'+ev.text+'</div>'}</div>`;break;}
       case 'school':{let ev=processSchoolEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p><div style="margin-top:8px;">${ev.text}</div></div>`;break;}
       case 'partner':{let ev=processPartnerEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p><div style="margin-top:8px;">${ev.text}</div></div>`;break;}
       case 'justice':{let ev=processJusticeEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p><div style="margin-top:8px;">${ev.text}</div></div>`;break;}
@@ -773,10 +707,9 @@ function spinYearEventWheel(){
         document.getElementById('mini-wheel-spin-btn').style.display='';
         document.getElementById('mini-wheel-spin-btn').classList.remove('btn-disabled');
         document.getElementById('mini-wheel-hint').textContent='点击"旋转转盘"重新抽取';
-        yearEventWheelSpinning=false;
-        // Rebuild wheel data (excluding reroll to prevent infinite loops)
-        yearEventWheelData = buildYearEventWheel().filter(s => s.id !== 'reroll');
-        drawMiniWheel(yearEventWheelData);
+        wheelState.spinning=false;
+        wheelState.data = buildYearEventWheel().filter(s => s.id !== 'reroll');
+        drawMiniWheel(wheelState.data);
         let canvas = document.getElementById('mini-wheel-canvas');
         canvas.style.transition='none';
         canvas.style.transform='rotate(0deg)';
@@ -784,7 +717,7 @@ function spinYearEventWheel(){
         return;
       }
     }
-    yearEventResult = result;
+    wheelState.extra = result;
     document.getElementById('mini-wheel-spin-btn').style.display = 'none';
     document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
   }, 4800);
@@ -804,42 +737,23 @@ function buildTimelineCharacterWheel(){
 }
 
 function openTimelineCharacterWheel(callback){
-  timelineCharWheelData = buildTimelineCharacterWheel();
-  timelineCharWheelCallback = callback;
-  document.getElementById('mini-wheel-label').textContent = '时间线奇缘';
-  document.getElementById('mini-wheel-hint').textContent = '命运的丝线将你与某位原著角色相连...';
-  document.getElementById('mini-wheel-result-area').innerHTML = '';
-  let spinBtn = document.getElementById('mini-wheel-spin-btn');
-  spinBtn.style.display = '';
-  spinBtn.classList.remove('btn-disabled');
-  spinBtn.onclick = spinTimelineCharacterWheel;
-  drawMiniWheel(timelineCharWheelData);
-  let canvas = document.getElementById('mini-wheel-canvas');
-  canvas.style.transition = 'none';
-  canvas.style.transform = 'rotate(0deg)';
-  void canvas.offsetWidth;
-  document.getElementById('mini-wheel-overlay').classList.add('active');
+  wheelState.data = buildTimelineCharacterWheel();
+  wheelState.callback = callback;
+  wheelState.type = 'char';
+  openWheelBase('时间线奇缘', '命运的丝线将你与某位原著角色相连...', wheelState.data, spinTimelineCharacterWheel);
 }
 
 function spinTimelineCharacterWheel(){
-  if(timelineCharWheelSpinning) return;
-  timelineCharWheelSpinning = true;
+  if(wheelState.spinning) return;
+  wheelState.spinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let items = timelineCharWheelData;
-  let total = items.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(items);
-  let selectedIdx = items.indexOf(selected);
-  let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += items[i].weight;
-  let sectorAngle = (selected.weight / total) * 360;
-  let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
-  let finalAngle = 360 * 6 + (360 - targetCenter + 270);
+  let { selected, finalAngle } = calcWheelSpinResult(wheelState.data);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
-  setTimeout(() => {
-    timelineCharWheelSpinning = false;
+  managedTimeout(() => {
+    wheelState.spinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
     let charData = selected._charData;
@@ -901,35 +815,16 @@ function closeMiniWheel(){
   let overlay = document.getElementById('mini-wheel-overlay');
   if(!overlay.classList.contains('active')) return;
   let resultArea = document.getElementById('mini-wheel-result-area');
-  if(resultArea.innerHTML === '' || miniWheelSpinning) return;
-  if(loverWheelSpinning || enemyWheelSpinning || oppWheelSpinning || yearEventWheelSpinning || timelineCharWheelSpinning || spiritSoulWheelSpinning) return;
+  if(resultArea.innerHTML === '' || wheelState.spinning) return;
 
-  // Find the ONE active callback (most recently set takes priority)
-  let activeCb = null;
-  if(spiritSoulWheelCallback) activeCb = spiritSoulWheelCallback;
-  else if(yearEventWheelCallback) activeCb = yearEventWheelCallback;
-  else if(timelineCharWheelCallback) activeCb = timelineCharWheelCallback;
-  else if(enemyWheelCallback) activeCb = enemyWheelCallback;
-  else if(loverWheelCallback) activeCb = loverWheelCallback;
-  else if(oppWheelCallback) activeCb = oppWheelCallback;
-  else if(miniWheelCallback) activeCb = miniWheelCallback;
-
-  // Clear ALL state BEFORE firing callback (prevents cascade bugs)
-  let cb = activeCb;
-  miniWheelCallback = null;
-  loverWheelCallback = null;
-  enemyWheelCallback = null;
-  oppWheelCallback = null;
-  yearEventWheelCallback = null;
-  timelineCharWheelCallback = null;
-  spiritSoulWheelCallback = null;
-  miniWheelSpinning = false;
-  yearEventWheelSpinning = false;
-  timelineCharWheelSpinning = false;
-  spiritSoulWheelSpinning = false;
+  let cb = wheelState.callback;
+  wheelState.data = null;
+  wheelState.spinning = false;
+  wheelState.callback = null;
+  wheelState.type = null;
+  wheelState.extra = null;
   overlay.classList.remove('active');
 
-  // Now fire the callback - it can safely set up a new wheel
   if(cb) cb();
 }
 
@@ -943,8 +838,7 @@ const RING_OPPORTUNITY = [
   {id:'nothing',name:'平稳吸收',weight:30,color:'#888888',desc:'一切顺利，没有额外收获。'}
 ];
 
-let oppWheelSpinning = false;
-let oppWheelCallback = null;
+
 
 // Self-created skill name generator
 const CUSTOM_SKILL_PREFIX = {
@@ -970,40 +864,23 @@ function generateCustomSkillName(){
 }
 
 function openOpportunityWheel(callback){
-  oppWheelCallback = callback;
-  document.getElementById('mini-wheel-label').textContent = '魂环吸收机遇';
-  document.getElementById('mini-wheel-hint').textContent = '吸收魂环后，命运给你带来了...';
-  document.getElementById('mini-wheel-result-area').innerHTML = '';
-  document.getElementById('mini-wheel-spin-btn').style.display = '';
-  document.getElementById('mini-wheel-spin-btn').classList.remove('btn-disabled');
-  document.getElementById('mini-wheel-spin-btn').onclick = spinOpportunityWheel;
-  drawMiniWheel(RING_OPPORTUNITY);
-  let canvas = document.getElementById('mini-wheel-canvas');
-  canvas.style.transition = 'none';
-  canvas.style.transform = 'rotate(0deg)';
-  void canvas.offsetWidth;
-  document.getElementById('mini-wheel-overlay').classList.add('active');
+  wheelState.callback = callback;
+  wheelState.type = 'opp';
+  wheelState.data = RING_OPPORTUNITY;
+  openWheelBase('魂环吸收机遇', '吸收魂环后，命运给你带来了...', RING_OPPORTUNITY, spinOpportunityWheel);
 }
 
 function spinOpportunityWheel(){
-  if(oppWheelSpinning) return;
-  oppWheelSpinning = true;
+  if(wheelState.spinning) return;
+  wheelState.spinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let items = RING_OPPORTUNITY;
-  let total = items.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(items);
-  let selectedIdx = items.indexOf(selected);
-  let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += items[i].weight;
-  let sectorAngle = (selected.weight / total) * 360;
-  let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
-  let finalAngle = 360 * 5 + (360 - targetCenter + 270);
+  let { selected, finalAngle } = calcWheelSpinResult(RING_OPPORTUNITY, 5);
   canvas.style.transition = 'transform 1.75s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
-  setTimeout(() => {
-    oppWheelSpinning = false;
+  managedTimeout(() => {
+    wheelState.spinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
     switch(selected.id){
@@ -1014,7 +891,7 @@ function spinOpportunityWheel(){
         break;
       }
       case 'bone': {
-        let boneTypes = ['头部魂骨','躯干魂骨','左臂骨','右臂骨','左腿骨','右腿骨'];
+        let boneTypes = BONE_TYPES;
         let available = boneTypes.filter(b => !G.soulBones.includes(b));
         if(available.length > 0){
           let bt = available[Math.floor(Math.random()*available.length)];
@@ -1041,7 +918,7 @@ function spinOpportunityWheel(){
           control:`第${G.customSkills.length}自创魂技。领悟精神控制之妙，创造出控制类技能。`,
           boost:`第${G.customSkills.length}自创魂技。激发自身潜能，创造出增幅类技能。`
         };
-        setTimeout(() => {
+        managedTimeout(() => {
           area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:#aa66ff">灵光一现！</h3><p>你领悟了一门自创魂技！</p><p style="color:var(--gold);margin-top:8px;"><b>${customSkill.name}</b></p><p style="color:${typeColors[customSkill.type]};">类型：${typeNames[customSkill.type]}</p><p style="font-size:12px;color:var(--gray);margin-top:4px;">${skillDescs[customSkill.type]}</p></div>`;
           document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
         }, 500);
@@ -1060,9 +937,7 @@ function spinOpportunityWheel(){
 // ============================================================
 // LOVER WHEEL SYSTEM
 // ============================================================
-let loverWheelData = null;
-let loverWheelSpinning = false;
-let loverWheelCallback = null;
+
 
 function buildLoverWheel(){
   // Determine target pool based on player gender
@@ -1105,40 +980,23 @@ function buildLoverWheel(){
 }
 
 function openLoverWheel(callback){
-  loverWheelData = buildLoverWheel();
-  loverWheelCallback = callback;
-  document.getElementById('mini-wheel-label').textContent = '邂逅...';
-  document.getElementById('mini-wheel-hint').textContent = '命运的转盘在转动，你会遇见谁？';
-  document.getElementById('mini-wheel-result-area').innerHTML = '';
-  document.getElementById('mini-wheel-spin-btn').style.display = '';
-  document.getElementById('mini-wheel-spin-btn').classList.remove('btn-disabled');
-  document.getElementById('mini-wheel-spin-btn').onclick = spinLoverWheel;
-  drawMiniWheel(loverWheelData);
-  let canvas = document.getElementById('mini-wheel-canvas');
-  canvas.style.transition = 'none';
-  canvas.style.transform = 'rotate(0deg)';
-  void canvas.offsetWidth;
-  document.getElementById('mini-wheel-overlay').classList.add('active');
+  wheelState.data = buildLoverWheel();
+  wheelState.callback = callback;
+  wheelState.type = 'lover';
+  openWheelBase('邂逅...', '命运的转盘在转动，你会遇见谁？', wheelState.data, spinLoverWheel);
 }
 
 function spinLoverWheel(){
-  if(loverWheelSpinning) return;
-  loverWheelSpinning = true;
+  if(wheelState.spinning) return;
+  wheelState.spinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let total = loverWheelData.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(loverWheelData);
-  let selectedIdx = loverWheelData.indexOf(selected);
-  let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += loverWheelData[i].weight;
-  let sectorAngle = (selected.weight / total) * 360;
-  let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
-  let finalAngle = 360 * 6 + (360 - targetCenter + 270);
+  let { selected, finalAngle } = calcWheelSpinResult(wheelState.data);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
-  setTimeout(() => {
-    loverWheelSpinning = false;
+  managedTimeout(() => {
+    wheelState.spinning = false;
     btn.classList.remove('btn-disabled');
     // Determine success chance based on charm and personality
     let charm = G.appearance?.attr?.charm || 5;
@@ -1163,9 +1021,7 @@ function spinLoverWheel(){
 // ============================================================
 // ENEMY WHEEL SYSTEM
 // ============================================================
-let enemyWheelData = null;
-let enemyWheelSpinning = false;
-let enemyWheelCallback = null;
+
 
 // ============================================================
 // COMBAT POWER SYSTEM (战力系统)
@@ -1314,40 +1170,29 @@ function buildEnemyWheel(){
 }
 
 function openEnemyWheel(callback){
-  enemyWheelData = buildEnemyWheel();
-  enemyWheelCallback = callback;
-  document.getElementById('mini-wheel-label').textContent = (G.timeline?.id === 'godrealm') ? '神界动乱！' : '强敌来袭！';
-  document.getElementById('mini-wheel-hint').textContent = '命运的转盘在转动，你的对手是谁？';
-  document.getElementById('mini-wheel-result-area').innerHTML = '';
-  document.getElementById('mini-wheel-spin-btn').style.display = '';
-  document.getElementById('mini-wheel-spin-btn').classList.remove('btn-disabled');
-  document.getElementById('mini-wheel-spin-btn').onclick = spinEnemyWheel;
-  drawMiniWheel(enemyWheelData);
-  let canvas = document.getElementById('mini-wheel-canvas');
-  canvas.style.transition = 'none';
-  canvas.style.transform = 'rotate(0deg)';
-  void canvas.offsetWidth;
-  document.getElementById('mini-wheel-overlay').classList.add('active');
+  wheelState.data = buildEnemyWheel();
+  wheelState.callback = callback;
+  wheelState.type = 'enemy';
+  let label = (G.timeline?.id === 'godrealm') ? '神界动乱！' : '强敌来袭！';
+  openWheelBase(label, '命运的转盘在转动，你的对手是谁？', wheelState.data, spinEnemyWheel);
+}
+
+function renderEnemyResult(title, titleColor, selected, enemyLevel, cpDisplay, bodyText, effectText, effectColor, extraHtml){
+  let area = document.getElementById('mini-wheel-result-area');
+  area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:${titleColor}">${title}</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>${bodyText}</p><p style="color:${effectColor};margin-top:8px;">${effectText}</p>${extraHtml||''}</div>`;
 }
 
 function spinEnemyWheel(){
-  if(enemyWheelSpinning) return;
-  enemyWheelSpinning = true;
+  if(wheelState.spinning) return;
+  wheelState.spinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let total = enemyWheelData.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(enemyWheelData);
-  let selectedIdx = enemyWheelData.indexOf(selected);
-  let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += enemyWheelData[i].weight;
-  let sectorAngle = (selected.weight / total) * 360;
-  let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
-  let finalAngle = 360 * 6 + (360 - targetCenter + 270);
+  let { selected, finalAngle } = calcWheelSpinResult(wheelState.data);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
-  setTimeout(() => {
-    enemyWheelSpinning = false;
+  managedTimeout(() => {
+    wheelState.spinning = false;
     btn.classList.remove('btn-disabled');
     // Determine enemy power relative to player
     let enemyLevel = Math.max(1, Math.round(G.soulPower * selected.power + (Math.random()*10 - 5)));
@@ -1395,7 +1240,6 @@ function spinEnemyWheel(){
     let enemyCPRating = getCombatPowerRating(enemyCP);
     let cpDisplay = `<p style="font-size:12px;color:var(--gray);margin-top:6px;">我方战力：<span style="color:${playerCPRating.color};">${playerCP}</span>（${playerCPRating.name}） | 敌方战力：<span style="color:${enemyCPRating.color};">${enemyCP}</span>（${enemyCPRating.name}）</p>`;
 
-    let area = document.getElementById('mini-wheel-result-area');
     let enemyInfo = {name: selected.name, level: enemyLevel, type: selected.type, cp: enemyCP};
 
     if(canEscape && !win){
@@ -1407,7 +1251,7 @@ function spinEnemyWheel(){
         G.beastYears = Math.max((G.beastYears || 0) - lossYears, 0);
         syncBeastSoulPower();
         G.enemies.push({...enemyInfo, escaped: true});
-        area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--green)">成功逃脱！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你察觉到危险，凭借魂兽的本能迅速逃离了人类的猎杀范围！</p><p style="color:var(--gold);margin-top:8px;">逃脱成功，仅损失${lossYears}年修为</p></div>`;
+        renderEnemyResult('成功逃脱！','var(--green)',selected,enemyLevel,cpDisplay,'你察觉到危险，凭借魂兽的本能迅速逃离了人类的猎杀范围！',`逃脱成功，仅损失${lossYears}年修为`,'var(--gold)');
       }else{
         // Failed to escape, fight and lose
         let lossCap = isEvil ? 10 : 5;
@@ -1418,9 +1262,9 @@ function spinEnemyWheel(){
         G.enemies.push({...enemyInfo, defeated: true});
         if(Math.random() < 0.15 * selected.power){
           G.alive = false;
-          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">命丧猎魂师之手</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你试图逃跑但失败了，最终被人类猎魂师击杀，成为了他们的魂环...</p><p style="color:var(--red);margin-top:8px;">年限-${lossYears}年</p></div>`;
+          renderEnemyResult('命丧猎魂师之手','var(--red)',selected,enemyLevel,cpDisplay,'你试图逃跑但失败了，最终被人类猎魂师击杀，成为了他们的魂环...',`年限-${lossYears}年`,'var(--red)');
         }else{
-          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">逃脱失败</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你没能成功逃脱，被人类重创后勉强挣脱...</p><p style="color:var(--red);margin-top:8px;">年限-${lossYears}年</p></div>`;
+          renderEnemyResult('逃脱失败','var(--red)',selected,enemyLevel,cpDisplay,'你没能成功逃脱，被人类重创后勉强挣脱...',`年限-${lossYears}年`,'var(--red)');
         }
       }
     }else if(win){
@@ -1432,7 +1276,7 @@ function spinEnemyWheel(){
         syncBeastSoulPower();
         G.gold = (G.gold||0) + Math.floor(enemyLevel * 5);
         G.enemies.push(enemyInfo);
-        area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--gold)">战斗胜利！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你成功击败了入侵者，吞噬了对方的能量！</p><p style="color:var(--green);margin-top:8px;">年限+${gainYears}年 | 获得${Math.floor(enemyLevel*5)}金魂币</p></div>`;
+        renderEnemyResult('战斗胜利！','var(--gold)',selected,enemyLevel,cpDisplay,'你成功击败了入侵者，吞噬了对方的能量！',`年限+${gainYears}年 | 获得${Math.floor(enemyLevel*5)}金魂币`,'var(--green)');
       }else{
         G.soulPower = Math.min(G.soulPower + reward, G.maxLevel);
         G.gold = (G.gold||0) + Math.floor(enemyLevel * 10);
@@ -1440,7 +1284,7 @@ function spinEnemyWheel(){
         let extraText = '';
         if(isFierce) extraText = '<br><span style="color:var(--cyan);font-size:12px;">你的凶相让敌人心生畏惧，战斗更加顺利。</span>';
         if(hasControlSkill) extraText += '<br><span style="color:var(--purple);font-size:12px;">你用控制系自创魂技牵制了敌人，占据了上风！</span>';
-        area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--gold)">战斗胜利！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你成功击败了对手！</p><p style="color:var(--green);margin-top:8px;">魂力+${reward}级 | 获得${Math.floor(enemyLevel*10)}金魂币</p>${extraText}</div>`;
+        renderEnemyResult('战斗胜利！','var(--gold)',selected,enemyLevel,cpDisplay,'你成功击败了对手！',`魂力+${reward}级 | 获得${Math.floor(enemyLevel*10)}金魂币`,'var(--green)',extraText);
       }
     }else{
       // Evil soul masters drain more soul power
@@ -1455,9 +1299,9 @@ function spinEnemyWheel(){
         G.enemies.push({...enemyInfo, defeated: true});
         if(Math.random() < 0.15 * selected.power){
           G.alive = false;
-          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">陨落</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>实力差距太大，你倒在了强敌的爪下...</p><p style="color:var(--red);margin-top:8px;">年限-${lossYears}年</p></div>`;
+          renderEnemyResult('陨落','var(--red)',selected,enemyLevel,cpDisplay,'实力差距太大，你倒在了强敌的爪下...',`年限-${lossYears}年`,'var(--red)');
         }else{
-          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">战斗失败</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你被击败了，身受重伤...</p><p style="color:var(--red);margin-top:8px;">年限-${lossYears}年</p></div>`;
+          renderEnemyResult('战斗失败','var(--red)',selected,enemyLevel,cpDisplay,'你被击败了，身受重伤...',`年限-${lossYears}年`,'var(--red)');
         }
       }else{
         G.soulPower = Math.max(G.soulPower - loss, 1);
@@ -1468,30 +1312,30 @@ function spinEnemyWheel(){
         if(isEvil && isFemale && charm >= 8 && Math.random() < 0.3){
           let drainExtra = Math.min(Math.floor(enemyLevel * 0.2), 5);
           G.soulPower = Math.max(G.soulPower - drainExtra, 1);
-          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">邪魂师的觊觎</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>邪魂师被你的容貌所吸引，没有直接杀你，而是用邪术大量吸取了你的魂力，欲将你掳走修炼...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss + drainExtra}级（被吸取）</p></div>`;
+          renderEnemyResult('邪魂师的觊觎','var(--red)',selected,enemyLevel,cpDisplay,'邪魂师被你的容貌所吸引，没有直接杀你，而是用邪术大量吸取了你的魂力，欲将你掳走修炼...',`魂力-${loss + drainExtra}级（被吸取）`,'var(--red)');
           specialResult = true;
         }else if(isEvil && isDivine && Math.random() < 0.2){
           let recover = Math.min(3, loss);
           G.soulPower = Math.min(G.soulPower + recover, G.maxLevel);
-          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--gold)">神辉护体！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你身上散发的神辉让邪魂师痛苦不堪，他的邪术被净化了大半！</p><p style="color:var(--gold);margin-top:8px;">魂力-${loss}级，但神辉净化后恢复${recover}级</p></div>`;
+          renderEnemyResult('神辉护体！','var(--gold)',selected,enemyLevel,cpDisplay,'你身上散发的神辉让邪魂师痛苦不堪，他的邪术被净化了大半！',`魂力-${loss}级，但神辉净化后恢复${recover}级`,'var(--gold)');
           specialResult = true;
         }else if(isEvil){
-          area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">邪魂侵蚀</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你被邪魂师击败，邪术侵蚀了你的经脉，大量魂力被吸取...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+          renderEnemyResult('邪魂侵蚀','var(--red)',selected,enemyLevel,cpDisplay,'你被邪魂师击败，邪术侵蚀了你的经脉，大量魂力被吸取...',`魂力-${loss}级`,'var(--red)');
         }
 
         if(!specialResult){
           if(Math.random() < 0.15 * selected.power){
             G.alive = false;
             if(isEvil){
-              area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">魂飞魄散</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>邪魂师将你彻底吞噬，连灵魂都没有留下...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+              renderEnemyResult('魂飞魄散','var(--red)',selected,enemyLevel,cpDisplay,'邪魂师将你彻底吞噬，连灵魂都没有留下...',`魂力-${loss}级`,'var(--red)');
             }else{
-              area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">命丧敌手！</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>实力差距太大，你倒在了血泊之中...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+              renderEnemyResult('命丧敌手！','var(--red)',selected,enemyLevel,cpDisplay,'实力差距太大，你倒在了血泊之中...',`魂力-${loss}级`,'var(--red)');
             }
           }else{
             if(isFierce){
-              area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">战斗失败</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你被击败了，但你的凶相让敌人不敢追击，得以保全性命。</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+              renderEnemyResult('战斗失败','var(--red)',selected,enemyLevel,cpDisplay,'你被击败了，但你的凶相让敌人不敢追击，得以保全性命。',`魂力-${loss}级`,'var(--red)');
             }else{
-              area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:var(--red)">战斗失败</h3><p>强敌：<strong style="color:${selected.color}">${selected.name}</strong>（${enemyLevel}级）</p>${selected.desc?`<p style="font-size:12px;color:var(--gray);">${selected.desc}</p>`:''}${cpDisplay}<p>你被击败了，身受重伤...</p><p style="color:var(--red);margin-top:8px;">魂力-${loss}级</p></div>`;
+              renderEnemyResult('战斗失败','var(--red)',selected,enemyLevel,cpDisplay,'你被击败了，身受重伤...',`魂力-${loss}级`,'var(--red)');
             }
           }
         }
@@ -1509,7 +1353,6 @@ let G = null; // Current game state
 let wheelQueue = [];
 let wheelIndex = 0;
 let currentWheelData = null;
-let isSpinning = false;
 let globalAchievements = [];
 
 function loadGlobalAchievements(){
@@ -1544,13 +1387,14 @@ function initParticles(){
 // ============================================================
 // SCREEN MANAGEMENT
 // ============================================================
-// showScreen → moved to render.js
 
 // ============================================================
 // WEIGHTED RANDOM
 // ============================================================
 function weightedRandom(items,weightKey='weight'){
+  if(!items||items.length===0)return null;
   let total=items.reduce((s,i)=>s+i[weightKey],0);
+  if(total<=0)return null;
   let r=Math.random()*total;
   for(let item of items){r-=item[weightKey];if(r<=0)return item;}
   return items[items.length-1];
@@ -1560,94 +1404,9 @@ function weightedRandom(items,weightKey='weight'){
 // WHEEL SYSTEM
 // ============================================================
 function drawWheel(items,labelKey,colorKey){
-  const canvas=document.getElementById('wheel-canvas');
-  const ctx=canvas.getContext('2d');
-  const w=canvas.width,h=canvas.height;
-  const cx=w/2,cy=h/2,r=340;
-  ctx.clearRect(0,0,w,h);
-
-  let total=items.reduce((s,i)=>s+i.weight,0);
-  let startAngle=0;
-
-  items.forEach((item,i)=>{
-    let sliceAngle=(item.weight/total)*Math.PI*2;
-    let endAngle=startAngle+sliceAngle;
-
-    // Draw sector
-    ctx.beginPath();
-    ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,r,startAngle,endAngle);
-    ctx.closePath();
-
-    let color=item[colorKey]||`hsl(${(i/items.length)*360},60%,30%)`;
-    ctx.fillStyle=color;
-    ctx.fill();
-    ctx.strokeStyle='rgba(255,215,0,0.3)';
-    ctx.lineWidth=1;
-    ctx.stroke();
-
-    // Draw text
-    ctx.save();
-    ctx.translate(cx,cy);
-    ctx.rotate(startAngle+sliceAngle/2);
-    ctx.textAlign='right';
-    ctx.fillStyle='#fff';
-    ctx.font='bold 22px Microsoft YaHei';
-    ctx.shadowColor='rgba(0,0,0,0.8)';
-    ctx.shadowBlur=4;
-    let label=item[labelKey];
-    if(label.length>8)label=label.substring(0,8)+'…';
-    ctx.fillText(label,r-20,6);
-    ctx.restore();
-
-    startAngle=endAngle;
+  drawWheelCanvas(document.getElementById('wheel-canvas'), items, {
+    labelKey, colorKey, radius:340, fontSize:22, textX:20, textY:6, ringGap:5, ringWidth:4, decoration:true, maxLabel:8
   });
-
-  // Outer ring
-  ctx.beginPath();
-  ctx.arc(cx,cy,r+5,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,215,0,0.5)';
-  ctx.lineWidth=4;
-  ctx.stroke();
-
-  // Inner decoration
-  for(let i=0;i<items.length;i++){
-    let angle=(i/items.length)*Math.PI*2;
-    ctx.beginPath();
-    ctx.arc(cx,cy,r+5,angle,angle+0.02);
-    ctx.strokeStyle='rgba(255,215,0,0.8)';
-    ctx.lineWidth=6;
-    ctx.stroke();
-  }
-}
-
-function spinWheel(){
-  if(isSpinning)return;
-  isSpinning=true;
-  const btn=document.getElementById('wheel-spin-btn');
-  btn.classList.add('btn-disabled');
-
-  const canvas=document.getElementById('wheel-canvas');
-  let total=currentWheelData.reduce((s,i)=>s+i.weight,0);
-  let selectedItem=weightedRandom(currentWheelData);
-  let selectedIdx=currentWheelData.indexOf(selectedItem);
-
-  // Calculate target angle
-  let cumWeight=0;
-  for(let i=0;i<selectedIdx;i++)cumWeight+=currentWheelData[i].weight;
-  let sectorAngle=(selectedItem.weight/total)*360;
-  let targetCenter=cumWeight/total*360+sectorAngle/2;
-  // Pointer is at top (270 degrees), adjust
-  let finalAngle=360*8+(360-targetCenter+270);
-
-  canvas.style.transition='transform 6s cubic-bezier(0.17,0.67,0.12,0.99)';
-  canvas.style.transform=`rotate(${finalAngle}deg)`;
-
-  setTimeout(()=>{
-    isSpinning=false;
-    btn.classList.remove('btn-disabled');
-    onWheelResult(selectedItem);
-  },6200);
 }
 
 // ============================================================
@@ -1725,8 +1484,6 @@ function generateRandomCharacter(forceType){
   return c;
 }
 
-// renderRandomCharCard → moved to render.js
-
 let _quickRandomHuman = null;
 let _quickRandomBeast = null;
 
@@ -1735,8 +1492,6 @@ function startQuickRandom(){
   _quickRandomBeast = generateRandomCharacter('soul_beast');
   renderQuickRandom();
 }
-
-// renderQuickRandom → moved to render.js
 
 function rerollQuickRandom(){
   _quickRandomHuman = generateRandomCharacter('human');
@@ -1801,6 +1556,7 @@ function createDefaultState(){
 }
 
 function startNewGame(){
+  clearAllTimers();
   G=createDefaultState();
   wheelIndex=0;
 
@@ -1828,6 +1584,22 @@ function setupNextWheel(){
   canvas.style.transform='rotate(0deg)';
 }
 
+function pushNextWheel(type, label, centerText, items, options = {}) {
+  const { labelKey = 'name', colorKey = 'color', colorFn = null, extra = null } = options;
+  items.forEach((it, i) => {
+    if (colorFn) {
+      it.eraColor = colorFn(it, i, items.length);
+    } else if (colorKey && it[colorKey]) {
+      it.eraColor = it[colorKey];
+    } else {
+      it.eraColor = `hsl(${(i / items.length) * 280}, 50%, 30%)`;
+    }
+  });
+  const entry = { type, label, centerText, items, labelKey, colorKey: 'eraColor' };
+  if (extra) Object.assign(entry, extra);
+  wheelQueue.push(entry);
+}
+
 function onWheelResult(item){
   const area=document.getElementById('wheel-result-area');
   const hint=document.getElementById('wheel-hint');
@@ -1842,28 +1614,33 @@ function onWheelResult(item){
       let idTypePool;
       if(item.id==='godrealm'){idTypePool=[...IDENTITY_TYPES.god, ...IDENTITY_TYPES.divine_beast];}
       else{idTypePool=[...IDENTITY_TYPES.human,...IDENTITY_TYPES.soul_beast];}
-      idTypePool.forEach((it,i)=>{it.eraColor=it.color||`hsl(${(i/idTypePool.length)*280+120},50%,30%)`;});
-      wheelQueue.push({type:'identity_type',label:'抽取种族',centerText:'族',items:idTypePool,labelKey:'name',colorKey:'color'});
+      pushNextWheel('identity_type', '抽取种族', '族', idTypePool, {
+        colorFn: (it, i, len) => it.color || `hsl(${(i/len)*280+120},50%,30%)`
+      });
       break;
     case 'identity_type':
       G.identityType=item.id;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       if(item.id==='human'){
         hint.textContent='你是人类，接下来抽取出身背景...';
-        HUMAN_BACKGROUNDS.forEach((it,i)=>{it.eraColor=`hsl(${(i/HUMAN_BACKGROUNDS.length)*200+200},50%,30%)`;});
-        wheelQueue.push({type:'background',label:'抽取背景',centerText:'出',items:HUMAN_BACKGROUNDS,labelKey:'name',colorKey:null});
+        pushNextWheel('background', '抽取背景', '出', HUMAN_BACKGROUNDS, {
+          colorFn: (it, i, len) => `hsl(${(i/len)*200+200},50%,30%)`
+        });
       }else if(item.id==='soul_beast'){
         hint.textContent='你是魂兽，接下来抽取种族年限...';
-        BEAST_RACES.forEach((it,i)=>{it.eraColor=`hsl(${(i/BEAST_RACES.length)*60},50%,30%)`;});
-        wheelQueue.push({type:'beast_race',label:'抽取种族',centerText:'族',items:BEAST_RACES,labelKey:'name',colorKey:null});
+        pushNextWheel('beast_race', '抽取种族', '族', BEAST_RACES, {
+          colorFn: (it, i, len) => `hsl(${(i/len)*60},50%,30%)`
+        });
       }else if(item.id==='god'){
         hint.textContent='你是神祇，接下来抽取神位...';
-        GOD_TIERS.forEach((it,i)=>{it.eraColor=`hsl(${(i/GOD_TIERS.length)*60+40},50%,30%)`;});
-        wheelQueue.push({type:'god_tier',label:'抽取神位',centerText:'神',items:GOD_TIERS,labelKey:'name',colorKey:null});
+        pushNextWheel('god_tier', '抽取神位', '神', GOD_TIERS, {
+          colorFn: (it, i, len) => `hsl(${(i/len)*60+40},50%,30%)`
+        });
       }else if(item.id==='divine_beast'){
         hint.textContent='你是神兽，接下来抽取神兽种族...';
-        DIVINE_BEAST_RACES.forEach((it,i)=>{it.eraColor=`hsl(${(i/DIVINE_BEAST_RACES.length)*80+20},50%,35%)`;});
-        wheelQueue.push({type:'divine_beast_race',label:'抽取神兽种族',centerText:'兽',items:DIVINE_BEAST_RACES,labelKey:'name',colorKey:'color'});
+        pushNextWheel('divine_beast_race', '抽取神兽种族', '兽', DIVINE_BEAST_RACES, {
+          colorFn: (it, i, len) => `hsl(${(i/len)*80+20},50%,35%)`
+        });
       }
       break;
     case 'background':
@@ -1871,66 +1648,60 @@ function onWheelResult(item){
       area.innerHTML=`<div class="wheel-result"><h3>${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='背景已定，接下来抽取性别...';
       let bgGenderItems = GENDERS.filter(g=>g.id!=='none');
-      wheelQueue.push({type:'gender',label:'抽取性别',centerText:'性',items:bgGenderItems,labelKey:'name',colorKey:null});
-      bgGenderItems.forEach((g,i)=>{g.eraColor=`hsl(${(i/bgGenderItems.length)*280},50%,30%)`;});
+      pushNextWheel('gender', '抽取性别', '性', bgGenderItems);
       break;
     case 'beast_race':
       G.identity=item;
       G.gender = Math.random()<0.5 ? {id:'male',name:'雄',desc:''} : {id:'female',name:'雌',desc:''};
       area.innerHTML=`<div class="wheel-result"><h3>${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='种族已定，接下来抽取血脉系...';
-      BEAST_BLOODLINES.forEach((it,i)=>{it.eraColor=it.color;});
-      wheelQueue.push({type:'beast_bloodline',label:'抽取血脉系',centerText:'脉',items:BEAST_BLOODLINES,labelKey:'name',colorKey:'color'});
+      pushNextWheel('beast_bloodline', '抽取血脉系', '脉', BEAST_BLOODLINES);
       break;
     case 'divine_beast_race':
       G.identity=item;
       G.gender = Math.random()<0.5 ? {id:'male',name:'雄',desc:''} : {id:'female',name:'雌',desc:''};
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='神兽种族已定，接下来抽取神兽血脉...';
-      BEAST_BLOODLINES.forEach((it,i)=>{it.eraColor=it.color;});
-      wheelQueue.push({type:'beast_bloodline',label:'抽取神兽血脉',centerText:'脉',items:BEAST_BLOODLINES,labelKey:'name',colorKey:'color'});
+      pushNextWheel('beast_bloodline', '抽取神兽血脉', '脉', BEAST_BLOODLINES);
       break;
     case 'god_tier':
       G.identity=item;
       area.innerHTML=`<div class="wheel-result"><h3>${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='神位等级已定，接下来抽取神位名称...';
       let posPool = GOD_POSITIONS[item.id] || GOD_POSITIONS.god_official;
-      posPool = posPool.map((p,i)=>({...p, weight: 1, eraColor: p.color}));
-      wheelQueue.push({type:'god_position',label:'抽取神位名称',centerText:'神',items:posPool,labelKey:'name',colorKey:'eraColor'});
+      posPool = posPool.map((p,i)=>({...p, weight: 1}));
+      pushNextWheel('god_position', '抽取神位名称', '神', posPool);
       break;
     case 'god_position':
       G.godPosition = item;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='神位已定，接下来抽取神器...';
       let artPool = GOD_ARTIFACTS[G.identity?.id] || GOD_ARTIFACTS.god_official;
-      artPool = artPool.map((a,i)=>({...a, weight: 1, eraColor: a.color}));
-      wheelQueue.push({type:'god_artifact',label:'抽取神器',centerText:'器',items:artPool,labelKey:'name',colorKey:'eraColor'});
+      artPool = artPool.map((a,i)=>({...a, weight: 1}));
+      pushNextWheel('god_artifact', '抽取神器', '器', artPool);
       break;
     case 'god_artifact':
       G.godArtifact = item;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='神器已定，接下来抽取神界势力...';
-      GOD_FACTIONS_POOL.forEach((f,i)=>{f.eraColor=f.color;});
-      wheelQueue.push({type:'god_faction',label:'抽取神界势力',centerText:'势',items:GOD_FACTIONS_POOL,labelKey:'name',colorKey:'eraColor'});
+      pushNextWheel('god_faction', '抽取神界势力', '势', GOD_FACTIONS_POOL);
       break;
     case 'god_faction':
       G.faction = item.name;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='势力已定，接下来抽取性别...';
       let godGenderItems2 = GENDERS.filter(g=>g.id!=='none');
-      godGenderItems2.forEach((g,i)=>{g.eraColor=`hsl(${(i/godGenderItems2.length)*280},50%,30%)`;});
-      wheelQueue.push({type:'gender',label:'抽取性别',centerText:'性',items:godGenderItems2,labelKey:'name',colorKey:null});
+      pushNextWheel('gender', '抽取性别', '性', godGenderItems2);
       break;
     case 'gender':
       G.gender=item;
       area.innerHTML=`<div class="wheel-result"><h3>性别：${item.name}</h3><p>${item.desc}</p></div>`;
       if(G.identityType==='soul_beast'){
         hint.textContent='接下来抽取血脉系...';
-        BEAST_BLOODLINES.forEach((it,i)=>{it.eraColor=it.color;});
-        wheelQueue.push({type:'beast_bloodline',label:'抽取血脉系',centerText:'脉',items:BEAST_BLOODLINES,labelKey:'name',colorKey:'color'});
+        pushNextWheel('beast_bloodline', '抽取血脉系', '脉', BEAST_BLOODLINES);
       }else if(G.identityType==='god'){
         hint.textContent='神祇无需武魂觉醒，接下来抽取性格...';
-        wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
+        pushNextWheel('personality', '抽取性格', '性', PERSONALITIES);
       }else{
         if(G.timeline.factions && (G.identity.id==='sect_disciple'||G.identity.id==='family_child'||G.identity.id==='noble')){
           G.faction=G.timeline.factions[Math.floor(Math.random()*G.timeline.factions.length)];
@@ -1940,8 +1711,7 @@ function onWheelResult(item){
         let awItems = AWAKENING_COUNT.map(a => ({...a}));
         if(G.identity.id==='family_child'){awItems[1].weight=40;awItems[2].weight=18;awItems[3].weight=7;}
         if(G.identity.id==='noble'){awItems[1].weight=35;awItems[2].weight=15;awItems[3].weight=5;}
-        awItems.forEach((a,i)=>{a.eraColor=a.color;});
-        wheelQueue.push({type:'awaken_count',label:'抽取觉醒个数',centerText:'觉',items:awItems,labelKey:'name',colorKey:'color'});
+        pushNextWheel('awaken_count', '抽取觉醒个数', '觉', awItems);
       }
       break;
     case 'beast_bloodline':
@@ -1949,14 +1719,13 @@ function onWheelResult(item){
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}血脉</h3><p>${item.desc}</p></div>`;
       hint.textContent='血脉已定，抽取降生地点...';
       let birthplaces = getBeastBirthplaces(G.timeline.id);
-      birthplaces.forEach((it,i)=>{it.eraColor=it.color;});
-      wheelQueue.push({type:'beast_birthplace',label:'抽取降生地点',centerText:'地',items:birthplaces,labelKey:'name',colorKey:'color'});
+      pushNextWheel('beast_birthplace', '抽取降生地点', '地', birthplaces);
       break;
     case 'beast_birthplace':
       G.birthplace = item;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='降生地点已定，接下来抽取性格...';
-      wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
+      pushNextWheel('personality', '抽取性格', '性', PERSONALITIES);
       break;
     case 'awaken_count':
       G._awakenCount = item.count;
@@ -1973,7 +1742,7 @@ function onWheelResult(item){
         hint.textContent='接下来抽取武魂品质...';
       }
       let qualityItems = buildQualityWheel();
-      wheelQueue.push({type:'soul_quality',label:'抽取武魂品质',centerText:'品',items:qualityItems,labelKey:'name',colorKey:'color'});
+      pushNextWheel('soul_quality', '抽取武魂品质', '品', qualityItems);
       break;
     case 'soul_quality':
       G._soulQualityTier = item.tier;
@@ -1985,7 +1754,10 @@ function onWheelResult(item){
       hint.textContent='品质已定，从千种武魂中觉醒...';
       let nameItems = pickNameWheelItems(item.tier, 12);
       nameItems.forEach(n => {n.weight = 1;});
-      wheelQueue.push({type:'soul_name',label:`第${soulIdx}个武魂（千中选一）`,centerText:'魂',items:nameItems,labelKey:'name',colorKey:'qColor',tier:item.tier});
+      pushNextWheel('soul_name', `第${soulIdx}个武魂（千中选一）`, '魂', nameItems, {
+        colorKey: 'qColor',
+        extra: { tier: item.tier }
+      });
       break;
     case 'soul_name':
       let tier = wheelQueue[wheelIndex].tier;
@@ -2015,7 +1787,7 @@ function onWheelResult(item){
       if(soulsDone < soulsTarget && !isDual){
         hint.textContent=`还有${soulsTarget - soulsDone}个武魂要觉醒...`;
         let qualityItems = buildQualityWheel();
-        wheelQueue.push({type:'soul_quality',label:'抽取武魂品质',centerText:'品',items:qualityItems,labelKey:'name',colorKey:'color'});
+        pushNextWheel('soul_quality', '抽取武魂品质', '品', qualityItems);
       }else{
         // All done - compile final martial soul
         let hasDualEntry = G._awakenedSouls.some(s=>s.isDual);
@@ -2059,7 +1831,7 @@ function onWheelResult(item){
           area.innerHTML+=`<p style="color:var(--gold);margin-top:8px;">所有武魂觉醒完毕：${soulNames}</p>`;
         }
         hint.textContent='武魂已定，接下来抽取先天魂力...';
-        wheelQueue.push({type:'innate',label:'抽取先天魂力',centerText:'魂',items:INNATE_POWER,labelKey:'name',colorKey:'ratingColor'});
+        pushNextWheel('innate', '抽取先天魂力', '魂', INNATE_POWER, { colorKey: 'ratingColor' });
       }
       break;
     case 'innate':
@@ -2101,13 +1873,13 @@ function onWheelResult(item){
       if(soulBonusNote) guaranteeNote='<br><span style="color:var(--cyan)">【'+soulBonusNote+'】</span>'+guaranteeNote;
       area.innerHTML=`<div class="wheel-result"><h3>先天魂力：${G.innatePower}级</h3><p style="color:${G.innateRatingColor}">${G.innateRating}</p><p style="margin-top:4px">${actualRating?actualRating.desc:item.desc}</p>${guaranteeNote}</div>`;
       hint.textContent='天赋已定，接下来抽取性格...';
-      wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
+      pushNextWheel('personality', '抽取性格', '性', PERSONALITIES);
       break;
     case 'personality':
       G.personality=item;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p><p style="margin-top:4px;color:var(--gray);">社交：${Math.round(item.traits.social*100)}% | 情缘：${Math.round(item.traits.romance*100)}% | 强敌：${Math.round(item.traits.enemy*100)}%</p></div>`;
       hint.textContent='性格已定，接下来抽取外貌...';
-      wheelQueue.push({type:'appearance',label:'抽取外貌',centerText:'貌',items:APPEARANCES,labelKey:'name',colorKey:'color'});
+      pushNextWheel('appearance', '抽取外貌', '貌', APPEARANCES);
       break;
     case 'appearance':
       G.appearance=item;
@@ -2142,7 +1914,7 @@ function nextWheelStep(){
     document.getElementById('wheel-spin-btn').style.display='';
   }else{
     hint.textContent='';
-    setTimeout(()=>showAwakening(),500);
+    managedTimeout(()=>showAwakening(),500);
   }
 }
 
@@ -2152,13 +1924,6 @@ function getActiveSoul(){
     return G.martialSoul.souls[G.martialSoul.activeIndex || 0];
   }
   return G.martialSoul;
-}
-
-function getActiveRings(){
-  let soul = getActiveSoul();
-  if(!soul) return G.soulRings || [];
-  if(!soul.rings) soul.rings = [];
-  return soul.rings;
 }
 
 function switchActiveSoul(index){
@@ -2175,12 +1940,10 @@ function switchActiveSoul(index){
   let newSoul = G.martialSoul.souls[index];
   G.soulRings = newSoul.rings || [];
   renderSidebar();
-  renderGameLog();
 }
 
-// showAwakening → moved to render.js
-
 function rerollAll(){
+  clearAllTimers();
   showScreen('screen-title');
   G=null;
 }
@@ -2212,10 +1975,6 @@ function enterLife(){
   }
   addEventLog(6,'cultivate',awakeningText,true);
 }
-
-// renderSidebar → moved to render.js
-
-// renderControls → moved to render.js
 
 function addEventLog(age,type,text,isInit){
   const log=document.getElementById('event-log');
@@ -2286,128 +2045,41 @@ function processPartnerEvent(){
   let spouse = G.spouse;
   if(!spouse) return null;
   let timelineId = G.timeline?.id || 'douluo1';
-  let outcomes = [];
-
-  switch(timelineId){
-    case 'douluo1':
-      outcomes = [
-        {text:`你与${spouse.name}在星斗大森林中历练，两人并肩作战，默契大增。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '魂力+2级';}},
-        {text:`${spouse.name}为你寻来了一株相思断肠红（仿品），助你稳固魂力。`,effect:()=>{G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '魂力+3级';}},
-        {text:`你和${spouse.name}一同前往海神岛朝圣，在海神之光下共同修炼。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);G.merit=(G.merit||0)+5;return '魂力+2级，名声+5';}},
-        {text:`${spouse.name}遭遇武魂殿余孽的袭击，你奋不顾身前去相救！`,effect:()=>{if(Math.random()<0.8){G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '成功救出！两人感情更加深厚，魂力+1级';}else{G.soulPower=Math.max(G.soulPower-2,1);return '营救过程中受伤，魂力-2级';}}},
-        {text:`你和${spouse.name}在索托城散步，享受难得的宁静时光。`,effect:()=>{return '平淡而幸福的一年。';}}
-      ];
-      break;
-    case 'douluo2':
-      outcomes = [
-        {text:`你与${spouse.name}在海神湖畔漫步，黄金树的见证下感情升温。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '魂力+2级';}},
-        {text:`${spouse.name}亲手为你制作了一件二级魂导器作为礼物。`,effect:()=>{G.battleArmor=Math.max(G.battleArmor||0,1);G.gold=(G.gold||0)+20;return '掌握魂导基础，获得20金魂币';}},
-        {text:`你和${spouse.name}参加了海神缘相亲大会后的庆典，羡煞旁人。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);G.merit=(G.merit||0)+8;return '魂力+2级，名声+8';}},
-        {text:`${spouse.name}在监察团任务中遇险，你火速赶往救援！`,effect:()=>{if(Math.random()<0.75){G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '成功救出！两人感情更加深厚，魂力+1级';}else{G.soulPower=Math.max(G.soulPower-2,1);return '营救过程中受伤，魂力-2级';}}},
-        {text:`你和${spouse.name}一起研究魂导器到深夜，虽然疲惫但很充实。`,effect:()=>{return '平淡而幸福的一年。';}}
-      ];
-      break;
-    case 'douluo3':
-      outcomes = [
-        {text:`你与${spouse.name}在史莱克学院的斗铠工坊一起制作合金，默契十足。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '魂力+2级';}},
-        {text:`${spouse.name}陪你去传灵塔升灵台修炼，两人在虚拟世界中并肩作战。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '魂力+2级';}},
-        {text:`你和${spouse.name}一同前往龙谷秘境探险，在龙骨山脉中许下了誓言。`,effect:()=>{G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '魂力+3级（龙骨见证）';}},
-        {text:`${spouse.name}被圣灵教的人盯上，你挺身而出保护爱人！`,effect:()=>{if(Math.random()<0.7){G.soulPower=Math.min(G.soulPower+1,G.maxLevel);G.merit=(G.merit||0)+5;return '成功击退敌人！名声+5，魂力+1级';}else{G.soulPower=Math.max(G.soulPower-2,1);return '不敌邪魂师，受伤后魂力-2级';}}},
-        {text:`你和${spouse.name}在东海城的海边散步，谈论着未来的斗铠设计。`,effect:()=>{return '平淡而幸福的一年。';}}
-      ];
-      break;
-    case 'douluo4':
-      outcomes = [
-        {text:`你与${spouse.name}在天龙星的龙族花园中约会，外星球的浪漫别有一番风味。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '魂力+2级';}},
-        {text:`${spouse.name}驾驶飞船带你游览了斗罗联邦的星际疆域。`,effect:()=>{G.gold=(G.gold||0)+40;return '获得40金魂币';}},
-        {text:`你和${spouse.name}一同探索了龙界遗迹，在龙神的气息中感情升华。`,effect:()=>{G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '魂力+3级';}},
-        {text:`${spouse.name}在深红之域的探索中失联，你冒着生命危险前去寻找！`,effect:()=>{if(Math.random()<0.7){G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '成功找到！两人在生死之间更加珍惜彼此，魂力+2级';}else{G.soulPower=Math.max(G.soulPower-3,1);return '遭遇深红生物袭击，重伤后魂力-3级';}}},
-        {text:`你和${spouse.name}在精灵星的栖息地露营，欣赏着外星球的星空。`,effect:()=>{return '平淡而幸福的一年。';}}
-      ];
-      break;
-    case 'godrealm':
-      outcomes = [
-        {text:`你与${spouse.name}在神界花园中漫步，神界的景色万年不变但身边有你足矣。`,effect:()=>{G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '魂力+3级';}},
-        {text:`${spouse.name}用生命之力为你洗涤神魂，你的神力更加纯粹。`,effect:()=>{G.soulPower=Math.min(G.soulPower+4,G.maxLevel);return '魂力+4级（神魂洗涤）';}},
-        {text:`你和${spouse.name}一同参加了神界委员会举办的论道大会，在诸神面前展示了你们的默契。`,effect:()=>{G.soulPower=Math.min(G.soulPower+3,G.maxLevel);G.merit=(G.merit||0)+10;return '魂力+3级，名声+10';}},
-        {text:`${spouse.name}在神界深渊巡查时遇险，你冲入深渊营救！`,effect:()=>{if(Math.random()<0.8){G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '成功救出！两人在神界也是令人羡慕的神仙眷侣，魂力+2级';}else{G.soulPower=Math.max(G.soulPower-2,1);return '被神界乱流所伤，魂力-2级';}}},
-        {text:`你和${spouse.name}在神界天河旁静修，数万年的陪伴让你们的感情愈发深厚。`,effect:()=>{return '平淡而幸福的一年。';}}
-      ];
-      break;
-    default:
-      outcomes = [
-        {text:`你与${spouse.name}一同修炼，两人相辅相成，魂力精进。`,effect:()=>{G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '魂力+2级';}},
-        {text:`${spouse.name}为你寻来一株稀有药草，助你突破瓶颈。`,effect:()=>{G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '魂力+3级';}},
-        {text:`你和${spouse.name}共同游历大陆，增长见闻。`,effect:()=>{G.gold=(G.gold||0)+50;return '获得50金魂币';}},
-        {text:`${spouse.name}遭遇危险，你奋不顾身前去相救！`,effect:()=>{if(Math.random()<0.7){return '成功救出！两人感情更加深厚。';}else{G.soulPower=Math.max(G.soulPower-2,1);return '营救过程中受伤，魂力-2级';}}},
-        {text:`你和${spouse.name}感情平淡但温馨，携手走过这一年。`,effect:()=>{return '平淡而幸福的一年。';}}
-      ];
-  }
-
+  let outcomes = PARTNER_OUTCOMES[timelineId] || PARTNER_OUTCOMES.default;
   let o = outcomes[Math.floor(Math.random()*outcomes.length)];
-  let result = o.effect();
-  return {type:'social',text:`<b style="color:#ff88aa;">【伴侣】</b> ${o.text}<br><span style="color:var(--gold)">【${result}】</span>`};
+  let text = o.text.replace(/\{spouse\}/g, spouse.name);
+  let effectText = '';
+  if(o.rescueChance !== undefined){
+    if(Math.random() < o.rescueChance){
+      if(o.spWin > 0) G.soulPower = Math.min(G.soulPower + o.spWin, G.maxLevel);
+      if(o.repWin) G.merit = (G.merit||0) + o.repWin;
+      effectText = o.winText || ('成功救出！两人感情更加深厚' + (o.spWin > 0 ? '，魂力+' + o.spWin + '级' : '。'));
+    }else{
+      G.soulPower = Math.max(G.soulPower - o.spLose, 1);
+      effectText = o.loseText || ('营救过程中受伤，魂力-' + o.spLose + '级');
+    }
+  }else if(o.effectType === 'battleArmor'){
+    G.battleArmor = Math.max(G.battleArmor||0, o.battleArmor);
+    G.gold = (G.gold||0) + o.gold;
+    effectText = '掌握魂导基础，获得' + o.gold + '金魂币';
+  }else if(o.sp > 0){
+    G.soulPower = Math.min(G.soulPower + o.sp, G.maxLevel);
+    effectText = '魂力+' + o.sp + '级';
+    if(o.spLabel) effectText += '（' + o.spLabel + '）';
+    if(o.rep){ G.merit=(G.merit||0)+o.rep; effectText += '，名声+' + o.rep; }
+    if(o.gold){ G.gold=(G.gold||0)+o.gold; effectText += '，获得' + o.gold + '金魂币'; }
+  }else if(o.gold){
+    G.gold = (G.gold||0) + o.gold;
+    effectText = '获得' + o.gold + '金魂币';
+  }else{
+    effectText = '平淡而幸福的一年。';
+  }
+  return {type:'social',text:`<b style="color:#ff88aa;">【伴侣】</b> ${text}<br><span style="color:var(--gold)">【${effectText}】</span>`};
 }
 
 function processJusticeEvent(){
   let timelineId = G.timeline?.id || 'douluo1';
-  let scenarios = [];
-
-  switch(timelineId){
-    case 'douluo1':
-      scenarios = [
-        {text:'路见不平，你看到一位老人被武魂殿的魂师欺负，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
-        {text:'你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
-        {text:'一位少女被魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
-        {text:'你撞见武魂殿的人在欺压平民，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
-        {text:'一伙强盗劫掠商队，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
-      ];
-      break;
-    case 'douluo2':
-      scenarios = [
-        {text:'你看到一位平民被日月帝国的魂导师欺压，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
-        {text:'你发现一群邪魂师在袭击村庄，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
-        {text:'一位少女被魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
-        {text:'你撞见圣灵教的人在抓捕平民进行邪恶实验，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
-        {text:'一伙强盗劫掠商队，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
-      ];
-      break;
-    case 'douluo3':
-      scenarios = [
-        {text:'你看到一位平民被传灵塔的执事欺压，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
-        {text:'你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
-        {text:'一位少女被魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
-        {text:'你撞见圣灵教的人在抓捕平民进行邪恶实验，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
-        {text:'一伙强盗劫掠商队，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
-      ];
-      break;
-    case 'douluo4':
-      scenarios = [
-        {text:'你看到一位平民被星际海盗欺压，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
-        {text:'你发现一群深红之域的生物在袭击殖民地，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
-        {text:'一位少女被外星魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
-        {text:'你撞见天龙星的龙族在欺压人类移民，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
-        {text:'一伙星际强盗劫掠商船，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
-      ];
-      break;
-    case 'godrealm':
-      scenarios = [
-        {text:'你看到一位神官被神兽欺负，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
-        {text:'你发现一群叛逆神兽在破坏神界秩序，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
-        {text:'一位神官被流放神兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
-        {text:'你撞见毁灭之神的部下在欺压弱小神祇，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
-        {text:'一伙神界流民劫掠集市，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
-      ];
-      break;
-    default:
-      scenarios = [
-        {text:'路见不平，你看到一位老人被魂师欺负，挺身而出！',winChance:0.8,reward:{rep:5,sp:1}},
-        {text:'你发现一群邪魂师在屠戮村庄，义无反顾地出手相助！',winChance:0.6,reward:{rep:10,sp:2}},
-        {text:'一位少女被魂兽追杀，你拔刀相助！',winChance:0.7,reward:{rep:8,sp:1}},
-        {text:'你撞见邪恶势力在欺压平民，仗义执言！',winChance:0.5,reward:{rep:15,sp:2}},
-        {text:'一伙强盗劫掠商队，你出手相救！',winChance:0.9,reward:{rep:3,sp:1}}
-      ];
-  }
+  let scenarios = JUSTICE_SCENARIOS[timelineId] || JUSTICE_SCENARIOS.default;
 
   let s = scenarios[Math.floor(Math.random()*scenarios.length)];
   let win = Math.random() < s.winChance;
@@ -2423,68 +2095,24 @@ function processJusticeEvent(){
 
 function processAuctionEvent(){
   let timelineId = G.timeline?.id || 'douluo1';
-  let items = [];
-
-  switch(timelineId){
-    case 'douluo1':
-      items = [
-        {name:'千年魂骨碎片',cost:50,effect:()=>{G.gold-=50;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '吸收了碎片中的魂力，魂力+1级';}},
-        {name:'稀有药草·龙血参',cost:80,effect:()=>{G.gold-=80;G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '服用后魂力暴涨，魂力+2级';}},
-        {name:'上古暗器图谱残卷',cost:60,effect:()=>{G.gold-=60;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '领悟了上古暗器的皮毛，魂力+1级';}},
-        {name:'上古武魂秘典',cost:100,effect:()=>{G.gold-=100;G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '领悟了上古修炼法门，魂力+3级';}},
-        {name:'仙品药草·绮罗郁金香',cost:50,effect:()=>{G.gold-=50;if(G.appearance){G.appearance={...G.appearance,attr:{...G.appearance.attr,charm:(G.appearance.attr?.charm||5)+1}};}return '服用后容貌提升，魅力+1';}}
-      ];
-      break;
-    case 'douluo2':
-      items = [
-        {name:'千年魂骨碎片',cost:50,effect:()=>{G.gold-=50;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '吸收了碎片中的魂力，魂力+1级';}},
-        {name:'稀有药草·龙血参',cost:80,effect:()=>{G.gold-=80;G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '服用后魂力暴涨，魂力+2级';}},
-        {name:'日月帝国魂导器图纸',cost:60,effect:()=>{G.gold-=60;G.battleArmor=Math.max(G.battleArmor,1);return '掌握了魂导器制作技术';}},
-        {name:'上古武魂秘典',cost:100,effect:()=>{G.gold-=100;G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '领悟了上古修炼法门，魂力+3级';}},
-        {name:'魂导美容仪',cost:50,effect:()=>{G.gold-=50;if(G.appearance){G.appearance={...G.appearance,attr:{...G.appearance.attr,charm:(G.appearance.attr?.charm||5)+1}};}return '使用后容貌提升，魅力+1';}}
-      ];
-      break;
-    case 'douluo3':
-      items = [
-        {name:'千年魂骨碎片',cost:50,effect:()=>{G.gold-=50;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '吸收了碎片中的魂力，魂力+1级';}},
-        {name:'有灵合金配方',cost:80,effect:()=>{G.gold-=80;G.battleArmor=Math.max(G.battleArmor,2);return '掌握了有灵合金技术';}},
-        {name:'一字斗铠设计图',cost:60,effect:()=>{G.gold-=60;G.battleArmor=Math.max(G.battleArmor,1);return '获得了一字斗铠设计图';}},
-        {name:'上古武魂秘典',cost:100,effect:()=>{G.gold-=100;G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '领悟了上古修炼法门，魂力+3级';}},
-        {name:'传灵塔美容魂导器',cost:50,effect:()=>{G.gold-=50;if(G.appearance){G.appearance={...G.appearance,attr:{...G.appearance.attr,charm:(G.appearance.attr?.charm||5)+1}};}return '使用后容貌提升，魅力+1';}}
-      ];
-      break;
-    case 'douluo4':
-      items = [
-        {name:'千年魂骨碎片',cost:50,effect:()=>{G.gold-=50;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '吸收了碎片中的魂力，魂力+1级';}},
-        {name:'龙力结晶',cost:80,effect:()=>{G.gold-=80;G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '吸收龙力后魂力暴涨，魂力+2级';}},
-        {name:'星际魂导器核心',cost:60,effect:()=>{G.gold-=60;G.battleArmor=Math.max(G.battleArmor,2);return '获得了星际魂导器技术';}},
-        {name:'上古武魂秘典',cost:100,effect:()=>{G.gold-=100;G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '领悟了上古修炼法门，魂力+3级';}},
-        {name:'天龙星养颜秘方',cost:50,effect:()=>{G.gold-=50;if(G.appearance){G.appearance={...G.appearance,attr:{...G.appearance.attr,charm:(G.appearance.attr?.charm||5)+1}};}return '使用后容貌提升，魅力+1';}}
-      ];
-      break;
-    case 'godrealm':
-      items = [
-        {name:'神骨碎片',cost:50,effect:()=>{G.gold-=50;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '吸收了神骨碎片中的神力，魂力+1级';}},
-        {name:'神赐药草',cost:80,effect:()=>{G.gold-=80;G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '服用后神力暴涨，魂力+2级';}},
-        {name:'神器残片',cost:60,effect:()=>{G.gold-=60;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '领悟了神器中的法则，魂力+1级';}},
-        {name:'神界秘典',cost:100,effect:()=>{G.gold-=100;G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '领悟了神界法则，魂力+3级';}},
-        {name:'生命精华',cost:50,effect:()=>{G.gold-=50;if(G.appearance){G.appearance={...G.appearance,attr:{...G.appearance.attr,charm:(G.appearance.attr?.charm||5)+1}};}return '使用后容貌提升，魅力+1';}}
-      ];
-      break;
-    default:
-      items = [
-        {name:'千年魂骨碎片',cost:50,effect:()=>{G.gold-=50;G.soulPower=Math.min(G.soulPower+1,G.maxLevel);return '吸收了碎片中的魂力，魂力+1级';}},
-        {name:'稀有药草·龙血参',cost:80,effect:()=>{G.gold-=80;G.soulPower=Math.min(G.soulPower+2,G.maxLevel);return '服用后魂力暴涨，魂力+2级';}},
-        {name:'魂导器图纸',cost:60,effect:()=>{G.gold-=60;G.battleArmor=Math.max(G.battleArmor,1);return '掌握了魂导器制作技术';}},
-        {name:'上古武魂秘典',cost:100,effect:()=>{G.gold-=100;G.soulPower=Math.min(G.soulPower+3,G.maxLevel);return '领悟了上古修炼法门，魂力+3级';}},
-        {name:'美容养颜丹',cost:50,effect:()=>{G.gold-=50;if(G.appearance){G.appearance={...G.appearance,attr:{...G.appearance.attr,charm:(G.appearance.attr?.charm||5)+1}};}return '服用后容貌提升，魅力+1';}}
-      ];
-  }
-
+  let items = AUCTION_ITEMS[timelineId] || AUCTION_ITEMS.default;
   let item = items[Math.floor(Math.random()*items.length)];
   if((G.gold||0) >= item.cost){
-    let result = item.effect();
-    return {type:'fortune',text:`<b style="color:var(--gold);">【拍卖会】</b> 你在拍卖会上以${item.cost}金魂币拍得<b>${item.name}</b>！<br><span style="color:var(--gold)">【${result}】</span>`};
+    G.gold -= item.cost;
+    switch(item.effectType){
+      case 'sp':
+        G.soulPower = Math.min(G.soulPower + item.sp, G.maxLevel);
+        break;
+      case 'battleArmor':
+        G.battleArmor = Math.max(G.battleArmor, item.battleArmor);
+        break;
+      case 'charm':
+        if(G.appearance){
+          G.appearance = {...G.appearance, attr:{...G.appearance.attr, charm:(G.appearance.attr?.charm||5)+1}};
+        }
+        break;
+    }
+    return {type:'fortune',text:`<b style="color:var(--gold);">【拍卖会】</b> 你在拍卖会上以${item.cost}金魂币拍得<b>${item.name}</b>！<br><span style="color:var(--gold)">【${item.desc}】</span>`};
   }else{
     return {type:'fortune',text:`<b style="color:var(--gold);">【拍卖会】</b> 你看中了一件宝贝，但囊中羞涩...<br><span style="color:var(--gray)">【下次再来吧】</span>`};
   }
@@ -2495,75 +2123,7 @@ function processFortuneEvent(){
   let types = ['sp','gold','appearance','bone'];
   let type = types[Math.floor(Math.random()*types.length)];
 
-  // 按时间线定义贴合原著的机遇文本池（人类视角）
-  let texts = {
-    douluo1: {
-      sp: ['你在一处隐秘山谷发现了一株万年灵芝，服用后魂力大涨！','你在猎魂森林深处发现了一处前人遗留的洞府，获得了一本上古修炼笔记。','一位游历的魂师看你资质不错，赠送了你一枚珍贵的魂骨碎片。','你在索托城偶遇一位神秘的封号斗罗，他随手指点了几句就让你茅塞顿开。','你参加了一场地下拍卖会，意外以低价拍下了一株龙血参。'],
-      gold: ['你意外发现了一处被魂兽守护的宝藏！','你帮助了一位商人，他赠予你大量金魂币作为谢礼。','你在斗魂场下注赢了，获得了丰厚的回报。','你在瀑布下修炼时发现水底有一道暗门，里面藏着前辈魂师留下的金币。'],
-      appearance: ['你服用了某种神奇的天材地宝，容貌发生了变化...','你修炼了一种养颜功法，气质越发出众。','你在冰火两仪眼附近采摘到一株仙品药草，不仅提升了修为，容貌也变得更加出众。'],
-      bone: ['你在秘境探险中意外发现了一块魂骨！','你猎杀了一只罕见魂兽，它竟然产出了一块魂骨！','你在星斗大森林核心区边缘捡到了一块前人遗留的魂骨！']
-    },
-    douluo2: {
-      sp: ['你在海神湖畔捡到一块奇特的魂导核心，里面蕴含着远古魂导技术！','你的精神探测意外触碰到黄金树的意识，获得了短暂的精神力洗礼。','你在日月帝国的边境发现了一处魂导师遗迹，获得了一本失传的修炼手册。','你遇到了一只濒死的天梦冰蚕（幼体），它自愿将部分精神力赠与你。'],
-      gold: ['你制作了一件魂导器并出售，赚了不少钱。','你在日月帝国的边境贸易中获利颇丰。','你发现了一批日月帝国流出的稀有金属，卖了个好价钱。'],
-      appearance: ['你使用了一款新型魂导美容仪，效果显著。','你修炼了唐门的玄天功，气质越发超凡脱俗。','海神湖畔的灵气洗涤了你的肌肤，魅力提升。'],
-      bone: ['你在监察团任务中发现了一块魂骨！','你在海神阁的藏宝库中获得了一块传承魂骨！','你剿灭邪魂师据点时，意外发现了一块被掠夺的魂骨！']
-    },
-    douluo3: {
-      sp: ['你在升灵台中意外触发了一个隐藏区域，魂灵获得了额外的成长能量！','你锻造时意外进入了一种奇妙的境界，魂力随之突破。','你在龙谷秘境的边缘捡到了一块龙骨碎片，龙族气息让你血脉沸腾。','你的魂灵在传灵塔的特殊培育舱中发生了良性变异。'],
-      gold: ['你锻造的一件合金作品被高价买走。','你在传灵塔的悬赏任务中获得了丰厚奖励。','你发现了一种新型稀有金属矿脉，联邦给予了奖励。'],
-      appearance: ['你使用了传灵塔最新研发的美容魂导器。','你的武魂二次觉醒，连带容貌也变得更加出众。','你在生命古树的树荫下修炼，生命能量让你的气质更加出众。'],
-      bone: ['你在古战场遗址中发现了一块上古魂骨！','你击杀了一只深渊生物，它掉落了一块奇特的魂骨！','你在龙谷秘境中找到了一块龙骨化成的魂骨！']
-    },
-    douluo4: {
-      sp: ['你在天龙星的龙族祭坛附近修炼，意外吸收了一丝纯净的龙力！','你在深红之域的边缘发现了一种奇异的能量晶体，对修炼大有裨益。','你探索龙界遗迹时，龙神的气息灌入体内，修为大增。','你在精灵星的生命古树下冥想，感受到了宇宙本源的生命能量。'],
-      gold: ['你发现了一颗富含稀有金属的小行星，获得了联邦的奖励。','你参加星际魂师大赛获得了高额奖金。','你帮龙马星系的商人解决了一个难题，获得了丰厚报酬。'],
-      appearance: ['你吸收了精灵星的生命能量，容貌变得更加完美。','你的龙神血脉觉醒了一丝，连带外貌也发生了变化。','你使用了天龙星龙族特有的养颜秘方，效果惊人。'],
-      bone: ['你在龙界遗迹中发现了一块龙族魂骨！','你探索未知星域时获得了一块外星生物的魂骨！','你在深红之域击败了一只强大的深红生物，获得了一块变异魂骨！']
-    },
-    godrealm: {
-      sp: ['你获得了一道神赐神力，修为突飞猛进！','你在神界法则中感悟到了宇宙的奥秘。','你吸收了一只神兽的神性精华。','唐三路过你的修炼之地，随口指点了一句就让你豁然开朗。'],
-      gold: ['你在神界集市中出售了一件多余的神器。','你完成了一项神界任务，获得了丰厚奖励。','你在神界天河中捡到了一块神金，价值连城。'],
-      appearance: ['生命女神赐予你一滴生命精华，你的容貌变得完美无瑕。','你在神光中洗涤肉身，气质变得超凡脱俗。','神界的法则之力重塑了你的形体，魅力提升。'],
-      bone: ['你在神界深渊中发现了一块神骨！','你在神域秘境中获得了一块传承神骨！','你协助神界委员会剿灭叛逆神兽，获得了一块神兽魂骨！']
-    }
-  };
-
-  // 魂兽专属机遇文本池
-  let beastTexts = {
-    douluo1: {
-      sp: ['你发现了一株散发着浓郁灵气的万年灵芝，毫不犹豫地一口吞下，修为大涨！','你闯入了一处前人遗留的洞府，里面残留的能量被你尽数吸收。','一只重伤的千年魂兽倒在你面前，你本能地吞噬了它的魂力。','你在瀑布下发现了隐藏的灵泉，喝了几口后浑身舒畅。'],
-      gold: ['你发现了一处被遗弃的洞穴，里面散落着人类魂师留下的金币。','你在森林中捡到了一枚人类掉落的储物戒指，里面有一些金魂币。','你守护了一片药田，主人感激地赠予你财宝。'],
-      appearance: ['你吞噬了一颗奇异的果实，身上的毛发变得更加光亮...','你吸收了一缕月华之力，气质变得越发威严。','你在灵泉中泡了一晚，体型变得更加矫健威武。'],
-      bone: ['你发现了一只强大魂兽的遗骸，吞噬了它残留的能量精华！','你在洞穴深处发现了一块能量结晶，里面蕴含着浓郁的天地灵气！','你击败了一只入侵你领地的魂兽，吞噬了它的本源之力！']
-    },
-    douluo2: {
-      sp: ['你在海神湖畔发现了一块蕴含能量的魂导核心碎片，一口咬碎吞了下去！','黄金树的气息让你浑身舒泰，不自觉地靠近吸收了不少能量。','你在边境发现了一处废弃的魂导师实验室，里面残留的能量被你尽数吞噬。','你遇到了一只濒死的天梦冰蚕（幼体），本能地吞噬了它的精神力。'],
-      gold: ['你在人类城镇外围的废墟中发现了不少散落的金魂币。','你帮一只受伤的魂兽找到回家的路，它的族群赠予你一些人类金币作为谢礼。'],
-      appearance: ['你吸收了一缕海神湖畔的灵气，身上的鳞片/毛发变得更加鲜艳。','你吞噬了一种奇异的灵果，体型更加威武霸气。'],
-      bone: ['你发现了一处人类监察团的遗物，里面有一块蕴含能量的结晶！','你在海底发现了一枚遗落的魂导器核心，吞噬后获得了额外的能量！']
-    },
-    douluo3: {
-      sp: ['你在龙谷秘境边缘发现了一块龙骨碎片，龙族的气息让你血脉沸腾！','你在森林深处发现了一处灵泉，畅饮之后修为大涨。','你的血脉在月光下发生了微妙的共鸣，仿佛有远古的力量在觉醒。','你吞噬了一只闯入你领地的深渊生物，它的能量让你实力大增。'],
-      gold: ['你发现了一处人类采矿队遗弃的营地，里面有不少值钱的金属。','你在传灵塔外围的废墟中找到了一些人类掉落的金币。'],
-      appearance: ['你的生命能量得到了升华，外表变得更加威严霸气。','你的血脉之力微微觉醒，身上的气息变得更加慑人。'],
-      bone: ['你在古战场发现了一只远古魂兽的完整遗骸，吞噬后获得了巨大的能量！','你击败了一只挑战你的深渊生物，吞噬了它的核心！']
-    },
-    douluo4: {
-      sp: ['你在天龙星的龙族祭坛附近修炼，意外吸收了一丝纯净的龙力！','你在深红之域的边缘发现了一种奇异的能量晶体，一口咬碎吞了下去。','你探索龙界遗迹时，龙神的气息灌入体内，修为大增。','你在精灵星的生命古树下冥想，感受到了宇宙本源的生命能量。'],
-      gold: ['你发现了一颗小行星上人类遗落的物资，里面有不少值钱的东西。','你在星际港口附近捡到了一些人类掉落的货币。'],
-      appearance: ['你吸收了精灵星的生命能量，外表变得更加完美威严。','你的龙神血脉觉醒了一丝，体型变得更加庞大威武。'],
-      bone: ['你在龙界遗迹中发现了一只远古龙族的遗骸，吞噬后获得了龙族传承之力！','你在深红之域击败了一只强大的深红生物，吞噬了它的能量核心！']
-    },
-    godrealm: {
-      sp: ['你获得了一道神赐神力，修为突飞猛进！','你在神界法则中感悟到了宇宙的奥秘。','你吞噬了一只叛逆神兽的神性精华。','生命女神路过你的修炼之地，随手洒下了一滴生命甘露。'],
-      gold: ['你在神界森林中发现了前人遗留的神金。','你完成了一项神界任务，获得了丰厚奖励。','你在神界天河中捡到了一块蕴含神力的结晶。'],
-      appearance: ['生命女神赐予你一滴生命精华，你的外表变得完美无瑕。','你在神光中洗涤肉身，气质变得超凡脱俗。','神界的法则之力重塑了你的形体，魅力提升。'],
-      bone: ['你在神界深渊中发现了一只陨落神兽的遗骸，吞噬后获得了神性精华！','你协助神界委员会剿灭叛逆神兽，吞噬了它的神性本源！']
-    }
-  };
-
-  let textPool = G.identityType === 'soul_beast' ? (beastTexts[timelineId] || beastTexts.douluo1) : (texts[timelineId] || texts.douluo1);
+  let textPool = G.identityType === 'soul_beast' ? (FORTUNE_BEAST_TEXTS[timelineId] || FORTUNE_BEAST_TEXTS.douluo1) : (FORTUNE_TEXTS[timelineId] || FORTUNE_TEXTS.douluo1);
   let t = textPool[type];
   // 魂兽没有appearance时fallback到sp文本
   if(G.identityType === 'soul_beast' && type === 'appearance' && !G.appearance){
@@ -2593,7 +2153,7 @@ function processFortuneEvent(){
       G.soulPower = Math.min(G.soulPower + 1, G.maxLevel);
       return {type:'fortune',text:`<b style="color:var(--gold);">【机遇】</b> ${text}<br><span style="color:var(--gold)">【魂力+1级】</span>`};
     case 'bone':
-      let boneTypes = ['头部魂骨','躯干魂骨','左臂骨','右臂骨','左腿骨','右腿骨'];
+      let boneTypes = BONE_TYPES;
       let bt = boneTypes[Math.floor(Math.random()*boneTypes.length)];
       if(!G.soulBones.includes(bt)){
         G.soulBones.push(bt);
@@ -2623,7 +2183,6 @@ function processSchoolEvent(){
 
 function processNormalEvent(){
   let timelineId = G.timeline?.id || 'douluo1';
-  let events = [];
 
   // Soul beast exclusive training events
   if(G.identityType === 'soul_beast'){
@@ -2646,77 +2205,85 @@ function processNormalEvent(){
       synergy = 1.5;
       synergyText = '（血脉与降生地契合，修炼效率+50%）';
     }
-    switch(timelineId){
-      case 'douluo1':
-        events = [
-          {text:'你在星斗大森林深处吸收月华之力，修为稳步增长。',sp:1,years:25},
-          {text:'你发现了一处灵泉，畅饮之后浑身舒畅，本源之力有所增强。',sp:1,years:35},
-          {text:'你与同族切磋斗技，在战斗中磨练了本能。',sp:2,years:20},
-          {text:'你吞噬了一只入侵领地的小型魂兽，获得了额外的能量。',sp:1,years:45},
-          {text:'你在瀑布下淬炼肉身，皮毛/鳞甲变得更加坚韧。',sp:1,years:25},
-          {text:'你感应到了森林深处某位十万年魂兽的气息，受到启发。',sp:2,years:20},
-          {text:'你在冰火两仪眼附近修炼，极致能量让你的血脉更加纯粹。',sp:2,years:40},
-          {text:'平静的一年，你安心修炼，无惊无险。',sp:1,years:18}
-        ];
-        break;
-      case 'douluo2':
-        events = [
-          {text:'你在森林中吸收天地灵气，黄金树的气息让修炼事半功倍。',sp:1,years:25},
-          {text:'你发现了一片被人类遗弃的药田，吞食了几株灵草。',sp:1,years:35},
-          {text:'你与其他魂兽争夺领地，胜利后吞噬了对方的残余能量。',sp:2,years:30},
-          {text:'你避开了人类监察团的巡逻，在隐秘山谷中安心修炼。',sp:1,years:18},
-          {text:'你在冰原上修炼，极寒环境淬炼了你的意志。',sp:1,years:25},
-          {text:'你吞噬了一只邪魂师留下的邪恶魂兽，获得了诡异的能量。',sp:2,years:35},
-          {text:'你感受到日月帝国魂导器的能量波动，从中汲取了一丝变异之力。',sp:2,years:30}
-        ];
-        break;
-      case 'douluo3':
-        events = [
-          {text:'你在龙谷秘境边缘感应到龙族气息，血脉微微沸腾。',sp:1,years:25},
-          {text:'你发现了一处地下灵脉，汲取其中的能量修炼。',sp:2,years:35},
-          {text:'你击败了一只挑战你的深渊生物，吞噬了它的核心。',sp:2,years:45},
-          {text:'你在传灵塔外围的森林中躲避人类的目光，默默修炼。',sp:1,years:18},
-          {text:'你吞噬了一只重伤的同类，虽然残忍但弱肉强食是法则。',sp:1,years:35},
-          {text:'你在斗铠碎片遗迹中感悟远古力量，修为精进。',sp:2,years:40},
-          {text:'平静的一年，你在隐秘洞穴中沉睡修炼。',sp:1,years:25}
-        ];
-        break;
-      case 'douluo4':
-        events = [
-          {text:'你在天龙星的原始森林中吸收龙力，修为有所提升。',sp:1,years:25},
-          {text:'你发现了一颗蕴含能量的陨石碎片，吞噬后获得了异域能量。',sp:2,years:45},
-          {text:'你躲避星际猎魂师的追捕，在荒星上艰难求生。',sp:1,years:18},
-          {text:'你在深红之域边缘吸收了一丝奇异能量，修为大涨。',sp:2,years:35},
-          {text:'你在精灵星的生命古树下修炼，感受到了宇宙本源之力。',sp:2,years:35},
-          {text:'你在龙马星系吸收异星法则，血脉产生微妙变化。',sp:2,years:40},
-          {text:'平静的一年，你在洞穴中沉睡，吸收天地精华。',sp:1,years:25}
-        ];
-        break;
-      case 'godrealm':
-        events = [
-          {text:'你在神界森林中吸收神性精华，本源之力变得更加纯粹。',sp:2,years:50},
-          {text:'你吞噬了一只叛逆神兽的神性本源，修为大增。',sp:2,years:60},
-          {text:'你在神界天河中洗涤肉身，去除了体内的杂质。',sp:1,years:40},
-          {text:'你观摩了神界法则的运转，对天地大道有了新的感悟。',sp:2,years:50},
-          {text:'你在神兽领域边缘感悟神兽本源，血脉之力沸腾。',sp:2,years:55},
-          {text:'平静的一年，你在神界隐秘角落中安心修炼。',sp:1,years:35}
-        ];
-        break;
-      default:
-        events = [
-          {text:'你闭关苦修，感悟天地之力。',sp:1,years:18},
-          {text:'你在森林中吸收日月精华，修为稳步增长。',sp:1,years:25},
-          {text:'平静的一年，你安心修炼，无惊无险。',sp:1,years:18}
-        ];
+    let beastSet = TIMELINE_BEAST_EVENTS[timelineId];
+    if(!beastSet) beastSet = TIMELINE_BEAST_EVENTS.douluo1;
+    // 从事件集中随机选择一个事件类型
+    let types = ['cultivate','social','battle','fortune','crisis'];
+    let typeWeights = [35,15,20,15,15]; // 修炼权重最高
+    let roll = Math.random() * 100;
+    let cum = 0;
+    let selectedType = 'cultivate';
+    for(let i = 0; i < types.length; i++){
+      cum += typeWeights[i];
+      if(roll < cum){ selectedType = types[i]; break; }
     }
-    let e = events[Math.floor(Math.random()*events.length)];
-    // 应用血脉与降生地契合度加成
+    let pool = beastSet[selectedType] || beastSet.cultivate;
+    // 过滤条件事件
+    pool = pool.filter(e => !e.condition || e.condition(G));
+    if(pool.length === 0) pool = beastSet.cultivate;
+    let e = pool[Math.floor(Math.random()*pool.length)];
+    // 处理带选项的事件
+    if(e.choices){
+      let typeLabels = {cultivate:'修炼',social:'社交',battle:'战斗',fortune:'机缘',crisis:'危机'};
+      let typeColors = {cultivate:'var(--green)',social:'#88aaff',battle:'var(--red)',fortune:'var(--gold)',crisis:'#ff6600'};
+      let choices = e.choices.map(c => {
+        return {
+          text: c.text,
+          effect: (g) => {
+            let effectText = '';
+            // 带有随机胜负的选项
+            if(c.spWin !== undefined && c.winChance !== undefined){
+              if(Math.random() < c.winChance){
+                let spGain = c.spWin;
+                if(synergy > 1) spGain = Math.max(spGain, 2);
+                g.soulPower = Math.min((g.soulPower||0) + spGain, g.maxLevel);
+                let yearsGain = c.yearsWin ? Math.floor(c.yearsWin * synergy) : 0;
+                let yearText = yearsGain > 0 ? addBeastYears(yearsGain) : '';
+                effectText = (c.winText || '成功！') + (spGain > 0 ? ' 魂力+' + spGain + '级' : '') + yearText + synergyText;
+              }else{
+                if(c.spLose) g.soulPower = Math.max(g.soulPower + c.spLose, 1);
+                let yearsLose = c.yearsLose || 0;
+                let yearText = yearsLose > 0 ? addBeastYears(-yearsLose) : '';
+                effectText = (c.loseText || '失败...') + (c.spLose ? ' 魂力' + c.spLose + '级' : '') + yearText;
+              }
+            }else if(c.deathChance && Math.random() < c.deathChance){
+              g.alive = false; g.deathReason = c.deathText || '不幸陨落';
+              effectText = c.deathText || '不幸陨落...';
+            }else{
+              // 确定性选项
+              let spGain = c.sp || 0;
+              if(synergy > 1 && spGain > 0) spGain = Math.max(spGain, 2);
+              if(spGain) g.soulPower = Math.min((g.soulPower||0) + spGain, g.maxLevel);
+              let yearsVal = c.years || 0;
+              if(c.yearsLose) yearsVal = -c.yearsLose;
+              let yearText = yearsVal !== 0 ? addBeastYears(Math.floor(yearsVal * synergy)) : '';
+              effectText = (spGain > 0 ? '魂力+' + spGain + '级' : '') + yearText + synergyText;
+              if(c.rep){ g.merit = (g.merit||0) + c.rep; effectText += ' 名声' + (c.rep > 0 ? '+' : '') + c.rep; }
+              if(c.gold){ g.gold = (g.gold||0) + c.gold; effectText += ' 获得' + c.gold + '金魂币'; }
+            }
+            return effectText;
+          }
+        };
+      });
+      showEventModal(G.age, selectedType, `<b style="color:${typeColors[selectedType]||'var(--green)'};">【${typeLabels[selectedType]||selectedType}】</b> ${e.text}`, choices);
+      return {type:selectedType, text:`<b style="color:${typeColors[selectedType]||'var(--green)'};">【${typeLabels[selectedType]||selectedType}】</b> ${e.text}`, _hasChoices:true};
+    }
+    // 无选项事件：直接处理
     let finalYears = Math.floor((e.years || 10) * synergy);
-    let yearText = addBeastYears(finalYears);
+    let yearText = finalYears !== 0 ? addBeastYears(finalYears) : '';
     let spGain = e.sp || 1;
     if(synergy > 1) spGain = Math.max(spGain, 2);
     G.soulPower = Math.min((G.soulPower || 0) + spGain, G.maxLevel);
-    return {type:'cultivate',text:`<b style="color:var(--green);">【修炼】</b> ${e.text}<br><span style="color:var(--gold)">【年限+${finalYears}年${yearText}${synergyText}】</span>`};
+    let effectParts = [];
+    if(spGain) effectParts.push('魂力+' + spGain + '级');
+    if(finalYears) effectParts.push('年限' + (finalYears > 0 ? '+' : '') + finalYears + '年');
+    effectParts.push(yearText);
+    if(synergyText) effectParts.push(synergyText);
+    if(e.rep){ G.merit = (G.merit||0) + e.rep; effectParts.push('名声+' + e.rep); }
+    if(e.gold){ G.gold = (G.gold||0) + e.gold; effectParts.push('获得' + e.gold + '金魂币'); }
+    let typeLabels = {cultivate:'修炼',social:'社交',battle:'战斗',fortune:'机缘',crisis:'危机'};
+    let typeColors = {cultivate:'var(--green)',social:'#88aaff',battle:'var(--red)',fortune:'var(--gold)',crisis:'#ff6600'};
+    return {type:selectedType,text:`<b style="color:${typeColors[selectedType]||'var(--green)'};">【${typeLabels[selectedType]||selectedType}】</b> ${e.text}<br><span style="color:var(--gold)">【${effectParts.filter(Boolean).join(' ')}】</span>`};
   }
 
   // 神兽专属修炼事件（神界传说）
@@ -2753,68 +2320,69 @@ function processNormalEvent(){
     return {type:'cultivate',text:`<b style="color:var(--gold);">【神祇修炼】</b> ${ge.text}<br><span style="color:var(--gold)">【神力+${ge.sp}级】</span>`};
   }
 
-  // Human training events
-  switch(timelineId){
-    case 'douluo1':
-      events = [
-        {text:'你在瀑布下苦修，如当年唐三修炼玄天功一般，肉体与精神同步提升。',sp:2},
-        {text:'你进入猎魂森林历练，与低阶魂兽交手，实战经验大增。',sp:1},
-        {text:'你在宗门藏经阁读到上古暗器图谱，虽不能制作但开阔了眼界。',sp:1},
-        {text:'你参加了一场魂师友谊赛，在切磋中发现了自己武魂的新用法。',sp:2},
-        {text:'你跟随师长前往星斗大森林外围，远远感受到了十万年魂兽的恐怖气息。',sp:1},
-        {text:'你在索托城的大斗魂场观战，被魂师们的热血战斗所感染。',sp:1}
-      ];
-      break;
-    case 'douluo2':
-      events = [
-        {text:'你在海神湖畔冥想，黄金树的力量潜移默化地滋养着你的武魂。',sp:1},
-        {text:'你研究了一件一级魂导器的构造，对魂导科技的理解更深了一层。',sp:1},
-        {text:'你尝试用精神探测感知周围环境，精神力如同霍雨浩那般缓慢增长。',sp:2},
-        {text:'你在史莱克学院的训练场上挥洒汗水，外院弟子的日常就是如此充实。',sp:1},
-        {text:'你阅读了唐门暗器与魂导器结合的论文，对两个时代的融合有了新的认识。',sp:1},
-        {text:'你参与了一场模拟魂导对抗赛，体验了日月帝国魂导师的战斗方式。',sp:2}
-      ];
-      break;
-    case 'douluo3':
-      events = [
-        {text:'你在锻造台上挥汗如雨，千锻一品的目标让你不断突破自我。',sp:1},
-        {text:'你在升灵台中进行虚拟实战，魂灵在战斗中成长，你的操作也更加娴熟。',sp:2},
-        {text:'你研究了一块有灵合金的配方，斗铠制作的道路漫长但充满诱惑。',sp:1},
-        {text:'你在史莱克学院的图书馆查阅万年前的史料，对比今昔感慨万千。',sp:1},
-        {text:'你尝试将血脉之力与魂技融合，如同唐舞麟那般寻找属于自己的战斗方式。',sp:2},
-        {text:'你在传灵塔参观魂灵培育中心，看到濒临灭绝的魂兽被悉心照料。',sp:1}
-      ];
-      break;
-    case 'douluo4':
-      events = [
-        {text:'你在精灵星的原始森林中冥想，外星球的能量与斗罗星截然不同。',sp:1},
-        {text:'你驾驶小型宇宙飞船进行了一次短途航行，星际时代的魂师需要掌握的技能真多。',sp:1},
-        {text:'你在天龙星的龙族遗迹中修炼，龙神血脉的气息让你修炼速度有所提升。',sp:2},
-        {text:'你参加了一场星际魂师对抗赛，见识了来自不同星球的魂师强者。',sp:1},
-        {text:'你学习了古武与魂技结合的新流派，娜娜老师的理论让你受益匪浅。',sp:2},
-        {text:'你在龙源星猎杀了一只小型龙族生物，获取了珍贵的龙力结晶。',sp:1}
-      ];
-      break;
-    case 'godrealm':
-      events = [
-        {text:'你在神界法则之下修炼，神力与魂力截然不同，需要重新适应。',sp:2},
-        {text:'你观摩了神界中枢的运转，对宇宙法则有了更深层次的感悟。',sp:2},
-        {text:'你在神界森林中狩猎神兽，这里的"魂兽"都散发着神性的光辉。',sp:1},
-        {text:'你参加了一场神祇之间的论道，虽然只是旁听但收获颇丰。',sp:1},
-        {text:'你在神界天河中洗涤肉身，神力的杂质被一一清除。',sp:2},
-        {text:'你尝试凝聚神位，虽然失败但为未来的突破积累了经验。',sp:1}
-      ];
-      break;
-    default:
-      events = [
-        {text:'你闭关苦修，感悟天地之力。',sp:1},
-        {text:'你在宗门藏经阁阅读典籍，有所感悟。',sp:1},
-        {text:'平静的一年，你安心修炼，无惊无险。',sp:1}
-      ];
+  // 人类事件：从时间线专属事件集中获取
+  let humanSet = TIMELINE_SPECIFIC_EVENTS[timelineId];
+  if(!humanSet) humanSet = TIMELINE_SPECIFIC_EVENTS.douluo1;
+  // 从事件集中随机选择一个事件类型
+  let types = ['cultivate','social','battle','fortune','crisis'];
+  let typeWeights = [35,15,20,15,15]; // 修炼权重最高
+  let roll = Math.random() * 100;
+  let cum = 0;
+  let selectedType = 'cultivate';
+  for(let i = 0; i < types.length; i++){
+    cum += typeWeights[i];
+    if(roll < cum){ selectedType = types[i]; break; }
   }
-  let e = events[Math.floor(Math.random()*events.length)];
-  G.soulPower = Math.min(G.soulPower + e.sp, G.maxLevel);
-  return {type:'cultivate',text:`<b style="color:var(--green);">【修炼】</b> ${e.text}<br><span style="color:var(--gold)">【魂力+${e.sp}级】</span>`};
+  let pool = humanSet[selectedType] || humanSet.cultivate;
+  // 过滤条件事件
+  pool = pool.filter(e => !e.condition || e.condition(G));
+  if(pool.length === 0) pool = humanSet.cultivate;
+  let e = pool[Math.floor(Math.random()*pool.length)];
+  // 处理带选项的事件
+  if(e.choices){
+    let typeLabels = {cultivate:'修炼',social:'社交',battle:'战斗',fortune:'机缘',crisis:'危机'};
+    let typeColors = {cultivate:'var(--green)',social:'#88aaff',battle:'var(--red)',fortune:'var(--gold)',crisis:'#ff6600'};
+    let choices = e.choices.map(c => {
+      return {
+        text: c.text,
+        effect: (g) => {
+          let effectText = '';
+          // 带有随机胜负的选项
+          if(c.spWin !== undefined && c.winChance !== undefined){
+            if(Math.random() < c.winChance){
+              g.soulPower = Math.min(g.soulPower + c.spWin, g.maxLevel);
+              effectText = (c.winText || '成功！') + (c.spWin > 0 ? ' 魂力+' + c.spWin + '级' : '');
+              if(c.rep){ g.merit = (g.merit||0) + c.rep; effectText += ' 名声+' + c.rep; }
+              if(c.gold){ g.gold = (g.gold||0) + c.gold; effectText += ' 获得' + c.gold + '金魂币'; }
+            }else{
+              if(c.spLose) g.soulPower = Math.max(g.soulPower + c.spLose, 1);
+              effectText = (c.loseText || '失败...') + (c.spLose ? ' 魂力' + c.spLose + '级' : '');
+            }
+          }else if(c.deathChance && Math.random() < c.deathChance){
+            g.alive = false; g.deathReason = c.deathText || '不幸陨落';
+            effectText = c.deathText || '不幸陨落...';
+          }else{
+            // 确定性选项
+            if(c.sp) g.soulPower = Math.min(g.soulPower + c.sp, g.maxLevel);
+            effectText = c.sp > 0 ? '魂力+' + c.sp + '级' : '';
+            if(c.rep){ g.merit = (g.merit||0) + c.rep; effectText += ' 名声' + (c.rep > 0 ? '+' : '') + c.rep; }
+            if(c.gold){ g.gold = (g.gold||0) + c.gold; effectText += ' 获得' + c.gold + '金魂币'; }
+          }
+          return effectText;
+        }
+      };
+    });
+    showEventModal(G.age, selectedType, `<b style="color:${typeColors[selectedType]||'var(--green)'};">【${typeLabels[selectedType]||selectedType}】</b> ${e.text}`, choices);
+    return {type:selectedType, text:`<b style="color:${typeColors[selectedType]||'var(--green)'};">【${typeLabels[selectedType]||selectedType}】</b> ${e.text}`, _hasChoices:true};
+  }
+  // 无选项事件：直接处理
+  let effectParts = [];
+  if(e.sp){ G.soulPower = Math.min(G.soulPower + e.sp, G.maxLevel); effectParts.push('魂力+' + e.sp + '级'); }
+  if(e.rep){ G.merit = (G.merit||0) + e.rep; effectParts.push('名声' + (e.rep > 0 ? '+' : '') + e.rep); }
+  if(e.gold){ G.gold = (G.gold||0) + e.gold; effectParts.push((e.gold > 0 ? '获得' : '花费') + Math.abs(e.gold) + '金魂币'); }
+  let typeLabels = {cultivate:'修炼',social:'社交',battle:'战斗',fortune:'机缘',crisis:'危机'};
+  let typeColors = {cultivate:'var(--green)',social:'#88aaff',battle:'var(--red)',fortune:'var(--gold)',crisis:'#ff6600'};
+  return {type:selectedType,text:`<b style="color:${typeColors[selectedType]||'var(--green)'};">【${typeLabels[selectedType]||selectedType}】</b> ${e.text}<br><span style="color:var(--gold)">【${effectParts.join(' ') || '平安无事'}】</span>`};
 }
 
 function nextYear(){
@@ -2936,14 +2504,14 @@ function processYearChain(idx, total, events){
       if(G.soulPower >= 91 && !G.chosenPath && G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast'){
         events.push({age:G.age, type:'fortune', text:'<b style="color:var(--gold);">【封号斗罗】</b> 你的修为突破90级，成为封号斗罗！是时候选择未来的道路了...'});
         finishYearAdvance(events);
-        setTimeout(()=>openDouluoPathChoice(), 600);
+        managedTimeout(()=>openDouluoPathChoice(), 600);
         return;
       }
       // Godhood check (only for those who chose god path or haven't chosen yet，神和神兽不触发)
       if(G.soulPower >= G.maxLevel && !G.isGod && G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast' && G.chosenPath !== 'family'){
         events.push({age:G.age, type:'fortune', text:'<b style="color:var(--gold);">【成神之路】</b> 你的修为已达到当前位面的极限，感应到了神位的召唤...'});
         finishYearAdvance(events);
-        setTimeout(()=>openGodhoodChoice(), 600);
+        managedTimeout(()=>openGodhoodChoice(), 600);
         return;
       }
       processYearChain(idx + 1, total, events);
@@ -3134,8 +2702,6 @@ function finishYearAdvance(events, hasRingMilestone){
   if(!G.alive) triggerDeath(G.deathReason || '遭遇不测');
 }
 
-// showEventModal → moved to render.js
-
 function makeChoice(idx){
   const modal=document.getElementById('modal-event');
   modal.classList.remove('active');
@@ -3163,6 +2729,13 @@ function makeChoice(idx){
 // AUTO MODE
 // ============================================================
 let autoTimer=null;
+function stopAutoMode(){
+  if(autoTimer){
+    clearInterval(autoTimer);
+    autoTimer=null;
+  }
+  G.autoMode=false;
+}
 function toggleAuto(){
   G.autoMode=!G.autoMode;
   document.getElementById('auto-btn').textContent=G.autoMode?'⏹ 停止推演':'自动推演';
@@ -3171,7 +2744,7 @@ function toggleAuto(){
   if(overlayStop) overlayStop.style.display = G.autoMode ? '' : 'none';
   if(G.autoMode){
     autoTimer=setInterval(()=>{
-      if(!G.alive){clearInterval(autoTimer);G.autoMode=false;document.getElementById('auto-btn').textContent='自动推演';let ob=document.getElementById('mini-auto-stop-btn');if(ob)ob.style.display='none';return;}
+      if(!G.alive){stopAutoMode();document.getElementById('auto-btn').textContent='自动推演';let ob=document.getElementById('mini-auto-stop-btn');if(ob)ob.style.display='none';return;}
       // Check if modal or mini wheel is open
       if(document.getElementById('modal-event').classList.contains('active'))return;
       if(document.getElementById('mini-wheel-overlay').classList.contains('active'))return;
@@ -3179,15 +2752,13 @@ function toggleAuto(){
       nextYear();
     },1500);
   }else{
-    clearInterval(autoTimer);
+    stopAutoMode();
     // Close any open overlay when stopping auto
     let overlay = document.getElementById('mini-wheel-overlay');
     if(overlay && overlay.classList.contains('active')){
       overlay.classList.remove('active');
       G._processing = false;
-      yearEventWheelSpinning = false;
-      enemyWheelSpinning = false;
-      timelineCharWheelSpinning = false;
+      wheelState.spinning = false;
     }
   }
 }
@@ -3199,10 +2770,10 @@ function triggerDeath(reason){
   G.alive=false;
   G.deathReason=reason;
   G.deathAge=G.age;
-  if(autoTimer)clearInterval(autoTimer);
-  G.autoMode=false;
+  stopAutoMode();
+  clearAllTimers();
 
-  setTimeout(()=>showReview(),1500);
+  managedTimeout(()=>showReview(),1500);
 }
 
 function endGameEarly(){
@@ -3210,8 +2781,7 @@ function endGameEarly(){
     G.alive=false;
     G.deathReason='主动结束';
     G.deathAge=G.age;
-    if(autoTimer)clearInterval(autoTimer);
-    G.autoMode=false;
+    stopAutoMode();
     showReview();
   }
 }
@@ -3305,8 +2875,6 @@ function generateFateSeed(){
   return seeds[Math.floor(Math.random()*seeds.length)];
 }
 
-// showReview → moved to render.js
-
 function leaveLegacy(){
   localStorage.setItem('dl_legacy',JSON.stringify({
     martialSoul:G.martialSoul,
@@ -3316,6 +2884,101 @@ function leaveLegacy(){
     innateBonus:Math.floor(G.innatePower*0.3)
   }));
   alert('传承已留下！下次转世时将获得继承加成。');
+}
+
+function calculateReviewRating(G){
+  let score=0;
+  score+=Math.min(G.soulPower,150);
+  score+=G.age/5;
+  score+=G.soulRings.length*10;
+  score+=G.soulBones.length*15;
+  score+=(G.companions||[]).length*5;
+  score+=(G.customSkills||[]).length*8;
+  if(G.crossSkills?.length)score+=30;
+  if(G.hasSpouse)score+=5;
+  if(G.bloodline)score+=15;
+  if(G.battleArmor)score+=G.battleArmor*10;
+  if(G.achievementsEarned)score+=G.achievementsEarned.length*10;
+
+  let rating='D';
+  if(score>=500)rating='SS';
+  else if(score>=350)rating='S';
+  else if(score>=250)rating='A';
+  else if(score>=150)rating='B';
+  else if(score>=80)rating='C';
+
+  let ratingColors={SS:'#ffdd44',S:'#ff8844',A:'#44dd88',B:'#4488ff',C:'#aaaaaa',D:'#888888'};
+
+  let epitaphs={
+    SS:`${G.timeline.name}的传说——${G.martialSoul?.example||G.beastName||'无名者'}。以${getLevelName(G.soulPower)}之境，${G.deathAge}岁之龄，留下了不可磨灭的印记。后人传颂，万世不灭。`,
+    S:`${G.identity.name}${G.martialSoul?.example||G.beastName||''}，一生波澜壮阔，在${G.timeline.name}书写了属于自己的传奇。`,
+    A:`${G.martialSoul?.example||G.beastName||'一位魂师'}，在${G.timeline.name}中历经风雨，终成一方强者。`,
+    B:`${G.identity.name}的一生，虽有遗憾，但也有精彩。在斗罗大陆留下了自己的足迹。`,
+    C:`在${G.timeline.name}中默默无闻地度过了一生。`,
+    D:`${G.deathReason==='寿终正寝'?'安详地':G.deathReason}离开了这个世界，未能实现心中的理想。`
+  };
+
+  let keyEventsHtml='';
+  let events=G.yearEvents||[];
+  for(let i=0;i<Math.min(events.length,12);i++){
+    let ev=events[i];
+    keyEventsHtml+=`<div class="review-node"><div class="year">${G.timeline.name} · ${ev.age}岁</div><div class="desc">${ev.text}</div></div>`;
+  }
+
+  return {
+    score: score,
+    rating: rating,
+    ratingColors: ratingColors,
+    epitaph: epitaphs[rating],
+    keyEventsHtml: keyEventsHtml
+  };
+}
+
+function saveGameResult(G, rating, epitaph){
+  let saves=loadSaves();
+  saves.unshift({
+    id:Date.now(),
+    timeline:G.timeline.name,
+    identity:G.identity.name,
+    martialSoul:G.martialSoul?.example||G.beastName||'',
+    soulPower:G.soulPower,
+    age:G.deathAge,
+    rating:rating,
+    epitaph:epitaph,
+    rings:G.soulRings.length,
+    bones:G.soulBones.length,
+    deathReason:G.deathReason,
+    innatePower:G.innatePower,
+    date:new Date().toLocaleString('zh-CN')
+  });
+  if(saves.length>20)saves=saves.slice(0,20);
+  saveSaves(saves);
+
+  checkAchievements();
+}
+
+function generateFateSeedData(G){
+  let seed=generateFateSeed();
+  let isBeast=G.identityType==='soul_beast';
+  let routeLabel=isBeast?'魂兽路线':'人类路线';
+  let beastYearStr = isBeast && G.beastYears!==undefined ? ` · ${formatYears(G.beastYears)}` : '';
+  let routeValue=isBeast?`${G.identity?.name||'未知种族'}${beastYearStr} · ${G.birthplace?.name||'未知之地'}`:`${G.identity?.name||'未知身份'}`;
+  let nameLabel=isBeast?'魂兽名号':'觉醒武魂';
+  let nameValue=isBeast?(G.bloodline?`${G.bloodline.name}${G.identity?.name||'魂兽'}（${formatYears(G.beastYears||0)}）`:'无名魂兽'):(G.martialSoul?.example||'未知');
+  let bloodlineValue=G.bloodline?(G.bloodline.name||G.bloodline.type):'无';
+  let title=generateTitle(G.martialSoul);
+  let domain=generateDomain();
+
+  return {
+    seed: seed,
+    routeLabel: routeLabel,
+    routeValue: routeValue,
+    nameLabel: nameLabel,
+    nameValue: nameValue,
+    bloodlineValue: bloodlineValue,
+    title: title,
+    domain: domain
+  };
 }
 
 // ============================================================
@@ -3333,16 +2996,9 @@ function checkAchievements(){
   });
 }
 
-// showAchievementNotification → moved to render.js
-
-// renderAchievements → moved to render.js
-
 // ============================================================
 // SAVE/LOAD
 // ============================================================
-// renderSaves → moved to render.js
-
-// _renderSaveSlots → moved to render.js
 
 function formatYears(y){
   if(y === 0) return '幼年期';
@@ -3373,17 +3029,13 @@ function addBeastYears(amount){
   if(G.identityType !== 'soul_beast' || G.beastYears === undefined) return '';
   G.beastYears += amount;
   syncBeastSoulPower();
-  return ` · 年限+${formatYears(amount)}`;
+  return ` · 年限${amount >= 0 ? '+' : ''}${formatYears(amount)}`;
 }
 
 function escapeHtml(str){
   if(str==null)return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-
-// viewSave → moved to render.js
-
-// closeSaveModal → moved to render.js
 
 async function deleteSave(idx){
   let saves=loadSaves();
@@ -3398,7 +3050,6 @@ async function deleteSave(idx){
   renderSaves();
 }
 
-// showSaveToast → moved to render.js
 function saveCurrentGame(){
   if(!G || !G.timeline){ showSaveToast('无法保存：游戏未开始','var(--red)'); return; }
   // 复用已有存档ID，避免读档后保存产生重复记录
@@ -3424,9 +3075,10 @@ function saveCurrentGame(){
     isSave: true
   };
   let fullOk = false;
+  let dataStr = null;
   try{
     const seen = new WeakSet();
-    let dataStr = JSON.stringify(G, function(key,val){
+    dataStr = JSON.stringify(G, function(key,val){
       if(typeof val === 'function') return undefined;
       if(val instanceof HTMLElement) return undefined;
       if(typeof val === 'object' && val !== null){
@@ -3464,20 +3116,10 @@ function saveCurrentGame(){
     showSaveToast('存档成功！进度已保存');
     addEventLog(G.age, 'fortune', '<b style="color:var(--green);">【存档成功】</b> 游戏进度已保存。');
   }
-  // Sync to backend (non-blocking)
+  // Sync to backend (non-blocking, reuse dataStr)
   try{
     let fullData = null;
-    const seen = new WeakSet();
-    let dataStr = JSON.stringify(G, function(key,val){
-      if(typeof val === 'function') return undefined;
-      if(val instanceof HTMLElement) return undefined;
-      if(typeof val === 'object' && val !== null){
-        if(seen.has(val)) return '[Circular]';
-        seen.add(val);
-      }
-      return val;
-    });
-    if(dataStr.length <= 4 * 1024 * 1024){
+    if(dataStr && dataStr.length <= 4 * 1024 * 1024){
       fullData = JSON.parse(dataStr);
     }
     apiSaveGame(summary, fullData).then(r => {
@@ -3518,7 +3160,8 @@ async function loadSaveGame(idx){
   G.autoMode = false;
   // 记录当前存档ID，保存时复用，避免产生重复记录
   G._saveId = s.id;
-  if(autoTimer){clearInterval(autoTimer);autoTimer=null;}
+  stopAutoMode();
+  clearAllTimers();
   let ob=document.getElementById('mini-auto-stop-btn');if(ob)ob.style.display='none';
   let defaults=createDefaultState();
   for(let k in defaults){
