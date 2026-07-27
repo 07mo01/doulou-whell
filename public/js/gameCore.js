@@ -1,6 +1,7 @@
 let G = null;
 let wheelQueue = [];
 let wheelIndex = 0;
+let currentWheelData = null;
 let globalAchievements = [];
 
 function loadGlobalAchievements(){

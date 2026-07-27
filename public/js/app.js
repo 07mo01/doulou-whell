@@ -272,14 +272,6 @@ function getTimelineProgressEvent(){
   return event;
 }
 
-const wheelState = {
-  data: null,
-  spinning: false,
-  callback: null,
-  type: null,
-  extra: null
-};
-
 let pendingTimers = [];
 function managedTimeout(fn, delay) {
   let id = setTimeout(() => {

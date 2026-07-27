@@ -298,7 +298,7 @@ function onWheelResult(item){
   }
 
   document.getElementById('wheel-spin-btn').style.display='none';
-  document.getElementById('wheel-continue-btn').style.display='';
+  document.getElementById('wheel-next-btn').style.display='';
 }
 
 function nextWheelStep(){
@@ -309,7 +309,7 @@ function nextWheelStep(){
   }
   setupNextWheel();
   document.getElementById('wheel-spin-btn').style.display='';
-  document.getElementById('wheel-continue-btn').style.display='none';
+  document.getElementById('wheel-next-btn').style.display='none';
 }
 
 function finalizeCharacter(){
@@ -416,6 +416,9 @@ function processYearChain(idx, total, events, callback){
   if(ringMilestone){
     events.push(ringMilestone);
     addEventLog(G.Age, 'milestone', ringMilestone.text);
+    finishYearAdvance(events, true);
+    openSoulRingWheel(() => {});
+    return;
   }
 
   let evolutionEvent = checkSoulEvolution();

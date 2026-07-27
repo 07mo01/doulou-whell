@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>斗罗大陆转盘 - 随机人生模拟</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -13,10 +13,10 @@
   --gray:#8888aa;--dark:#333355;
   --font:'Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;
 }
-body{font-family:var(--font);background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;touch-action:manipulation;}
+body{font-family:var(--font);background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;}
 .screen{display:none;width:100%;min-height:100vh;flex-direction:column;align-items:center;}
 .screen.active{display:flex;}
-.btn{padding:12px 32px;border:2px solid var(--gold);background:linear-gradient(135deg,#1a1a4e,#2a2a6e);color:var(--gold);font-size:16px;font-family:var(--font);cursor:pointer;border-radius:8px;transition:all .3s;letter-spacing:2px;position:relative;overflow:hidden;-webkit-user-select:none;user-select:none;touch-action:manipulation;}
+.btn{padding:12px 32px;border:2px solid var(--gold);background:linear-gradient(135deg,#1a1a4e,#2a2a6e);color:var(--gold);font-size:16px;font-family:var(--font);cursor:pointer;border-radius:8px;transition:all .3s;letter-spacing:2px;position:relative;overflow:hidden;}
 .btn:hover{background:linear-gradient(135deg,#2a2a6e,#3a3a8e);box-shadow:0 0 20px rgba(255,215,0,.3);transform:translateY(-2px);}
 .btn:active{transform:translateY(0);}
 .btn-sm{padding:8px 20px;font-size:13px;}
@@ -183,17 +183,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--white);min-height:
 .cross-skill-display{background:linear-gradient(135deg,#2a1a4e,#1a2a4e);border:2px solid var(--purple);border-radius:12px;padding:20px;margin:15px 0;text-align:center;animation:glow 2s infinite alternate;}
 .cross-skill-display h4{color:var(--purple);font-size:16px;margin-bottom:8px;}
 
-/* ===== Choice Panel ===== */
-.choice-panel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);}
-.choice-panel-title{color:var(--gold);text-align:center;margin-bottom:20px;font-size:20px;}
-.choice-panel-desc{color:var(--gray);text-align:center;margin-bottom:20px;font-size:14px;}
-.choice-panel-btn-group{display:flex;flex-direction:column;gap:15px;}
-.choice-panel-btn{text-align:left;padding:15px;}
-.choice-panel-btn .btn-title{font-size:16px;font-weight:bold;color:var(--gold);}
-.choice-panel-btn .btn-desc{font-size:12px;color:var(--gray);margin-top:4px;}
-.choice-panel-result{margin-top:15px;text-align:center;display:none;}
-.choice-panel-input{width:60px;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.3);border-radius:6px;color:var(--gold);padding:6px;font-size:16px;margin-left:8px;}
-
 /* ===== Animations ===== */
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 @keyframes glow{from{box-shadow:0 0 10px rgba(170,102,255,.2);}to{box-shadow:0 0 25px rgba(170,102,255,.4);}}
@@ -208,7 +197,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--white);min-height:
 
 /* ===== Responsive ===== */
 @media(max-width:768px){
-  .life-sidebar{position:relative;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--dark);max-height:40vh;overflow-y:auto;}
+  .life-sidebar{position:relative;width:100%;height:auto;border-right:none;border-bottom:1px solid var(--dark);}
   #screen-life{flex-direction:column;}
   .life-main{margin-left:0;max-width:100%;}
   .title-logo{font-size:32px;letter-spacing:4px;}
@@ -216,28 +205,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--white);min-height:
   .wheel-canvas{width:300px;height:300px;}
   .awakening-attrs{grid-template-columns:1fr;}
   .review-stats{grid-template-columns:1fr 1fr;}
-  .modal-box{padding:20px 15px;}
-  .mini-wheel-wrap{width:260px;height:260px;}
-  .mini-wheel-canvas{width:260px;height:260px;}
-  .btn{padding:10px 24px;font-size:15px;}
-  .wheel-result{padding:15px 20px;min-width:auto;width:90%;}
-  .mini-wheel-result{min-width:auto;width:90%;padding:12px 18px;}
-}
-@media(max-width:480px){
-  .title-logo{font-size:26px;letter-spacing:2px;}
-  .title-sub{font-size:13px;letter-spacing:2px;}
-  .wheel-stage{width:260px;height:260px;}
-  .wheel-canvas{width:260px;height:260px;}
-  .wheel-label{font-size:18px;}
-  .mini-wheel-wrap{width:220px;height:220px;}
-  .mini-wheel-canvas{width:220px;height:220px;}
-  .btn{padding:10px 20px;font-size:14px;letter-spacing:1px;}
-  .event-entry{padding:10px 12px;}
-  .event-text{font-size:13px;}
-  .modal-box{padding:15px 12px;max-height:85vh;}
-  .review-fate-title{font-size:22px;letter-spacing:2px;}
-  .rating-letter{font-size:56px;}
-  .ach-grid{grid-template-columns:1fr;}
 }
 
 /* ===== Particle BG ===== */
@@ -306,40 +273,41 @@ body{font-family:var(--font);background:var(--bg);color:var(--white);min-height:
     <div class="event-log" id="event-log"></div>
     <div class="life-controls" id="life-controls"></div>
     <!-- Godhood Choice Panel -->
-    <div id="godhood-panel" class="choice-panel">
-      <h2 class="choice-panel-title">🌟 成神之路</h2>
-      <p class="choice-panel-desc">你的修为已达到位面极限，感应到了神界的召唤...</p>
-      <div class="choice-panel-btn-group">
-        <button class="btn choice-panel-btn" onclick="chooseGodhood('inherit')">
-          <div class="btn-title">🏛️ 继承神位</div>
-          <div class="btn-desc">成功率较高（70%），继承一位陨落神祇的神位，稳妥成神。</div>
+    <div id="godhood-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);">
+      <h2 style="color:var(--gold);text-align:center;margin-bottom:20px;">🌟 成神之路</h2>
+      <p style="color:var(--gray);text-align:center;margin-bottom:20px;">你的修为已达到位面极限，感应到了神界的召唤...</p>
+      <div style="display:flex;flex-direction:column;gap:15px;">
+        <button class="btn" onclick="chooseGodhood('inherit')" style="text-align:left;padding:15px;">
+          <div style="font-size:16px;color:var(--gold);font-weight:bold;">🏛️ 继承神位</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:4px;">成功率较高（70%），继承一位陨落神祇的神位，稳妥成神。</div>
         </button>
-        <button class="btn choice-panel-btn" onclick="chooseGodhood('create')">
-          <div class="btn-title">⚡ 自创神位</div>
-          <div class="btn-desc">成功率较低（40%），以自身为根基创造全新神位，风险与机遇并存。</div>
+        <button class="btn" onclick="chooseGodhood('create')" style="text-align:left;padding:15px;">
+          <div style="font-size:16px;color:var(--cyan);font-weight:bold;">⚡ 自创神位</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:4px;">成功率较低（40%），以自身为根基创造全新神位，风险与机遇并存。</div>
         </button>
       </div>
-      <div id="godhood-result" class="choice-panel-result"></div>
+      <div id="godhood-result" style="margin-top:15px;text-align:center;display:none;"></div>
     </div>
-    <div id="douluo-path-panel" class="choice-panel">
-      <h2 class="choice-panel-title">🎖️ 封号斗罗</h2>
-      <p class="choice-panel-desc">你的修为突破90级，成为封号斗罗！请选择你的道路...</p>
+    <!-- Douluo Path Choice Panel -->
+    <div id="douluo-path-panel" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:30px;max-width:500px;width:90%;z-index:2000;box-shadow:0 0 40px rgba(255,215,0,.3);">
+      <h2 style="color:var(--gold);text-align:center;margin-bottom:10px;">🎖️ 封号斗罗</h2>
+      <p style="color:var(--gray);text-align:center;margin-bottom:15px;font-size:13px;">你的修为突破90级，成为封号斗罗！请选择你的道路...</p>
       <div style="margin-bottom:15px;">
         <label style="color:var(--gray);font-size:12px;">你的封号（2字）：</label>
-        <input type="text" id="custom-title-input" maxlength="2" class="choice-panel-input" placeholder="如：昊天">
+        <input type="text" id="custom-title-input" maxlength="2" style="width:60px;text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.3);border-radius:6px;color:var(--gold);padding:6px;font-size:16px;margin-left:8px;" placeholder="如：昊天">
       </div>
-      <div class="choice-panel-btn-group">
-        <button class="btn choice-panel-btn" onclick="chooseDouluoPath('family')">
-          <div class="btn-title" style="color:#ff66aa;">💕 成家立业</div>
-          <div class="btn-desc">与心爱之人共度余生，解锁恋爱系统，体验人间烟火。</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <button class="btn" onclick="chooseDouluoPath('family')" style="text-align:left;padding:12px;">
+          <div style="font-size:15px;color:#ff66aa;font-weight:bold;">💕 成家立业</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:3px;">与心爱之人共度余生，解锁恋爱系统，体验人间烟火。</div>
         </button>
-        <button class="btn choice-panel-btn" onclick="chooseDouluoPath('god')">
-          <div class="btn-title">✨ 追求神位</div>
-          <div class="btn-desc">继续修炼，追求更高的境界，当达到极限时可选择成神。</div>
+        <button class="btn" onclick="chooseDouluoPath('god')" style="text-align:left;padding:12px;">
+          <div style="font-size:15px;color:var(--gold);font-weight:bold;">✨ 追求神位</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:3px;">继续修炼，追求更高的境界，当达到极限时可选择成神。</div>
         </button>
-        <button class="btn choice-panel-btn" id="btn-godrealm-path" onclick="chooseDouluoPath('godrealm')" style="display:none;">
-          <div class="btn-title" style="color:#ffdd44;">🌟 飞升神界</div>
-          <div class="btn-desc">绝世唐门百级魂力突破位面界限，飞升神界，进入神界传说时间线！</div>
+        <button class="btn" id="btn-godrealm-path" onclick="chooseDouluoPath('godrealm')" style="text-align:left;padding:12px;display:none;">
+          <div style="font-size:15px;color:#ffdd44;font-weight:bold;">🌟 飞升神界</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:3px;">绝世唐门百级魂力突破位面界限，飞升神界，进入神界传说时间线！</div>
         </button>
       </div>
     </div>
@@ -525,26 +493,26 @@ const HUMAN_BACKGROUNDS = [
 ];
 
 const BEAST_RACES = [
-  {id:'beast_wolf',name:'疾风狼',weight:12,desc:'速度极快的狼形魂兽，群居猎食，擅长围攻。',bloodlines:['wind','thunder'],birthplaces:['forest_edge','temperate','mountain']},
-  {id:'beast_tiger',name:'暗金恐爪熊',weight:8,desc:'力量型魂兽，暗金色的利爪可撕裂空间。',bloodlines:['earth','dragon'],birthplaces:['forest_core','mountain','cave']},
-  {id:'beast_snake',name:'碧磷蛇皇',weight:10,desc:'剧毒蛇类魂兽，独孤博的武魂原型。',bloodlines:['poison','dark'],birthplaces:['swamp','cave','forest_edge']},
-  {id:'beast_eagle',name:'苍穹之鹰',weight:10,desc:'天空霸主，锐利的目光可看穿一切伪装。',bloodlines:['wind','light'],birthplaces:['mountain','forest_edge','temperate']},
-  {id:'beast_bear',name:'泰坦巨猿',weight:8,desc:'力量恐怖的巨猿，一拳可碎山岳，天青牛蟒的挚友。',bloodlines:['earth','dragon'],birthplaces:['forest_core','mountain']},
-  {id:'beast_dragon',name:'蓝电霸王龙',weight:6,desc:'龙族血脉的霸王龙，雷霆之力覆盖全身。',bloodlines:['thunder','dragon'],birthplaces:['forest_core','dragon','cave']},
-  {id:'beast_phoenix',name:'邪火凤凰',weight:7,desc:'拥有邪火的凤凰，攻守兼备但需要控制邪火。',bloodlines:['fire','dark'],birthplaces:['volcano','forest_core']},
-  {id:'beast_turtle',name:'玄冰龟',weight:10,desc:'防御极强的龟类魂兽，冰系能力让敌人寸步难行。',bloodlines:['ice','water'],birthplaces:['ice','sea','cave']},
-  {id:'beast_rabbit',name:'柔骨魅兔',weight:8,desc:'敏捷极高的兔类魂兽，近身肉搏不输任何对手。',bloodlines:['wind','spirit'],birthplaces:['forest_edge','temperate']},
-  {id:'beast_scorpion',name:'冰碧帝皇蝎',weight:5,desc:'冰系顶级魂兽，拥有极致之冰与剧毒双重能力。',bloodlines:['ice','poison'],birthplaces:['ice','cave']},
-  {id:'beast_whale',name:'深海魔鲸',weight:4,desc:'海洋霸主，体型巨大，魂力深不可测。',bloodlines:['water','devour'],birthplaces:['sea']},
-  {id:'beast_lion',name:'烈焰雄狮',weight:8,desc:'火系狮形魂兽，烈焰鬃毛中蕴含恐怖的火焰之力。',bloodlines:['fire','earth'],birthplaces:['volcano','temperate','mountain']},
-  {id:'beast_fox',name:'九尾灵狐',weight:6,desc:'拥有九条尾巴的灵狐，精神力极强，擅长幻术。',bloodlines:['spirit','dark'],birthplaces:['forest_edge','cave']},
-  {id:'beast_crocodile',name:'暗影鳄王',weight:8,desc:'潜伏暗处的鳄鱼魂兽，咬合力惊人。',bloodlines:['dark','earth'],birthplaces:['swamp','sea']},
-  {id:'beast_peacock',name:'七彩神孔雀',weight:5,desc:'美丽的孔雀魂兽，尾羽中蕴含七种元素之力。',bloodlines:['light','space'],birthplaces:['forest_core','forest_edge']},
-  {id:'beast_spider',name:'人面魔蛛',weight:7,desc:'面如人形的恐怖蜘蛛，蛛丝坚不可摧。',bloodlines:['poison','dark'],birthplaces:['cave','swamp']},
-  {id:'beast_deer',name:'三眼金猊',weight:3,desc:'传说中的命运之兽，三只眼睛可看透命运。',bloodlines:['spirit','time'],birthplaces:['forest_core']},
-  {id:'beast_horse',name:'幽冥白虎',weight:4,desc:'暗属性虎形魂兽，幽冥之力可吞噬一切。',bloodlines:['dark','wind'],birthplaces:['forest_core','cave']},
-  {id:'beast_cat',name:'幽冥灵猫',weight:8,desc:'暗影中潜行的猫类魂兽，速度与暗杀并重。',bloodlines:['dark','wind'],birthplaces:['cave','forest_edge']},
-  {id:'beast_leech',name:'天梦冰蚕',weight:3,desc:'精神系冰蚕，百万年级别的存在，拥有无与伦比的精神力。',bloodlines:['spirit','ice'],birthplaces:['ice','cave']}
+  {id:'beast_wolf',name:'疾风狼',weight:12,desc:'速度极快的狼形魂兽，群居猎食，擅长围攻。'},
+  {id:'beast_tiger',name:'暗金恐爪熊',weight:8,desc:'力量型魂兽，暗金色的利爪可撕裂空间。'},
+  {id:'beast_snake',name:'碧磷蛇皇',weight:10,desc:'剧毒蛇类魂兽，独孤博的武魂原型。'},
+  {id:'beast_eagle',name:'苍穹之鹰',weight:10,desc:'天空霸主，锐利的目光可看穿一切伪装。'},
+  {id:'beast_bear',name:'泰坦巨猿',weight:8,desc:'力量恐怖的巨猿，一拳可碎山岳，天青牛蟒的挚友。'},
+  {id:'beast_dragon',name:'蓝电霸王龙',weight:6,desc:'龙族血脉的霸王龙，雷霆之力覆盖全身。'},
+  {id:'beast_phoenix',name:'邪火凤凰',weight:7,desc:'拥有邪火的凤凰，攻守兼备但需要控制邪火。'},
+  {id:'beast_turtle',name:'玄冰龟',weight:10,desc:'防御极强的龟类魂兽，冰系能力让敌人寸步难行。'},
+  {id:'beast_rabbit',name:'柔骨魅兔',weight:8,desc:'敏捷极高的兔类魂兽，近身肉搏不输任何对手。'},
+  {id:'beast_scorpion',name:'冰碧帝皇蝎',weight:5,desc:'冰系顶级魂兽，拥有极致之冰与剧毒双重能力。'},
+  {id:'beast_whale',name:'深海魔鲸',weight:4,desc:'海洋霸主，体型巨大，魂力深不可测。'},
+  {id:'beast_lion',name:'烈焰雄狮',weight:8,desc:'火系狮形魂兽，烈焰鬃毛中蕴含恐怖的火焰之力。'},
+  {id:'beast_fox',name:'九尾灵狐',weight:6,desc:'拥有九条尾巴的灵狐，精神力极强，擅长幻术。'},
+  {id:'beast_crocodile',name:'暗影鳄王',weight:8,desc:'潜伏暗处的鳄鱼魂兽，咬合力惊人。'},
+  {id:'beast_peacock',name:'七彩神孔雀',weight:5,desc:'美丽的孔雀魂兽，尾羽中蕴含七种元素之力。'},
+  {id:'beast_spider',name:'人面魔蛛',weight:7,desc:'面如人形的恐怖蜘蛛，蛛丝坚不可摧。'},
+  {id:'beast_deer',name:'三眼金猊',weight:3,desc:'传说中的命运之兽，三只眼睛可看透命运。'},
+  {id:'beast_horse',name:'幽冥白虎',weight:4,desc:'暗属性虎形魂兽，幽冥之力可吞噬一切。'},
+  {id:'beast_cat',name:'幽冥灵猫',weight:8,desc:'暗影中潜行的猫类魂兽，速度与暗杀并重。'},
+  {id:'beast_leech',name:'天梦冰蚕',weight:3,desc:'精神系冰蚕，百万年级别的存在，拥有无与伦比的精神力。'}
 ];
 
 // 神兽种族（神界传说专用）
@@ -695,8 +663,24 @@ const FACTION_SOULS = {
   '生命女神阵营':['生命之树','治愈圣杖','生命之泉','翡翠之盾','自然之弓']
 };
 
+function getFactionSoulPool(factionName, quality){
+  let factionSouls = FACTION_SOULS[factionName];
+  if(!factionSouls) return null;
+  let pool = buildSoulNamePool();
+  // Map faction souls to the appropriate quality tier
+  let results = factionSouls.map(name => {
+    if(quality === 'common') return {name, type:'器武魂', quality:'普通', qColor:'#888'};
+    if(quality === 'good') return {name, type:'器武魂', quality:'优秀', qColor:'#4488ff'};
+    if(quality === 'mutant') return {name, type:'变异武魂', quality:'优秀~顶级', qColor:'#aa66ff'};
+    if(quality === 'top') return {name, type:'器武魂', quality:'顶级', qColor:'#ffdd44'};
+    if(quality === 'dual') return {name, type:'双生武魂', quality:'顶级+', qColor:'#ff4444'};
+    return {name, type:'器武魂', quality:quality, qColor:'#888'};
+  });
+  return results;
+}
+
 // ============================================================
-// AWAKENING COUNT WHEEL
+// AWARDENING COUNT WHEEL
 // ============================================================
 const AWAKENING_COUNT = [
   {id:'one',name:'觉醒1个武魂',weight:55,desc:'只有一个武魂，但可以更专注地修炼。',count:1,color:'#4488ff'},
@@ -704,6 +688,13 @@ const AWAKENING_COUNT = [
   {id:'three',name:'觉醒3个武魂',weight:12,desc:'三武魂觉醒，极为罕见！',count:3,color:'#ffdd44'},
   {id:'four',name:'觉醒4个武魂',weight:3,desc:'四武魂觉醒，万中无一的奇迹！',count:4,color:'#ff4444'}
 ];
+
+// Keep IDENTITIES for backwards compatibility in other code
+const IDENTITIES = {
+  human:HUMAN_BACKGROUNDS,
+  soul_beast:BEAST_RACES,
+  god:GOD_TIERS
+};
 
 // ============================================================
 // SOUL BEAST BLOODLINES (血脉系)
@@ -730,175 +721,79 @@ const BEAST_BLOODLINES = [
 // SOUL BEAST BIRTHPLACES - Filtered by Timeline
 // ============================================================
 function getBeastBirthplaces(timelineId){
-  // Base locations (available in most timelines) - env tag for cross-timeline matching
+  // Base locations (available in most timelines)
   let base = [
-    {id:'xingdou_core',env:'forest_core',name:'星斗大森林核心区',weight:15,color:'#228844',desc:'魂兽圣地，十万年魂兽栖息之地，机遇与危险并存。',attr:{power:1.3,risk:1.3}},
-    {id:'xingdou_edge',env:'forest_edge',name:'星斗大森林外围',weight:20,color:'#44aa66',desc:'魂兽天堂，资源丰富，但强者众多。',attr:{power:1.1,risk:1.0}},
-    {id:'jibei',env:'ice',name:'极北之地',weight:12,color:'#88ccff',desc:'冰天雪地，极致之冰的发源地，冰系魂兽的乐园。',attr:{power:1.2,ice:1.4}},
-    {id:'luori',env:'temperate',name:'落日森林',weight:15,color:'#aa8844',desc:'温暖湿润，植被茂密，适合各类魂兽繁衍。',attr:{power:1.0,risk:0.8}},
-    {id:'deep_sea',env:'sea',name:'深海',weight:8,color:'#2244aa',desc:'神秘莫测的海底世界，蕴藏着远古的力量。',attr:{power:1.15,secret:1.3}},
-    {id:'cave',env:'cave',name:'地底洞穴',weight:6,color:'#664422',desc:'黑暗幽深的地下迷宫，隐藏着古老的宝藏。',attr:{power:1.1,secret:1.4}},
-    {id:'volcano',env:'volcano',name:'火山地带',weight:8,color:'#ff6622',desc:'烈焰之地，火系魂兽的天然修炼场。',attr:{power:1.2,fire:1.3}},
-    {id:'swamp',env:'swamp',name:'迷雾沼泽',weight:6,color:'#668844',desc:'毒雾弥漫，危机四伏，毒系魂兽的温床。',attr:{power:1.0,poison:1.4}},
-    {id:'mountain',env:'mountain',name:'魂兽山脉',weight:10,color:'#886644',desc:'连绵起伏的山脉，力量型魂兽的聚集地。',attr:{power:1.15,risk:0.9}}
+    {id:'xingdou_core',name:'星斗大森林核心区',weight:15,color:'#228844',desc:'魂兽圣地，十万年魂兽栖息之地，机遇与危险并存。',attr:{power:1.3,risk:1.3}},
+    {id:'xingdou_edge',name:'星斗大森林外围',weight:20,color:'#44aa66',desc:'魂兽天堂，资源丰富，但强者众多。',attr:{power:1.1,risk:1.0}},
+    {id:'jibei',name:'极北之地',weight:12,color:'#88ccff',desc:'冰天雪地，极致之冰的发源地，冰系魂兽的乐园。',attr:{power:1.2,ice:1.4}},
+    {id:'luori',name:'落日森林',weight:15,color:'#aa8844',desc:'温暖湿润，植被茂密，适合各类魂兽繁衍。',attr:{power:1.0,risk:0.8}},
+    {id:'deep_sea',name:'深海',weight:8,color:'#2244aa',desc:'神秘莫测的海底世界，蕴藏着远古的力量。',attr:{power:1.15,secret:1.3}},
+    {id:'cave',name:'地底洞穴',weight:6,color:'#664422',desc:'黑暗幽深的地下迷宫，隐藏着古老的宝藏。',attr:{power:1.1,secret:1.4}},
+    {id:'volcano',name:'火山地带',weight:8,color:'#ff6622',desc:'烈焰之地，火系魂兽的天然修炼场。',attr:{power:1.2,fire:1.3}},
+    {id:'swamp',name:'迷雾沼泽',weight:6,color:'#668844',desc:'毒雾弥漫，危机四伏，毒系魂兽的温床。',attr:{power:1.0,poison:1.4}},
+    {id:'mountain',name:'魂兽山脉',weight:10,color:'#886644',desc:'连绵起伏的山脉，力量型魂兽的聚集地。',attr:{power:1.15,risk:0.9}}
   ];
 
   switch(timelineId){
     case 'douluo1': // 唐三时代 - 星斗大森林最繁盛
       return base.map(b => {
-        let c = {...b};
-        if(c.id==='xingdou_core'){c.weight=18;c.desc='万年前的星斗大森林，生命之湖能量充沛，百万年魂兽潜伏。';}
-        if(c.id==='xingdou_edge'){c.weight=22;}
-        if(c.id==='luori'){c.weight=15;c.desc='冰火两仪眼仍在，植被茂密，各类魂兽繁衍生息。';}
-        if(c.id==='swamp'){c.weight=6;}
-        return c;
+        if(b.id==='xingdou_core'){b.weight=18;b.desc='万年前的星斗大森林，生命之湖能量充沛，百万年魂兽潜伏。';}
+        if(b.id==='xingdou_edge'){b.weight=22;}
+        if(b.id==='luori'){b.weight=15;b.desc='冰火两仪眼仍在，植被茂密，各类魂兽繁衍生息。';}
+        if(b.id==='swamp'){b.weight=6;}
+        return b;
       });
 
     case 'douluo2': // 绝世唐门 - 日月大陆碰撞
       return base.map(b => {
-        let c = {...b};
-        if(c.id==='xingdou_core'){c.weight=12;c.desc='星斗大森林核心区缩小，生命之湖仍是魂兽圣地。';}
-        if(c.id==='xingdou_edge'){c.weight=15;c.desc='魂兽因人类扩张而减少，外围危险度降低。';}
-        if(c.id==='jibei'){c.weight=15;c.desc='极北之地仍为冰系魂兽乐园，冰碧帝皇蝎的领地。';}
-        if(c.id==='luori'){c.weight=10;c.desc='落日森林因人类开发而逐渐缩小。';}
-        if(c.id==='mountain'){c.weight=8;}
-        return c;
+        if(b.id==='xingdou_core'){b.weight=12;b.desc='星斗大森林核心区缩小，生命之湖仍是魂兽圣地。';}
+        if(b.id==='xingdou_edge'){b.weight=15;b.desc='魂兽因人类扩张而减少，外围危险度降低。';}
+        if(b.id==='jibei'){b.weight=15;b.desc='极北之地仍为冰系魂兽乐园，冰碧帝皇蝎的领地。';}
+        if(b.id==='luori'){b.weight=10;b.desc='落日森林因人类开发而逐渐缩小。';}
+        if(b.id==='mountain'){b.weight=8;}
+        return b;
       }).concat([
-        {id:'mingdu',env:'tech',name:'明都山脉',weight:8,color:'#662200',desc:'日月帝国首都附近的山脉，魂导器影响下魂兽变异频发。',attr:{power:1.1,tech:1.3}}
+        {id:'mingdu',name:'明都山脉',weight:8,color:'#662200',desc:'日月帝国首都附近的山脉，魂导器影响下魂兽变异频发。',attr:{power:1.1,tech:1.3}}
       ]);
 
     case 'douluo3': // 龙王传说 - 魂兽濒临灭绝
       return base.filter(b => b.id!=='xingdou_core' && b.id!=='xingdou_edge')
         .map(b => {
-          let c = {...b};
-          if(c.id==='luori'){c.weight=8;c.desc='落日森林几乎消失，魂兽数量锐减。';}
-          if(c.id==='jibei'){c.weight=10;c.desc='极北之地冰川融化，冰系魂兽濒危。';}
-          if(c.id==='deep_sea'){c.weight=12;c.desc='深海成为魂兽最后避难所，龙谷藏于海底。';}
-          if(c.id==='cave'){c.weight=12;c.desc='地底洞穴成为隐藏魂兽的庇护所，暗藏龙族遗迹。';}
-          if(c.id==='mountain'){c.weight=8;}
-          return c;
+          if(b.id==='luori'){b.weight=8;b.desc='落日森林几乎消失，魂兽数量锐减。';}
+          if(b.id==='jibei'){b.weight=10;b.desc='极北之地冰川融化，冰系魂兽濒危。';}
+          if(b.id==='deep_sea'){b.weight=12;b.desc='深海成为魂兽最后避难所，龙谷藏于海底。';}
+          if(b.id==='cave'){b.weight=12;b.desc='地底洞穴成为隐藏魂兽的庇护所，暗藏龙族遗迹。';}
+          if(b.id==='mountain'){b.weight=8;}
+          return b;
         }).concat([
-          {id:'spirit_tower',env:'tech',name:'传灵塔',weight:15,color:'#44aaff',desc:'传灵塔人造魂灵诞生地，魂兽新形态的摇篮。',attr:{power:1.0,spirit:1.5}},
-          {id:'dragon_valley',env:'dragon',name:'龙谷秘境',weight:8,color:'#ff8800',desc:'隐藏的龙族栖息地，龙系魂兽的最后净土。',attr:{power:1.5,secret:1.6}}
+          {id:'spirit_tower',name:'传灵塔',weight:15,color:'#44aaff',desc:'传灵塔人造魂灵诞生地，魂兽新形态的摇篮。',attr:{power:1.0,spirit:1.5}},
+          {id:'dragon_valley',name:'龙谷秘境',weight:8,color:'#ff8800',desc:'隐藏的龙族栖息地，龙系魂兽的最后净土。',attr:{power:1.5,secret:1.6}}
         ]);
 
     case 'douluo4': // 终极斗罗 - 星际时代
       return [
-        {id:'douluo_star',env:'temperate',name:'斗罗母星',weight:20,color:'#44aa66',desc:'人类的母星，魂兽生态保护区仅存少量。',attr:{power:0.8,risk:0.5}},
-        {id:'dragon_world',env:'dragon',name:'龙界',weight:15,color:'#ff8800',desc:'龙族独立空间，龙系魂兽的终极家园。',attr:{power:1.4,risk:1.1}},
-        {id:'spirit_star',env:'forest_edge',name:'精灵星',weight:18,color:'#88dd44',desc:'魂兽迁徙后的新家园，生态完整。',attr:{power:1.1,secret:1.2}},
-        {id:'longma',env:'mountain',name:'龙马星系',weight:15,color:'#dd44ff',desc:'外星魂兽聚集地，拥有独特的外星魂兽种族。',attr:{power:1.2,alien:1.5}},
-        {id:'abyss',env:'dark',name:'深渊通道',weight:12,color:'#442266',desc:'深渊生物入侵的通道，深渊魂兽的巢穴。',attr:{power:1.5,risk:1.8}},
-        {id:'deep_sea',env:'sea',name:'深海',weight:10,color:'#2244aa',desc:'深海魂兽仍存在，但面临人类科技的威胁。',attr:{power:1.1,secret:1.2}},
-        {id:'space',env:'cave',name:'太空领域',weight:5,color:'#222266',desc:'星际空间，存在稀有的宇宙级魂兽。',attr:{power:1.5,space:1.6}},
-        {id:'cave',env:'cave',name:'地底遗迹',weight:5,color:'#664422',desc:'远古地底遗迹，埋藏着上古魂兽的秘密。',attr:{power:1.2,secret:1.5}}
+        {id:'douluo_star',name:'斗罗母星',weight:20,color:'#44aa66',desc:'人类的母星，魂兽生态保护区仅存少量。',attr:{power:0.8,risk:0.5}},
+        {id:'dragon_world',name:'龙界',weight:15,color:'#ff8800',desc:'龙族独立空间，龙系魂兽的终极家园。',attr:{power:1.4,risk:1.1}},
+        {id:'spirit_star',name:'精灵星',weight:18,color:'#88dd44',desc:'魂兽迁徙后的新家园，生态完整。',attr:{power:1.1,secret:1.2}},
+        {id:'longma',name:'龙马星系',weight:15,color:'#dd44ff',desc:'外星魂兽聚集地，拥有独特的外星魂兽种族。',attr:{power:1.2,alien:1.5}},
+        {id:'abyss',name:'深渊通道',weight:12,color:'#442266',desc:'深渊生物入侵的通道，深渊魂兽的巢穴。',attr:{power:1.5,risk:1.8}},
+        {id:'deep_sea',name:'深海',weight:10,color:'#2244aa',desc:'深海魂兽仍存在，但面临人类科技的威胁。',attr:{power:1.1,secret:1.2}},
+        {id:'space',name:'太空领域',weight:5,color:'#222266',desc:'星际空间，存在稀有的宇宙级魂兽。',attr:{power:1.5,space:1.6}},
+        {id:'cave',name:'地底遗迹',weight:5,color:'#664422',desc:'远古地底遗迹，埋藏着上古魂兽的秘密。',attr:{power:1.2,secret:1.5}}
       ];
 
     case 'godrealm': // 神界传说 - 神界时代
       return [
-        {id:'god_forest',env:'forest_edge',name:'神界森林',weight:25,color:'#44dd88',desc:'神界生态区，魂兽在此受神界法则庇护，可修炼成神兽。',attr:{power:1.2,divine:1.3}},
-        {id:'god_abyss',env:'dark',name:'神界深渊',weight:15,color:'#6644aa',desc:'神界边缘的深渊区域，暗属性魂兽聚集。',attr:{power:1.3,secret:1.4}},
-        {id:'god_realm',env:'forest_core',name:'神域秘境',weight:20,color:'#ffdd44',desc:'神界遗留的远古秘境，异兽横行。',attr:{power:1.4,divine:1.5}},
-        {id:'god_beast',env:'dragon',name:'神兽领域',weight:20,color:'#ff8844',desc:'神兽专属领地，只有最强大的魂兽才能踏足。',attr:{power:1.6,divine:1.6}},
-        {id:'god_sea',env:'sea',name:'神界天河',weight:10,color:'#4488ff',desc:'神界天河之水，水系神兽的栖息地。',attr:{power:1.1,divine:1.2}},
-        {id:'god_ice',env:'ice',name:'神界冰原',weight:10,color:'#88ddff',desc:'神界极寒之地，冰系神兽的修炼圣地。',attr:{power:1.2,divine:1.1}}
+        {id:'god_forest',name:'神界森林',weight:25,color:'#44dd88',desc:'神界生态区，魂兽在此受神界法则庇护，可修炼成神兽。',attr:{power:1.2,divine:1.3}},
+        {id:'god_abyss',name:'神界深渊',weight:15,color:'#6644aa',desc:'神界边缘的深渊区域，暗属性魂兽聚集。',attr:{power:1.3,secret:1.4}},
+        {id:'god_realm',name:'神域秘境',weight:20,color:'#ffdd44',desc:'神界遗留的远古秘境，异兽横行。',attr:{power:1.4,divine:1.5}},
+        {id:'god_beast',name:'神兽领域',weight:20,color:'#ff8844',desc:'神兽专属领地，只有最强大的魂兽才能踏足。',attr:{power:1.6,divine:1.6}},
+        {id:'god_sea',name:'神界天河',weight:10,color:'#4488ff',desc:'神界天河之水，水系神兽的栖息地。',attr:{power:1.1,divine:1.2}},
+        {id:'god_ice',name:'神界冰原',weight:10,color:'#88ddff',desc:'神界极寒之地，冰系神兽的修炼圣地。',attr:{power:1.2,divine:1.1}}
       ];
 
     default:
       return base;
-  }
-}
-
-// Filter birthplaces by race environment preferences
-function getRaceBirthplaces(timelineId, race){
-  let timelineBps = getBeastBirthplaces(timelineId);
-  let raceEnvs = race?.birthplaces || [];
-  if(raceEnvs.length === 0) return timelineBps;
-  let matching = timelineBps.filter(b => raceEnvs.includes(b.env));
-  return matching.length > 0 ? matching : timelineBps;
-}
-
-// Filter bloodlines by race bloodline preferences
-function getRaceBloodlines(race){
-  let raceBloodlineIds = race?.bloodlines || [];
-  if(raceBloodlineIds.length === 0) return BEAST_BLOODLINES;
-  let matching = BEAST_BLOODLINES.filter(b => raceBloodlineIds.includes(b.id));
-  return matching.length > 0 ? matching : BEAST_BLOODLINES;
-}
-
-// Common helper: apply timeline-based max level and age limits
-function applyTimelineLimits(g){
-  if(g.timeline.id==='douluo4'){g.maxLevel=150;g.maxAge=200;}
-  else if(g.timeline.id==='godrealm'){g.maxLevel=200;g.maxAge=999;}
-  else{g.maxLevel=99;g.maxAge=150;}
-}
-
-// Common helper: check if identity type is non-human (beast/god/divine_beast)
-function isNonHumanType(g){
-  return g.identityType === 'soul_beast' || g.identityType === 'god' || g.identityType === 'divine_beast';
-}
-
-// Common helper: random beast gender (beasts skip the gender wheel)
-function randomBeastGender(){
-  return Math.random()<0.5 ? {id:'male',name:'雄',desc:''} : {id:'female',name:'雌',desc:''};
-}
-
-// Human birthplaces: towns/cities per timeline
-function getHumanBirthplaces(timelineId){
-  switch(timelineId){
-    case 'douluo1':
-      return [
-        {id:'tiandou_city',name:'天斗城',weight:25,color:'#44aaff',desc:'天斗帝国首都，繁华鼎盛，天斗皇家学院的所在地。',attr:{power:1.0,wealth:1.3}},
-        {id:'xingluo_city',name:'星罗城',weight:20,color:'#ff8844',desc:'星罗帝国首都，尚武之风盛行，星罗皇家学院坐落于此。',attr:{power:1.1,risk:0.9}},
-        {id:'slime_town',name:'史莱克村',weight:15,color:'#88dd44',desc:'史莱克学院附近的小村庄，平静祥和，偶有奇遇。',attr:{power:0.9,fortune:1.3}},
-        {id:'nuoding_city',name:'诺丁城',weight:20,color:'#aa8844',desc:'中等规模的城市，诺丁学院所在地，唐三初入大陆的第一站。',attr:{power:1.0,risk:0.7}},
-        {id:'soto_city',name:'索托城',weight:10,color:'#cc8866',desc:'位于帝国边境的城市，鱼龙混杂，佣兵与魂师往来频繁。',attr:{power:1.0,risk:1.1}},
-        {id:'fasen_city',name:'法斯诺行省',weight:10,color:'#6699aa',desc:'天斗帝国行省，地处交通要道，商贸繁荣。',attr:{power:1.0,wealth:1.1}}
-      ];
-    case 'douluo2':
-      return [
-        {id:'tiandou_city',name:'天斗城',weight:20,color:'#44aaff',desc:'天斗帝国残存的都城，虽已衰落但仍是大城市。',attr:{power:1.0,wealth:1.1}},
-        {id:'riyue_city',name:'日月城',weight:25,color:'#ff4444',desc:'日月帝国首都，魂导器技术的中心，繁华而充满科技感。',attr:{power:1.2,tech:1.4}},
-        {id:'mingdu_city',name:'明都',weight:15,color:'#dd6622',desc:'日月帝国第二大城，明德堂所在地，魂导器研究的前沿。',attr:{power:1.1,tech:1.3}},
-        {id:'slime_town',name:'史莱克村',weight:15,color:'#88dd44',desc:'史莱克学院旁的小镇，世界级学府所在地，人才辈出。',attr:{power:1.0,fortune:1.3}},
-        {id:'xingluo_city',name:'星罗城',weight:15,color:'#ff8844',desc:'星罗帝国首都，白虎家族统治，尚武传统延续。',attr:{power:1.1,risk:0.9}},
-        {id:'tianling_city',name:'天灵城',weight:10,color:'#aa66ff',desc:'天魂帝国都城，灵冰广场闻名于世。',attr:{power:1.0,spirit:1.2}}
-      ];
-    case 'douluo3':
-      return [
-        {id:'tiandou_city',name:'天斗城',weight:20,color:'#44aaff',desc:'天斗帝国首都，千年后依旧繁华，史莱克学院在此设立分院。',attr:{power:1.0,wealth:1.2}},
-        {id:'donghai_city',name:'东海城',weight:20,color:'#44aaff',desc:'东海省省会，靠近海岸，唐舞麟成长的城市。',attr:{power:1.0,risk:1.0}},
-        {id:'slime_town',name:'史莱克镇',weight:25,color:'#88dd44',desc:'史莱克学院所在地，大陆最高学府，强者摇篮。',attr:{power:1.1,fortune:1.3}},
-        {id:'xingluo_city',name:'星罗城',weight:15,color:'#ff8844',desc:'星罗帝国首都，斗灵帝国灭亡后接收大量难民。',attr:{power:1.1,risk:0.9}},
-        {id:'tiandou_new',name:'天斗新城',weight:10,color:'#66ccff',desc:'天斗帝国新建的现代化城市，科技与修炼并存。',attr:{power:1.0,tech:1.1}},
-        {id:'douling_city',name:'斗灵城',weight:10,color:'#ddaa44',desc:'斗灵帝国故都，战乱后逐渐恢复，暗藏危机。',attr:{power:1.0,risk:1.2}}
-      ];
-    case 'douluo4':
-      return [
-        {id:'slime_town',name:'史莱克城',weight:25,color:'#88dd44',desc:'史莱克学院所在的超级城市，星际时代的精神堡垒。',attr:{power:1.1,fortune:1.3}},
-        {id:'tiandou_star',name:'天斗星城',weight:20,color:'#44aaff',desc:'天斗星首府，斗罗联邦的政治中心。',attr:{power:1.0,wealth:1.3}},
-        {id:'shrek_space',name:'史莱克太空城',weight:15,color:'#66ddff',desc:'环绕斗罗母星的太空城市，联邦军方基地。',attr:{power:1.2,tech:1.4}},
-        {id:'dragon_city',name:'龙城',weight:10,color:'#ff8800',desc:'龙界入口处的城市，龙族与人类交流的桥梁。',attr:{power:1.3,risk:1.1}},
-        {id:'longma_city',name:'龙马城',weight:10,color:'#dd44ff',desc:'龙马星系首府，外星文明与斗罗文明交汇之地。',attr:{power:1.2,alien:1.3}},
-        {id:'abyss_city',name:'深渊前线城',weight:5,color:'#664488',desc:'深渊通道前线的要塞城市，危机与机遇并存。',attr:{power:1.4,risk:1.5}}
-      ];
-    case 'godrealm':
-      return [
-        {id:'god_palace',name:'神界委员会',weight:20,color:'#ffdd44',desc:'神界最高权力机构所在地，众神议事之所。',attr:{power:1.3,divine:1.5}},
-        {id:'god_sea_city',name:'海神殿',weight:15,color:'#4488ff',desc:'海神唐三的居所，神界天河畔的圣殿。',attr:{power:1.2,divine:1.3}},
-        {id:'god_market',name:'神界集市',weight:25,color:'#88dd44',desc:'神界交易中心，各路神祇与神兽往来的繁华之地。',attr:{power:1.0,fortune:1.4}},
-        {id:'god_garden',name:'神界花园',weight:20,color:'#ff88aa',desc:'生命女神的花园，万物生长，灵气充沛。',attr:{power:1.1,divine:1.2}},
-        {id:'god_border',name:'神界边境',weight:10,color:'#aa6644',desc:'神界边缘区域，靠近凡界通道，偶有凡人飞升至此。',attr:{power:1.0,risk:1.1}},
-        {id:'god_arena',name:'神斗场',weight:10,color:'#ff6644',desc:'神界切磋武艺的竞技场，热血沸腾之地。',attr:{power:1.2,risk:1.0}}
-      ];
-    default:
-      return [
-        {id:'tiandou_city',name:'天斗城',weight:30,color:'#44aaff',desc:'天斗帝国首都，繁华鼎盛。',attr:{power:1.0,wealth:1.2}},
-        {id:'slime_town',name:'史莱克村',weight:20,color:'#88dd44',desc:'史莱克学院附近的村庄。',attr:{power:0.9,fortune:1.2}},
-        {id:'xingluo_city',name:'星罗城',weight:20,color:'#ff8844',desc:'星罗帝国首都。',attr:{power:1.1,risk:0.9}},
-        {id:'nuoding_city',name:'诺丁城',weight:15,color:'#aa8844',desc:'中等规模的城市。',attr:{power:1.0,risk:0.7}},
-        {id:'soto_city',name:'索托城',weight:15,color:'#cc8866',desc:'边境城市，鱼龙混杂。',attr:{power:1.0,risk:1.0}}
-      ];
   }
 }
 
@@ -1133,181 +1028,6 @@ const SOUL_EVOLUTIONS = {
   '_DEFAULT_BEAST_':{type:'suffix',stages:['王','皇','帝'],levels:[25,50,80],ages:[18,30,45],powers:[2,5,10],descs:['兽武魂血脉觉醒，进化为王者','兽武魂王血沸腾，进化为皇者','兽武魂达到帝级，统御一方']},
   '_DEFAULT_MUTANT_':{type:'suffix',stages:['·觉醒','·完全体','·神话'],levels:[30,60,90],ages:[20,35,50],powers:[3,6,10],descs:['变异武魂基因稳定，展现真正力量','变异武魂达到完全体，潜力全部释放','变异武魂进化为神话级，超越极限']}
 };
-
-// ============================================================
-// TRIGGER SYSTEM - 统一触发事件管理
-// ============================================================
-// Divine skill unlock thresholds (soul power levels that unlock each skill slot)
-const DIVINE_UNLOCK_THRESHOLDS = [10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200];
-
-const TRIGGER_REGISTRY = {
-  death_natural: {
-    priority: 10,
-    type: 'death',
-    check: () => {
-      if(!G.alive) return true;
-      let maxAge = G.maxAge;
-      if(G.soulPower >= 91) maxAge += 100;
-      if(G.soulPower >= 99) maxAge += 200;
-      if(G.soulPower >= 120) maxAge += 500;
-      return G.age > maxAge;
-    },
-    execute: () => {
-      G.alive = false;
-      G.deathReason = '寿终正寝';
-    }
-  },
-  
-  innate_zero_awakening: {
-    priority: 20,
-    type: 'normal',
-    check: () => G.innatePower === 0 && G.age === 12 && Math.random() < 0.1,
-    execute: () => {
-      G.innatePower = 3;
-      G.innateRating = '普通';
-      G.innateRatingColor = '#aaa';
-      return {type:'fortune', text:'<b style="color:var(--gold);">【觉醒】</b> 在一次意外中，你突然感受到了魂力的存在！后天觉醒成功，先天魂力3级！'};
-    }
-  },
-  
-  ring_milestone: {
-    priority: 30,
-    type: 'blocking',
-    check: () => {
-      if(isNonHumanType(G)) return false;
-      if(G.soulRings.length >= 9) return false;
-      let nextRingLevel = RING_MILESTONES[G.soulRings.length];
-      return G.soulPower >= nextRingLevel;
-    },
-    execute: () => {
-      return {type:'fortune', text:`<b style="color:var(--gold);">【突破】</b> 魂力达到${G.soulPower}级，突破瓶颈！需要猎杀第${G.soulRings.length+1}魂环...`, ringMilestone:true};
-    }
-  },
-  
-  divine_skill_unlock: {
-    priority: 40,
-    type: 'normal',
-    check: () => {
-      if(G.identityType !== 'god' && G.identityType !== 'divine_beast') return false;
-      if(!G.divineSkillsTotal) return false;
-      G.divineSkillsUnlocked = G.divineSkillsUnlocked || 0;
-      G.divineSkills = G.divineSkills || [];
-      let targetUnlocked = 0;
-      for(let lv of DIVINE_UNLOCK_THRESHOLDS){ if(G.soulPower >= lv) targetUnlocked++; else break; }
-      targetUnlocked = Math.min(targetUnlocked, G.divineSkillsTotal);
-      return targetUnlocked > G.divineSkillsUnlocked;
-    },
-    execute: () => {
-      let targetUnlocked = 0;
-      for(let lv of DIVINE_UNLOCK_THRESHOLDS){ if(G.soulPower >= lv) targetUnlocked++; else break; }
-      targetUnlocked = Math.min(targetUnlocked, G.divineSkillsTotal);
-      let newlyUnlocked = targetUnlocked - G.divineSkillsUnlocked;
-      let events = [];
-      for(let i=0; i<newlyUnlocked; i++){
-        let availableSkills = DIVINE_SKILL_POOL.filter(s => !G.divineSkills.some(ds => ds.name === s.name));
-        if(availableSkills.length === 0) break;
-        let newSkill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
-        G.divineSkills.push(newSkill);
-        G.divineSkillsUnlocked++;
-        events.push({type:'fortune', text:`<b style="color:var(--gold);">【神力觉醒】</b> 神力突破瓶颈，觉醒新技能：<b style="color:var(--cyan);">${newSkill.name}</b>！${newSkill.desc}。(${G.divineSkillsUnlocked}/${G.divineSkillsTotal})`});
-      }
-      return events;
-    }
-  },
-  
-  timeline_progress: {
-    priority: 50,
-    type: 'normal',
-    check: () => !!getTimelineProgressEvent(),
-    execute: () => {
-      let ev = getTimelineProgressEvent();
-      if(ev.sp) G.soulPower = Math.min(G.soulPower + ev.sp, G.maxLevel);
-      if(ev.merit) G.merit = (G.merit || 0) + ev.merit;
-      return {type:'fortune', text:ev.text};
-    }
-  },
-  
-  douluo_path: {
-    priority: 60,
-    type: 'blocking',
-    check: () => G.soulPower >= 91 && !G.chosenPath && G.identityType !== 'soul_beast',
-    execute: () => {
-      return {type:'fortune', text:'<b style="color:var(--gold);">【封号斗罗】</b> 你的修为突破90级，成为封号斗罗！是时候选择未来的道路了...', action:'showDouluoPath'};
-    }
-  },
-  
-  godhood: {
-    priority: 70,
-    type: 'blocking',
-    check: () => G.soulPower >= G.maxLevel && !G.isGod && G.identityType !== 'soul_beast' && G.chosenPath !== 'family',
-    execute: () => {
-      return {type:'fortune', text:'<b style="color:var(--gold);">【成神之路】</b> 你的修为已达到当前位面的极限，感应到了神位的召唤...', action:'showGodhood'};
-    }
-  },
-  
-  soul_evolution: {
-    priority: 80,
-    type: 'normal',
-    check: () => !!checkSoulEvolution(),
-    execute: () => {
-      let evo = checkSoulEvolution();
-      G.martialSoul.name = evo.newName;
-      G.martialSoul.example = evo.newName;
-      G.martialSoul.evolutionStage = evo.stage;
-      G.soulPower = Math.min(G.soulPower + evo.bonusPower, G.maxLevel);
-      return {type:'fortune', text:`<b style="color:var(--gold);">【武魂进化】</b> ${evo.desc} 武魂进化为「${evo.newName}」！魂力+${evo.bonusPower}级！`};
-    }
-  },
-  
-  soul_core: {
-    priority: 90,
-    type: 'normal',
-    check: () => {
-      if(isNonHumanType(G)) return false;
-      if(!G.martialSoul) return false;
-      return !!checkSoulCoreFormation();
-    },
-    execute: () => {
-      let ev = checkSoulCoreFormation();
-      G.soulCore++;
-      if(ev.core){ if(!Array.isArray(G.soulCores)) G.soulCores = []; G.soulCores.push(ev.core); }
-      if(ev.sp) G.soulPower = Math.min(G.soulPower + ev.sp, G.maxLevel);
-      return {type:'fortune', text:ev.text};
-    }
-  },
-  
-  year_event: {
-    priority: 100,
-    type: 'async',
-    check: () => true,
-    execute: () => ({action:'openYearWheel'})
-  }
-};
-
-function runTriggers(){
-  let triggers = Object.keys(TRIGGER_REGISTRY).sort((a,b) => TRIGGER_REGISTRY[a].priority - TRIGGER_REGISTRY[b].priority);
-  let results = [];
-  let action = null;
-  let stopped = false;
-  
-  for(let id of triggers){
-    let t = TRIGGER_REGISTRY[id];
-    if(!t.check()) continue;
-    
-    let result = t.execute();
-    if(result){
-      if(Array.isArray(result)) results.push(...result);
-      else if(result.action) action = result.action;
-      else results.push(result);
-    }
-    
-    if(t.type === 'death'){ stopped = true; break; }
-    if(t.type === 'blocking'){ stopped = true; break; }
-    if(t.type === 'async'){ stopped = true; break; }
-  }
-  
-  return {results, action, stopped};
-}
 
 function checkSoulEvolution(){
   if(!G || !G.martialSoul || !G.martialSoul.name) return null;
@@ -2065,419 +1785,419 @@ function getTimelineProgressEvent(){
 
 const TIMELINE_CHARACTERS = {
   douluo1:[
-    {name:'唐三',soul:'蓝银草 / 昊天锤',desc:'斗罗大陆的主角，双生武魂拥有者，史莱克七怪之首，唐门创始人。',color:'#4488ff',weight:12,ageRange:[6,30],locations:['xingdou_edge','luori','deep_sea','nuoding_city','slime_town'],events:[
+    {name:'唐三',soul:'蓝银草 / 昊天锤',desc:'斗罗大陆的主角，双生武魂拥有者，史莱克七怪之首，唐门创始人。',color:'#4488ff',weight:12,ageRange:[6,30],events:[
       {text:'你在诺丁学院遇到了正在修炼玄天功的唐三，他主动教你紫极魔瞳的入门方法。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return '魂力+1级';}},
       {text:'唐三邀请你加入史莱克七怪的特训，在大师玉小刚的魔鬼训练下，你的实战能力突飞猛进。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'你在天斗城偶遇唐三，他刚创建唐门，送你一枚唐门暗器"龙须针"图纸。',effect:(g)=>{g.gold=(g.gold||0)+50;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return '获得50金魂币，魂力+1级';}},
       {text:'唐三在落日森林修炼暗器，你旁观了他用"暗器百解"击落树上百步穿杨，对暗器之道有了新领悟。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+2级，名声+5';}},
       {text:'海神岛上，唐三正在接受海神九考，海神之光的余波让你受益匪浅。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return '魂力+3级';}}
     ]},
-    {name:'小舞',soul:'柔骨魅兔',desc:'十万年魂兽化形，唐三的挚爱，拥有柔骨绝技与虚无、爆杀八段摔。',color:'#ff66aa',weight:10,ageRange:[6,30],locations:['xingdou_edge','xingdou_core','slime_town'],events:[
+    {name:'小舞',soul:'柔骨魅兔',desc:'十万年魂兽化形，唐三的挚爱，拥有柔骨绝技与虚无、爆杀八段摔。',color:'#ff66aa',weight:10,ageRange:[6,30],events:[
       {text:'小舞在星斗大森林外围采灵草时遇到了你，她教你柔技中的腰弓入门。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return '魂力+1级';}},
       {text:'史莱克学院的操场上，小舞展示了她那令人惊叹的瞬移和无敌金身，你从中领悟了闪避的奥义。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'你偶遇正在卖烤兔腿的小舞，她请你吃了一顿，兔肉中蕴含的魂力让你精神一振。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.gold=(g.gold||0)+10;return '魂力+1级，获得10金魂币';}},
       {text:'小舞在月光下独舞，柔骨魅兔的天赋之美让你武魂产生共鸣。',effect:(g)=>{if(g.appearance){g.appearance={...g.appearance,attr:{...g.appearance.attr,charm:(g.appearance.attr?.charm||5)+1}};}return '魅力+1';}}
     ]},
-    {name:'戴沐白',soul:'邪眸白虎',desc:'星罗帝国皇子，史莱克七怪老大，强攻系战魂师，后继承太子之位。',color:'#ffdd44',weight:8,ageRange:[12,28],locations:['luori','mountain','xingluo_city','slime_town'],events:[
+    {name:'戴沐白',soul:'邪眸白虎',desc:'星罗帝国皇子，史莱克七怪老大，强攻系战魂师，后继承太子之位。',color:'#ffdd44',weight:8,ageRange:[12,28],events:[
       {text:'戴沐白正在大斗魂场以"邪眸白虎"之名战斗，你观战后对白虎金刚变有了新的理解。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'戴沐白带你进入星罗帝国的皇家猎场，与朱竹清联手展示幽冥白虎融合技，震撼全场。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+2级，名声+5';}},
       {text:'戴沐白请你喝酒，酒醉后讲述他逃离星罗皇宫的往事，你对皇权斗争有了警惕。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]},
-    {name:'奥斯卡',soul:'香肠',desc:'史莱克七怪中的食物系魂师，先天满魂力的天才，第一位食物系封号斗罗。',color:'#44ddff',weight:8,ageRange:[12,40],locations:['luori','mountain','slime_town'],events:[
+    {name:'奥斯卡',soul:'香肠',desc:'史莱克七怪中的食物系魂师，先天满魂力的天才，第一位食物系封号斗罗。',color:'#44ddff',weight:8,ageRange:[12,40],events:[
       {text:'奥斯卡递给你一根恢复大香肠，味道虽然一言难尽但效果惊人，你的魂力迅速恢复。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.gold=(g.gold||0)+20;return '魂力+1级，获得20金魂币';}},
       {text:'奥斯卡展示了他的第六魂技——镜像肠，你看到了复制的奇妙力量。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return '魂力+1级';}},
       {text:'奥斯卡正在研究新食谱，请你试吃亢奋粉红肠，全属性提升的感觉让你大呼过瘾。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}}
     ]},
-    {name:'马红俊',soul:'邪火凤凰',desc:'史莱克七怪之一，拥有变异武魂邪火凤凰，后净化为十首火凤凰。',color:'#ff4444',weight:8,ageRange:[12,28],locations:['luori','volcano','slime_town'],events:[
+    {name:'马红俊',soul:'邪火凤凰',desc:'史莱克七怪之一，拥有变异武魂邪火凤凰，后净化为十首火凤凰。',color:'#ff4444',weight:8,ageRange:[12,28],events:[
       {text:'马红俊的邪火失控暴走，你帮忙用冰属性魂力压制，事后他感激地传授你凤凰火线的修炼方法。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'马红俊带你去天斗城最好的酒楼"聚宝阁"大吃一顿，席间吹嘘他追白沉香的浪漫经历。',effect:(g)=>{g.gold=(g.gold||0)+20;return '获得20金魂币';}},
       {text:'马红俊展示了武魂进化后的七首火凤凰之力，凤凰领域让你感受到近乎不死的重生之力。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+2级，名声+5';}}
     ]},
-    {name:'宁荣荣',soul:'七宝琉璃塔',desc:'七宝琉璃宗小公主，辅助系魂师，奥斯卡的恋人，九层宝塔的强力辅助。',color:'#ffaa44',weight:8,ageRange:[12,28],locations:['luori','mountain','slime_town','tiandou_city'],events:[
+    {name:'宁荣荣',soul:'七宝琉璃塔',desc:'七宝琉璃宗小公主，辅助系魂师，奥斯卡的恋人，九层宝塔的强力辅助。',color:'#ffaa44',weight:8,ageRange:[12,28],events:[
       {text:'宁荣荣用九宝琉璃塔为你施展全属性增幅，增幅效果让你惊叹不已。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'宁荣荣的七宝琉璃塔在战斗中突然进化为九宝琉璃塔，进化之光波及到你，你的武魂品质有所提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return '魂力+3级';}},
       {text:'宁荣荣请你喝下午茶，席间讲述了七宝琉璃宗与武魂殿的恩怨。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]},
-    {name:'朱竹清',soul:'幽冥灵猫',desc:'星罗帝国贵族，速度型敏攻系魂师，戴沐白的未婚妻。',color:'#aa66ff',weight:7,ageRange:[12,28],locations:['luori','cave'],events:[
+    {name:'朱竹清',soul:'幽冥灵猫',desc:'星罗帝国贵族，速度型敏攻系魂师，戴沐白的未婚妻。',color:'#aa66ff',weight:7,ageRange:[12,28],events:[
       {text:'朱竹清在夜间独自修炼幽冥百爪，你暗中观摩她那快如闪电的暗杀技巧。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return '魂力+1级';}},
       {text:'朱竹清带你进行夜行训练，幽冥灵猫的隐匿身法让你对潜行有了全新认识。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+1级，名声+5';}},
       {text:'朱竹清讲述了她逃离星罗帝国朱家的经历，你对自由与家族的抉择有了更深理解。',effect:(g)=>{g.merit=(g.merit||0)+6;return '名声+6';}}
     ]},
-    {name:'唐昊',soul:'昊天锤',desc:'昊天斗罗，唐三之父，大陆最年轻的封号斗罗，曾为救阿银独战武魂殿。',color:'#444444',weight:7,ageRange:[10,50],locations:['xingdou_core','mountain','fasen_city'],events:[
+    {name:'唐昊',soul:'昊天锤',desc:'昊天斗罗，唐三之父，大陆最年轻的封号斗罗，曾为救阿银独战武魂殿。',color:'#444444',weight:7,ageRange:[10,50],events:[
       {text:'你在圣魂村的铁匠铺遇到了醉醺醺的唐昊，他随手一锤展示的昊天锤之力让你震撼不已。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return '魂力+3级';}},
       {text:'唐昊在瀑布下用大须弥锤法特训唐三，你在远处观摩，对昊天锤的炸环奥义有了初步领悟。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+2级，名声+5';}},
       {text:'唐昊讲述了他与阿银的故事，以及武魂殿的罪行，你对这个世界的残酷有了更深的认识。',effect:(g)=>{g.merit=(g.merit||0)+10;return '名声+10';}}
     ]},
-    {name:'独孤博',soul:'碧磷蛇皇',desc:'毒斗罗，以毒冠绝天下，后成为史莱克学院的客卿长老。',color:'#44ff44',weight:6,ageRange:[8,60],locations:['swamp','cave','nuoding_city'],events:[
+    {name:'独孤博',soul:'碧磷蛇皇',desc:'毒斗罗，以毒冠绝天下，后成为史莱克学院的客卿长老。',color:'#44ff44',weight:6,ageRange:[8,60],events:[
       {text:'独孤博带你前往冰火两仪眼，那里的仙草让你的体质大幅改善。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+2级，名声+5';}},
       {text:'独孤博教你辨识天下奇毒，你学会了碧磷蛇毒的基础运用。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+6;return '魂力+1级，名声+6';}},
       {text:'独孤博展示了碧磷蛇皇的恐怖群攻——毒气通过土地蔓延，方圆百米寸草不生。你对他避之不及的同时也学到了大规模杀伤的思路。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+3;return '魂力+1级，名声+3';}}
     ]},
-    {name:'比比东',soul:'死亡蛛皇 / 噬魂蛛皇',desc:'武魂殿教皇，双生武魂拥有者，当世巅峰强者之一，罗刹神传承者。',color:'#ff4444',weight:6,ageRange:[15,40],locations:['xingdou_core','cave','tiandou_city'],events:[
+    {name:'比比东',soul:'死亡蛛皇 / 噬魂蛛皇',desc:'武魂殿教皇，双生武魂拥有者，当世巅峰强者之一，罗刹神传承者。',color:'#ff4444',weight:6,ageRange:[15,40],events:[
       {text:'比比东在武魂城召见你，对你的天赋产生了兴趣，赐予你一枚武魂殿特制魂骨碎片。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return '魂力+3级';}},
       {text:'你拒绝了比比东的招揽，她冷冷地放你离开，但你守住了本心，内心更加坚定。',effect:(g)=>{g.merit=(g.merit||0)+15;return '名声+15';}},
       {text:'比比东展示了她双生武魂的恐怖——死亡蛛皇和噬魂蛛皇同时释放，黑暗气息笼罩全场。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}}
     ]},
-    {name:'千仞雪',soul:'六翼天使',desc:'武魂殿少主，天使神传承者，拥有神圣而强大的力量。',color:'#ffdd88',weight:6,ageRange:[9,30],locations:['luori','mountain','tiandou_city'],events:[
+    {name:'千仞雪',soul:'六翼天使',desc:'武魂殿少主，天使神传承者，拥有神圣而强大的力量。',color:'#ffdd88',weight:6,ageRange:[9,30],events:[
       {text:'你在天斗皇宫遇到了"大皇子雪清河"，她的天使之光让你感到温暖。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'千仞雪在武魂殿释放天使领域，天空为之变色，你在领域余波中感受到圣洁之力的洗礼。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+2级，名声+5';}},
       {text:'千仞雪跪在天使神殿前祈祷108天，你目睹了这一幕，被她的虔诚所震撼。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]},
-    {name:'波赛西',soul:'海神',desc:'海神岛大祭司，九十九级绝世斗罗，海神在人间的代言人。',color:'#4488ff',weight:5,ageRange:[18,35],locations:['deep_sea'],events:[
+    {name:'波赛西',soul:'海神',desc:'海神岛大祭司，九十九级绝世斗罗，海神在人间的代言人。',color:'#4488ff',weight:5,ageRange:[18,35],events:[
       {text:'波赛西引导你感受海神之光，海神的气息让你的精神力得到淬炼。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return '魂力+3级';}},
       {text:'波赛西带你潜入海神岛深海，海神岛的海底遗迹让你领悟了海洋之力的奥秘。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+2级，名声+5';}},
       {text:'波赛西讲述她与唐晨的故事，你感受到了跨越百年的爱情与执念。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]},
-    {name:'玉小刚',soul:'罗三炮',desc:'武魂理论界的大师，变异武魂罗三炮终身无法突破三十级，但提出"武魂十大核心竞争力"理论，唐三的启蒙恩师。',color:'#aa8844',weight:6,ageRange:[30,55],locations:['luori','mountain','nuoding_city','slime_town'],events:[
+    {name:'玉小刚',soul:'罗三炮',desc:'武魂理论界的大师，变异武魂罗三炮终身无法突破三十级，但提出"武魂十大核心竞争力"理论，唐三的启蒙恩师。',color:'#aa8844',weight:6,ageRange:[30,55],events:[
       {text:'玉小刚向你讲解武魂十大核心竞争力，你对武魂本质的理解豁然开朗。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return '魂力+1级，名声+5';}},
       {text:'玉小刚带你观察唐三的双生武魂，详细分析武魂兼容性的理论。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'玉小刚讲述他与比比东的往事，你被这段跨越身份与仇恨的师生情深深触动。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]},
-    {name:'弗兰德',soul:'四眼猫鹰',desc:'史莱克学院院长，武魂四眼猫鹰，七十八级敏攻系魂圣，以"只收怪物不收普通人"闻名。',color:'#4488aa',weight:6,ageRange:[35,55],locations:['luori','mountain','slime_town','soto_city'],events:[
+    {name:'弗兰德',soul:'四眼猫鹰',desc:'史莱克学院院长，武魂四眼猫鹰，七十八级敏攻系魂圣，以"只收怪物不收普通人"闻名。',color:'#4488aa',weight:6,ageRange:[35,55],events:[
       {text:'弗兰德院长亲自对你进行速度测试，四眼猫鹰的敏锐感知让你对战斗节奏有了新领悟。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'弗兰德带你参观史莱克学院的怪物训练营，那些训练方式让你大开眼界。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.gold=(g.gold||0)+30;return '魂力+1级，获得30金魂币';}},
       {text:'弗兰德讲述史莱克学院从无到有的创业史，你感受到了一位老院长对教育的热忱。',effect:(g)=>{g.merit=(g.merit||0)+6;return '名声+6';}}
     ]},
-    {name:'柳二龙',soul:'火龙',desc:'蓝电霸王龙家族旁支，变异武魂火龙，玉小刚的恋人，史莱克学院创始人之一，脾气暴躁但重情重义。',color:'#ff4444',weight:6,ageRange:[30,50],locations:['luori','volcano','slime_town'],events:[
+    {name:'柳二龙',soul:'火龙',desc:'蓝电霸王龙家族旁支，变异武魂火龙，玉小刚的恋人，史莱克学院创始人之一，脾气暴躁但重情重义。',color:'#ff4444',weight:6,ageRange:[30,50],events:[
       {text:'柳二龙在训练中暴怒，火龙武魂的烈焰险些烧到你的衣角，但你从中感受到了极致火焰的力量。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'柳二龙在月下独自饮酒，向你倾诉她与玉小刚跨越二十年的感情纠葛。',effect:(g)=>{g.merit=(g.merit||0)+7;return '名声+7';}},
       {text:'柳二龙以火龙之力为你淬炼体魄，高温灼烧后的经脉变得更加坚韧。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.maxLevel=Math.min(g.maxLevel+1,150);return '魂力+2级，魂力上限+1';}}
     ]},
-    {name:'赵无极',soul:'大力金刚熊',desc:'史莱克学院副院长，武魂大力金刚熊，七十六级强攻系魂圣，以强悍的防御和力量著称。',color:'#664422',weight:6,ageRange:[30,50],locations:['luori','mountain','slime_town'],events:[
+    {name:'赵无极',soul:'大力金刚熊',desc:'史莱克学院副院长，武魂大力金刚熊，七十六级强攻系魂圣，以强悍的防御和力量著称。',color:'#664422',weight:6,ageRange:[30,50],events:[
       {text:'赵无极以大力金刚熊的熊掌对你进行力量测试，你切身体会到了什么叫"不动明王"。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '魂力+2级';}},
       {text:'赵无极在斗魂场示范重力控制技巧，你学到了如何在重压下保持身体平衡。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+4;return '魂力+1级，名声+4';}},
       {text:'赵无极讲述当年被唐昊暴打三天三夜的经历，那位昊天斗罗的恐怖让你不寒而栗。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]}
   ],
   douluo2:[
-    {name:'霍雨浩',soul:'灵眸 / 冰碧帝皇蝎',desc:'绝世唐门主角，精神系与冰系双生武魂的天才魂师，情绪之神传承者。',color:'#44ddff',weight:12,ageRange:[11,26],locations:['xingdou_edge','jibei','mingdu','slime_town','riyue_city'],events:[
+    {name:'霍雨浩',soul:'灵眸 / 冰碧帝皇蝎',desc:'绝世唐门主角，精神系与冰系双生武魂的天才魂师，情绪之神传承者。',color:'#44ddff',weight:12,ageRange:[11,26],events:[
       {text:'霍雨浩在星斗大森林用精神探测与你共享视野，极北之地的极致冰寒也影响到了你，但你受益匪浅。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'霍雨浩带你去明德堂参观魂导器，十级魂导师的杰作让你对魂导科技大开眼界。',effect:(g)=>{g.gold=(g.gold||0)+60;g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'gold+60, sp+2';}},
       {text:'霍雨浩的天梦冰蚕与你交流精神力的运用，你感到精神之海在缓缓扩大。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}}
     ]},
-    {name:'唐舞桐',soul:'光明龙神蝶 / 昊天锤',desc:'唐三与小舞之女，拥有光明女神蝶与昊天锤双生武魂，后继承蝶神神位。',color:'#ff66aa',weight:10,ageRange:[10,26],locations:['xingdou_edge','mingdu','slime_town','tiandou_city'],events:[
+    {name:'唐舞桐',soul:'光明龙神蝶 / 昊天锤',desc:'唐三与小舞之女，拥有光明女神蝶与昊天锤双生武魂，后继承蝶神神位。',color:'#ff66aa',weight:10,ageRange:[10,26],events:[
       {text:'唐舞桐（王冬儿）带你翱翔天际，光明龙神蝶的光辉让你魂力产生奇异共鸣。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'唐舞桐用昊天锤为你演示乱披风锤法，那是唐门绝学的精髓。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+2, merit+5';}},
       {text:'唐舞桐在海神缘上展露女儿身，光明女神蝶的美丽让你为之倾倒，你的武魂因之振奋。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}}
     ]},
-    {name:'贝贝',soul:'光明圣龙',desc:'唐门大师兄，史莱克七怪队长，拥有光明圣龙武魂，后成为龙神斗罗。',color:'#ffdd44',weight:8,ageRange:[12,26],locations:['xingdou_edge','luori','slime_town'],events:[
+    {name:'贝贝',soul:'光明圣龙',desc:'唐门大师兄，史莱克七怪队长，拥有光明圣龙武魂，后成为龙神斗罗。',color:'#ffdd44',weight:8,ageRange:[12,26],events:[
       {text:'贝贝以史莱克七怪队长身份指点你修炼，龙皇破邪裂的龙族威压让你受益匪浅。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'贝贝带你参观重建中的唐门，讲述了唐门万年的兴衰史。',effect:(g)=>{g.merit=(g.merit||0)+8;g.gold=(g.gold||0)+20;return 'merit+8, gold+20';}},
       {text:'贝贝传授你唐门绝学中的控鹤擒龙手，这招近身格斗技在实战中极为实用。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}}
     ]},
-    {name:'马小桃',soul:'邪火凤凰',desc:'史莱克内院弟子，拥有邪火凤凰武魂，后净化为黑凤凰，成为凤凰斗罗。',color:'#ff4444',weight:8,ageRange:[14,26],locations:['luori','volcano','slime_town'],events:[
+    {name:'马小桃',soul:'邪火凤凰',desc:'史莱克内院弟子，拥有邪火凤凰武魂，后净化为黑凤凰，成为凤凰斗罗。',color:'#ff4444',weight:8,ageRange:[14,26],events:[
       {text:'马小桃的凤凰穿云击在你面前划破长空，极致之火的热浪让你的武魂为之震动。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'马小桃在邪火失控时你帮忙用冰水泼醒她，事后她对你心存感激，教你修炼火系魂技。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+2, merit+5';}},
       {text:'马小桃展示了武魂进化后的黑凤凰之力，凤凰涅槃的壮观景象让你震撼。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+3;return 'sp+1, merit+3';}}
     ]},
-    {name:'和菜头',soul:'雪茄',desc:'日月帝国前太子，后成为唐门成员，食物系魂导师。',color:'#44aa44',weight:7,ageRange:[12,26],locations:['mingdu','mingdu_city','riyue_city'],events:[
+    {name:'和菜头',soul:'雪茄',desc:'日月帝国前太子，后成为唐门成员，食物系魂导师。',color:'#44aa44',weight:7,ageRange:[12,26],events:[
       {text:'和菜头送你几枚自制的定装魂导炮弹，"当食物系魂师也能火力全开"。',effect:(g)=>{g.gold=(g.gold||0)+35;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+35, sp+1';}},
       {text:'和菜头教你制作基础魂导器，日月帝国的魂导技术果然精妙。',effect:(g)=>{g.gold=(g.gold||0)+30;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+30, sp+1';}},
       {text:'和菜头向你坦白了他的真实身份——日月帝国前太子徐和，你被他的隐忍所感动。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}}
     ]},
-    {name:'玄老',soul:'饕餮神牛',desc:'史莱克学院海神阁宿老，后成为海神阁阁主，九十九级极限斗罗。',color:'#aa8844',weight:7,ageRange:[8,60],locations:['xingdou_core','mountain','slime_town'],events:[
+    {name:'玄老',soul:'饕餮神牛',desc:'史莱克学院海神阁宿老，后成为海神阁阁主，九十九级极限斗罗。',color:'#aa8844',weight:7,ageRange:[8,60],events:[
       {text:'玄老一边啃鸡腿一边指点你修炼，饕餮神牛的力量灌入你体内，魂力暴涨。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return 'sp+3';}},
       {text:'玄老带你前往明斗山脉剿灭邪魂师盗匪，实战中的饕餮之怒让你见识了封号斗罗的恐怖。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+2, merit+5';}},
       {text:'玄老在兽潮中凭一己之力战平帝天，你远观此战后对封号斗罗的境界有了全新认知。',effect:(g)=>{g.merit=(g.merit||0)+10;return 'merit+10';}}
     ]},
-    {name:'穆老',soul:'光明圣龙',desc:'史莱克学院海神阁前阁主，龙神斗罗穆恩，九十九级极限斗罗。',color:'#ffdd88',weight:6,ageRange:[8,60],locations:['luori','xingdou_edge','slime_town'],events:[
+    {name:'穆老',soul:'光明圣龙',desc:'史莱克学院海神阁前阁主，龙神斗罗穆恩，九十九级极限斗罗。',color:'#ffdd88',weight:6,ageRange:[8,60],events:[
       {text:'穆老在黄金树下为你灌顶，光明圣龙之力洗涤你的身心，邪气尽消。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return 'sp+3';}},
       {text:'穆老传授你自创战技"君临天下"的入门心法，物理与精神攻击融合的奥义让你大开眼界。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+8;return 'sp+2, merit+8';}},
       {text:'穆老讲述了百年前与龙逍遥、叶夕水的三角往事，你对那个时代的爱恨纠葛感慨万千。',effect:(g)=>{g.merit=(g.merit||0)+10;return 'merit+10';}}
     ]},
-    {name:'王冬',soul:'昊天锤',desc:'霍雨浩的室友兼挚友，唐舞桐的女扮男装身份，拥有昊天锤武魂。',color:'#ff88aa',weight:8,ageRange:[11,26],locations:['xingdou_edge','luori','slime_town'],events:[
+    {name:'王冬',soul:'昊天锤',desc:'霍雨浩的室友兼挚友，唐舞桐的女扮男装身份，拥有昊天锤武魂。',color:'#ff88aa',weight:8,ageRange:[11,26],events:[
       {text:'王冬在宿舍中与你切磋，昊天锤的霸道力量让你印象深刻。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'王冬带你到海神湖畔，施展昊天锤乱披风锤法，你的武魂根基得到巩固。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'王冬与你并肩作战，双人武魂融合技的雏形让你们之间的默契大增。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}}
     ]},
-    {name:'王秋儿',soul:'黄金龙枪',desc:'十万年魂兽黄金龙化形，拥有强大的龙族血脉，对霍雨浩情深意重。',color:'#ffdd44',weight:8,ageRange:[14,26],locations:['xingdou_core','cave','slime_town','xingluo_city'],events:[
+    {name:'王秋儿',soul:'黄金龙枪',desc:'十万年魂兽黄金龙化形，拥有强大的龙族血脉，对霍雨浩情深意重。',color:'#ffdd44',weight:8,ageRange:[14,26],events:[
       {text:'王秋儿以黄金龙枪横扫战场，金龙之力的霸道让你热血沸腾。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'王秋儿教你黄金龙枪的基础运用，龙族秘技的力量让你受益匪浅。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+2, merit+5';}},
       {text:'王秋儿讲述了她对霍雨浩的感情，那份不求回报的付出让你感动不已。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}}
     ]},
-    {name:'徐三石',soul:'玄冥龟',desc:'史莱克七怪之一，防御型魂师，拥有玄冥龟武魂，后进化为玄武。',color:'#44aa44',weight:7,ageRange:[12,26],locations:['deep_sea','luori'],events:[
+    {name:'徐三石',soul:'玄冥龟',desc:'史莱克七怪之一，防御型魂师，拥有玄冥龟武魂，后进化为玄武。',color:'#44aa44',weight:7,ageRange:[12,26],events:[
       {text:'徐三石展示玄冥龟的绝对防御，玄武之盾的坚固让你叹为观止。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'徐三石教你玄冥龟的防御技巧，你的抗击打能力大幅提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'徐三石讲述他与江楠楠之间的感情故事，厚脸皮的追爱方式让你忍俊不禁。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'江楠楠',soul:'柔骨魅兔',desc:'史莱克七怪之一，敏攻系魂师，徐三石的恋人，拥有柔骨魅兔武魂。',color:'#ff66aa',weight:7,ageRange:[12,26],locations:['xingdou_edge','luori','slime_town'],events:[
+    {name:'江楠楠',soul:'柔骨魅兔',desc:'史莱克七怪之一，敏攻系魂师，徐三石的恋人，拥有柔骨魅兔武魂。',color:'#ff66aa',weight:7,ageRange:[12,26],events:[
       {text:'江楠楠以柔骨魅兔的灵动身法为你演示闪避技巧，速度与柔韧的结合让你大开眼界。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'江楠楠教你柔技中的腰弓入门，腰腹力量得到显著提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+3;return 'sp+1, merit+3';}},
       {text:'江楠楠分享了她在史莱克学院的成长经历，激励你不断前进。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'萧萧',soul:'九凤来仪箫 / 三生镇魂鼎',desc:'史莱克七怪之一，双生武魂拥有者，辅助与控制兼备的全面型魂师。',color:'#aa66ff',weight:7,ageRange:[11,26],locations:['luori','xingdou_edge','slime_town'],events:[
+    {name:'萧萧',soul:'九凤来仪箫 / 三生镇魂鼎',desc:'史莱克七怪之一，双生武魂拥有者，辅助与控制兼备的全面型魂师。',color:'#aa66ff',weight:7,ageRange:[11,26],events:[
       {text:'萧萧以九凤来仪箫吹奏一曲，悦耳的箫声中魂力缓缓流淌，你的精神力得到滋养。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'萧萧展示三生镇魂鼎的镇压之力，一鼎镇三生的气势让你震撼。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'萧萧与你合奏一曲，音律与魂力的共鸣让你们对武魂的理解更加深刻。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+4;return 'sp+1, merit+4';}}
     ]},
-    {name:'橘子',soul:'光明女神蝶',desc:'日月帝国太子妃，拥有光明女神蝶武魂，才华横溢的战术家和魂导师。',color:'#ff8844',weight:7,ageRange:[14,28],locations:['mingdu','mingdu_city','riyue_city'],events:[
+    {name:'橘子',soul:'光明女神蝶',desc:'日月帝国太子妃，拥有光明女神蝶武魂，才华横溢的战术家和魂导师。',color:'#ff8844',weight:7,ageRange:[14,28],events:[
       {text:'橘子向你展示日月帝国的魂导科技，她对魂导器的理解让你大开眼界。',effect:(g)=>{g.gold=(g.gold||0)+30;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+30, sp+1';}},
       {text:'橘子讲述她在日月帝国宫廷中的经历，你对权力斗争的残酷有了更深的理解。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}},
       {text:'橘子以光明女神蝶的领域之力为你加持，暖金色的光芒中你的魂力活跃起来。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}}
     ]},
-    {name:'戴华斌',soul:'邪眸白虎',desc:'星罗帝国皇子，戴沐白的后裔，拥有邪眸白虎武魂，性格高傲。',color:'#ffdd44',weight:6,ageRange:[12,26],locations:['luori','mountain','xingluo_city','slime_town'],events:[
+    {name:'戴华斌',soul:'邪眸白虎',desc:'星罗帝国皇子，戴沐白的后裔，拥有邪眸白虎武魂，性格高傲。',color:'#ffdd44',weight:6,ageRange:[12,26],events:[
       {text:'戴华斌以邪眸白虎的威压挑衅你，一场激战后你们互相认可了对方的实力。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'戴华斌展示白虎金刚变，白虎之力让你感受到星罗皇室血脉的强大。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'戴华斌放下高傲与你交谈，讲述了他对星罗帝国的责任感。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'王冬儿',soul:'光明女神蝶',desc:'唐舞桐的化名，以女儿身行走大陆时使用的身份，与霍雨浩有着不解之缘。',color:'#ff88aa',weight:7,ageRange:[12,26],locations:['xingdou_edge','luori','slime_town'],events:[
+    {name:'王冬儿',soul:'光明女神蝶',desc:'唐舞桐的化名，以女儿身行走大陆时使用的身份，与霍雨浩有着不解之缘。',color:'#ff88aa',weight:7,ageRange:[12,26],events:[
       {text:'王冬儿以光明女神蝶的绚丽光彩吸引你的目光，蝶翼翩翩中你的武魂产生共鸣。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'王冬儿教你光明女神蝶的光系魂技基础运用，你对光元素的理解大幅提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'王冬儿与你分享她的心事，那份隐藏身份的无奈让你心生同情。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'轩梓文',soul:'九级魂导核心',desc:'明德堂首席魂导师，九级魂导师，魂导器领域的巅峰人物。',color:'#44aaff',weight:6,ageRange:[18,50],locations:['mingdu','mingdu_city','riyue_city'],events:[
+    {name:'轩梓文',soul:'九级魂导核心',desc:'明德堂首席魂导师，九级魂导师，魂导器领域的巅峰人物。',color:'#44aaff',weight:6,ageRange:[18,50],events:[
       {text:'轩梓文向你展示九级魂导器的威力，魂导科技的巅峰之作让你叹为观止。',effect:(g)=>{g.gold=(g.gold||0)+50;g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'gold+50, sp+2';}},
       {text:'轩梓文教你魂导核心的制作原理，你对魂导器的理解更加深入。',effect:(g)=>{g.gold=(g.gold||0)+40;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+40, sp+1';}},
       {text:'轩梓文讲述了他与霍雨浩在魂导研究上的合作经历，天才的碰撞让你深受启发。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+4;return 'sp+1, merit+4';}}
     ]},
-    {name:'张乐萱',soul:'月神',desc:'史莱克学院内院弟子，日辰斗罗，拥有月神武魂，史莱克七怪之一。',color:'#88aaff',weight:6,ageRange:[14,28],locations:['luori','xingdou_edge','slime_town'],events:[
+    {name:'张乐萱',soul:'月神',desc:'史莱克学院内院弟子，日辰斗罗，拥有月神武魂，史莱克七怪之一。',color:'#88aaff',weight:6,ageRange:[14,28],events:[
       {text:'张乐萱以月神之力为你展示月华之光，清冷的月光中你的魂力更加精纯。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'张乐萱指导你如何在夜间修炼，月华之力对魂力的滋养效果极佳。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'张乐萱讲述了她与贝贝之间的感情，那份含蓄而深沉的爱让你感动。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'梦红尘',soul:'红尘眷恋',desc:'日月帝国公主，笑红尘的妹妹，拥有红尘眷恋武魂，天性活泼。',color:'#ff6688',weight:6,ageRange:[14,26],locations:['mingdu','mingdu_city','riyue_city'],events:[
+    {name:'梦红尘',soul:'红尘眷恋',desc:'日月帝国公主，笑红尘的妹妹，拥有红尘眷恋武魂，天性活泼。',color:'#ff6688',weight:6,ageRange:[14,26],events:[
       {text:'梦红尘用红尘眷恋向你施展魅惑之力，你险些沦陷在她的风情之中。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'梦红尘带你参观日月皇宫，帝国的繁华让你大开眼界。',effect:(g)=>{g.gold=(g.gold||0)+30;return 'gold+30';}},
       {text:'梦红尘讲述她与哥哥笑红尘在日月帝国的成长经历，皇室子女的酸甜苦辣让你感慨。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'笑红尘',soul:'火龙王',desc:'日月帝国皇子，梦红尘的哥哥，拥有火龙王武魂，天才魂导师。',color:'#ff4444',weight:6,ageRange:[14,26],locations:['mingdu','volcano','mingdu_city','riyue_city'],events:[
+    {name:'笑红尘',soul:'火龙王',desc:'日月帝国皇子，梦红尘的哥哥，拥有火龙王武魂，天才魂导师。',color:'#ff4444',weight:6,ageRange:[14,26],events:[
       {text:'笑红尘以火龙王之力向你展示火龙咆哮，烈焰滔天中你感受到龙族的威严。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'笑红尘与你切磋魂导器实战运用，日月帝国的魂导战术让你受益匪浅。',effect:(g)=>{g.gold=(g.gold||0)+25;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+25, sp+1';}},
       {text:'笑红尘讲述了他们兄妹的野心与抱负，你对日月帝国的未来有了新的认识。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'娜娜',soul:'冰元素',desc:'来自极北之地的冰系魂师，拥有强大的冰元素掌控力，后成为传灵塔高层。',color:'#88ddff',weight:5,ageRange:[16,30],locations:['jibei','tianling_city','slime_town'],events:[
+    {name:'娜娜',soul:'冰元素',desc:'来自极北之地的冰系魂师，拥有强大的冰元素掌控力，后成为传灵塔高层。',color:'#88ddff',weight:5,ageRange:[16,30],events:[
       {text:'娜娜以极北冰原的冰元素之力为你淬炼体魄，极寒之气让你的意志更加坚定。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'娜娜教你冰系魂技的进阶运用，冰元素在你手中变得更加得心应手。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'娜娜讲述了她来自极北之地的身世，那份孤独与坚韧让你心生敬意。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]}
   ],
   douluo3:[
-    {name:'唐舞麟',soul:'蓝银草 / 金龙王',desc:'龙王传说主角，表面武魂为蓝银草，实际体内封印金龙王之力，拥有恐怖的肉身力量，后继承海神与毁灭神位。',color:'#4488ff',weight:12,ageRange:[6,28],locations:['luori','deep_sea','dragon_valley','donghai_city','slime_town'],events:[
+    {name:'唐舞麟',soul:'蓝银草 / 金龙王',desc:'龙王传说主角，表面武魂为蓝银草，实际体内封印金龙王之力，拥有恐怖的肉身力量，后继承海神与毁灭神位。',color:'#4488ff',weight:12,ageRange:[6,28],events:[
       {text:'唐舞麟在锻造台上挥汗如雨，九级神匠的手艺让你叹为观止，他送你一块有灵合金。',effect:(g)=>{g.gold=(g.gold||0)+50;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+50, sp+1';}},
       {text:'唐舞麟展示金龙九式，金龙王血脉的力量让你感受到龙族的威压与荣耀。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'唐舞麟邀请你加入血神军团，在血神大阵中修炼，你的魂力在阵法加持下大幅提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return 'sp+3';}}
     ]},
-    {name:'古月娜',soul:'银龙王 / 元素掌控',desc:'魂兽共主银龙王化形，拥有掌控元素的恐怖能力，后分裂为古月和娜儿两个人格，唐舞麟的恋人。',color:'#aa66ff',weight:10,ageRange:[10,28],locations:['spirit_tower','dragon_valley','deep_sea','slime_town','douling_city'],events:[
+    {name:'古月娜',soul:'银龙王 / 元素掌控',desc:'魂兽共主银龙王化形，拥有掌控元素的恐怖能力，后分裂为古月和娜儿两个人格，唐舞麟的恋人。',color:'#aa66ff',weight:10,ageRange:[10,28],events:[
       {text:'古月娜向你展示了七元素同时操控的恐怖能力，火水风土光暗空间在你面前交织。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'古月娜带你前往传灵塔参观魂灵体系，你对魂兽与人类的共存方式有了新的认识。',effect:(g)=>{g.merit=(g.merit||0)+8;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'merit+8, sp+1';}},
       {text:'古月娜与唐舞麟施展武魂融合技"龙神变"，金银双色龙神之力让你血脉沸腾。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return 'sp+3';}}
     ]},
-    {name:'谢邂',soul:'光龙匕 / 影龙匕',desc:'唐舞麟的挚友，双生器武魂拥有者，敏攻系魂师，时空之龙传承者。',color:'#44ddff',weight:8,ageRange:[10,28],locations:['luori','mountain','donghai_city','slime_town'],events:[
+    {name:'谢邂',soul:'光龙匕 / 影龙匕',desc:'唐舞麟的挚友，双生器武魂拥有者，敏攻系魂师，时空之龙传承者。',color:'#44ddff',weight:8,ageRange:[10,28],events:[
       {text:'谢邂用光龙匕和影龙匕的融合技"双龙风暴"为你演示敏攻系的速度极限。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'谢邂教你唐门敏堂的隐匿身法，鬼影迷踪步的精妙让你受益匪浅。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'谢邂在北方军团的实战中展示了进化后的时空之龙之力，穿越刺的瞬间移动让你叹为观止。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}}
     ]},
-    {name:'原恩夜辉',soul:'泰坦巨猿 / 堕落天使',desc:'史莱克七怪之一，双生武魂，拥有强大的力量和黑暗属性。',color:'#662266',weight:8,ageRange:[14,28],locations:['cave','dragon_valley','slime_town'],events:[
+    {name:'原恩夜辉',soul:'泰坦巨猿 / 堕落天使',desc:'史莱克七怪之一，双生武魂，拥有强大的力量和黑暗属性。',color:'#662266',weight:8,ageRange:[14,28],events:[
       {text:'原恩夜辉以泰坦巨猿之拳震碎大地，泰坦神拳的刚猛让你感受到力量型魂师的霸道。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'原恩夜辉展示了堕落天使的恶魔之眼领域，黑暗与光明的双重属性让你武魂产生共鸣。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'原恩夜辉讲述了泰坦巨猿二明与母亲的故事，你对魂兽与人类的跨界之恋感慨万千。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}}
     ]},
-    {name:'云冥',soul:'擎天枪',desc:'史莱克学院海神阁阁主，擎天斗罗，当世最强者之一。',color:'#ffdd44',weight:7,ageRange:[8,50],locations:['luori','mountain','slime_town'],events:[
+    {name:'云冥',soul:'擎天枪',desc:'史莱克学院海神阁阁主，擎天斗罗，当世最强者之一。',color:'#ffdd44',weight:7,ageRange:[8,50],events:[
       {text:'云冥以擎天枪为你演示"一枪擎天"的绝技，准神级的战力让你感受到天地的震颤。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return 'sp+3';}},
       {text:'云冥讲述史莱克学院万年传承的历史，你的心中涌起一股莫名的使命感。',effect:(g)=>{g.merit=(g.merit||0)+10;return 'merit+10';}},
       {text:'云冥在圣灵教袭击中用擎天枪硬挡九级定装魂导炮弹，枪杆断裂的瞬间你感受到了他守护学院的决意。',effect:(g)=>{g.merit=(g.merit||0)+12;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'merit+12, sp+1';}}
     ]},
-    {name:'圣灵斗罗雅莉',soul:'祈愿天使',desc:'史莱克学院海神阁副阁主，大陆最强治疗系魂师。',color:'#ffddff',weight:6,ageRange:[8,50],locations:['luori','slime_town'],events:[
+    {name:'圣灵斗罗雅莉',soul:'祈愿天使',desc:'史莱克学院海神阁副阁主，大陆最强治疗系魂师。',color:'#ffddff',weight:6,ageRange:[8,50],events:[
       {text:'雅莉用祈愿天使的力量为你治愈暗伤，第九魂技"群体祈愿天使"的光辉让你焕然一新。',effect:(g)=>{g.maxAge=(g.maxAge||100)+15;g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'maxAge+15, sp+2';}},
       {text:'雅莉讲述了她为云冥守候百年的故事，你对纯粹的爱情充满敬意。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}},
       {text:'雅莉教你感知生命之力的方法，你对魂力运行的理解更加深入。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}}
     ]},
-    {name:'许小言',soul:'星辰锁链',desc:'史莱克七怪之一，控制系魂师，拥有星辰锁链武魂，擅长星象之力。',color:'#8888ff',weight:7,ageRange:[10,26],locations:['luori','jibei','donghai_city','slime_town'],events:[
+    {name:'许小言',soul:'星辰锁链',desc:'史莱克七怪之一，控制系魂师，拥有星辰锁链武魂，擅长星象之力。',color:'#8888ff',weight:7,ageRange:[10,26],events:[
       {text:'许小言以星辰锁链向你展示星象占卜，星辰之力对你的命运产生了微妙影响。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'许小言教你利用星辰之力修炼，夜空下的冥想让你的魂力更加精纯。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'许小言为你占卜未来，模糊的星象中你看到了自己命运的蛛丝马迹。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}}
     ]},
-    {name:'叶星澜',soul:'星神剑',desc:'史莱克七怪之一，强攻系魂师，拥有星神剑武魂，星辰剑法出神入化。',color:'#aaccff',weight:7,ageRange:[12,26],locations:['luori','mountain','slime_town'],events:[
+    {name:'叶星澜',soul:'星神剑',desc:'史莱克七怪之一，强攻系魂师，拥有星神剑武魂，星辰剑法出神入化。',color:'#aaccff',weight:7,ageRange:[12,26],events:[
       {text:'叶星澜以星神剑施展星辰剑法，星光璀璨中剑气纵横，让你对剑道有了新的领悟。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'叶星澜指导你剑法基础，一招一式中蕴含着星辰的轨迹。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'叶星澜讲述她在星罗村的童年往事，那段艰苦的修炼岁月让你深受触动。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'徐笠智',soul:'包子',desc:'史莱克七怪之一，食物系魂师，拥有包子武魂，性格憨厚老实。',color:'#44aa44',weight:6,ageRange:[12,26],locations:['luori','deep_sea','slime_town','donghai_city'],events:[
+    {name:'徐笠智',soul:'包子',desc:'史莱克七怪之一，食物系魂师，拥有包子武魂，性格憨厚老实。',color:'#44aa44',weight:6,ageRange:[12,26],events:[
       {text:'徐笠智递给你一个热腾腾的恢复大包子，食物中蕴含的魂力让你精神大振。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.gold=(g.gold||0)+10;return 'sp+1, gold+10';}},
       {text:'徐笠智展示了他的包子武魂的多种效果，食物系魂师的辅助能力让你叹为观止。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'徐笠智与你分享他的人生哲学，知足常乐的心态让你在修行路上更加从容。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'乐正宇',soul:'神圣天使',desc:'史莱克七怪之一，拥有神圣天使武魂，来自神圣家族，拥有强大的光明之力。',color:'#ffdd88',weight:7,ageRange:[12,26],locations:['luori','mountain','slime_town'],events:[
+    {name:'乐正宇',soul:'神圣天使',desc:'史莱克七怪之一，拥有神圣天使武魂，来自神圣家族，拥有强大的光明之力。',color:'#ffdd88',weight:7,ageRange:[12,26],events:[
       {text:'乐正宇以神圣天使的光明之力为你洗礼，圣光驱散了你体内的杂质。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'乐正宇展示神圣天使的审判之剑，光明与正义的力量让你心生敬畏。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'乐正宇讲述神圣家族的使命，那份守护光明的责任让你感动。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'龙跃',soul:'山龙王',desc:'史莱克学院内院弟子，拥有山龙王武魂，力量型魂师，史莱克七怪之一。',color:'#44aa44',weight:6,ageRange:[14,28],locations:['dragon_valley','mountain','xingluo_city'],events:[
+    {name:'龙跃',soul:'山龙王',desc:'史莱克学院内院弟子，拥有山龙王武魂，力量型魂师，史莱克七怪之一。',color:'#44aa44',weight:6,ageRange:[14,28],events:[
       {text:'龙跃以山龙王之力震碎大地，恐怖的肉身力量让你感受到龙族的霸道。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'龙跃教你山龙王的防御技巧，你的身体强度得到显著提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'龙跃讲述他与原恩夜辉之间的羁绊，那份跨越武魂对立的情感让你动容。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'戴云儿',soul:'灵眸',desc:'星罗帝国公主，拥有灵眸武魂，精神系魂师，性格活泼可爱。',color:'#ff88aa',weight:6,ageRange:[12,24],locations:['luori','mountain','xingluo_city'],events:[
+    {name:'戴云儿',soul:'灵眸',desc:'星罗帝国公主，拥有灵眸武魂，精神系魂师，性格活泼可爱。',color:'#ff88aa',weight:6,ageRange:[12,24],events:[
       {text:'戴云儿以灵眸之力与你进行精神交流，精神力的碰撞让你对精神魂技有了新的认识。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'戴云儿带你游览星罗皇宫，帝国的繁华与底蕴让你大开眼界。',effect:(g)=>{g.gold=(g.gold||0)+30;return 'gold+30';}},
       {text:'戴云儿讲述她与唐舞麟在星罗帝国的往事，那段充满欢笑的回忆让你心情愉悦。',effect:(g)=>{g.merit=(g.merit||0)+4;return 'merit+4';}}
     ]},
-    {name:'司马金驰',soul:'魔剑',desc:'史莱克学院海神阁成员，拥有魔剑武魂，九十八级超级斗罗。',color:'#6644aa',weight:6,ageRange:[18,50],locations:['dragon_valley','cave','tiandou_city'],events:[
+    {name:'司马金驰',soul:'魔剑',desc:'史莱克学院海神阁成员，拥有魔剑武魂，九十八级超级斗罗。',color:'#6644aa',weight:6,ageRange:[18,50],events:[
       {text:'司马金驰以魔剑演示剑意，凌厉的剑气让你对剑道有了全新的理解。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'司马金驰指导你实战剑术，一招一式皆是杀伐之道。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'司马金驰讲述他追随唐舞麟征战四方的经历，那段热血岁月让你心驰神往。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}}
     ]},
-    {name:'陈瑛',soul:'碧磷蛇',desc:'史莱克学院内院弟子，用毒高手，拥有碧磷蛇武魂，独孤博的传人。',color:'#44ff44',weight:5,ageRange:[14,26],locations:['luori','douling_city'],events:[
+    {name:'陈瑛',soul:'碧磷蛇',desc:'史莱克学院内院弟子，用毒高手，拥有碧磷蛇武魂，独孤博的传人。',color:'#44ff44',weight:5,ageRange:[14,26],events:[
       {text:'陈瑛教你辨识天下奇毒，碧磷蛇的毒功虽然凶险但极为实用。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'陈瑛展示了碧磷蛇的毒雾领域，你从中领悟了以毒攻毒的战斗思路。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'陈瑛讲述她与毒打交道的经历，那份在毒中求生的坚韧让你敬佩。',effect:(g)=>{g.merit=(g.merit||0)+4;return 'merit+4';}}
     ]},
-    {name:'舞长空',soul:'冰霜龙',desc:'史莱克学院外院教师，谢邂的导师，拥有冰霜龙武魂，冷傲而强大。',color:'#88ddff',weight:6,ageRange:[18,40],locations:['luori','mountain','slime_town'],events:[
+    {name:'舞长空',soul:'冰霜龙',desc:'史莱克学院外院教师，谢邂的导师，拥有冰霜龙武魂，冷傲而强大。',color:'#88ddff',weight:6,ageRange:[18,40],events:[
       {text:'舞长空以冰霜龙之力为你演示冰系魂技，极寒之气让你对冰元素有了更深的理解。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'舞长空指导你剑法修炼，他冷傲的教学风格虽严格但效果显著。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'舞长空讲述了他与圣灵教的恩怨，那份刻骨铭心的仇恨让你对邪魂师更加警惕。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}}
     ]},
-    {name:'圣灵教教主',soul:'死神',desc:'圣灵教最高领袖，九十九级极限斗罗，拥有死神武魂，斗罗大陆的黑暗面。',color:'#442222',weight:5,ageRange:[20,60],locations:['cave','swamp','douling_city'],events:[
+    {name:'圣灵教教主',soul:'死神',desc:'圣灵教最高领袖，九十九级极限斗罗，拥有死神武魂，斗罗大陆的黑暗面。',color:'#442222',weight:5,ageRange:[20,60],events:[
       {text:'圣灵教教主以死神之力笼罩四野，死亡的阴影让你感受到前所未有的压迫感。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'你与圣灵教教主交手，虽然不敌但侥幸逃脱，生死边缘的感悟让魂力突破。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);g.merit=(g.merit||0)+10;return 'sp+3, merit+10';}},
       {text:'圣灵教教主向你展示死神镰刀的恐怖，那毁灭一切的力量让你心有余悸。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}}
     ]},
-    {name:'冻千秋',soul:'魔魂大白鲨',desc:'来自精灵星的魂兽公主，魔魂大白鲨化形，蓝轩宇的红颜知己。',color:'#44aaff',weight:7,ageRange:[8,25],locations:['deep_sea','donghai_city'],events:[
+    {name:'冻千秋',soul:'魔魂大白鲨',desc:'来自精灵星的魂兽公主，魔魂大白鲨化形，蓝轩宇的红颜知己。',color:'#44aaff',weight:7,ageRange:[8,25],events:[
       {text:'冻千秋带你游览精灵星的深海，魔魂大白鲨领地中的美景让你流连忘返。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'冻千秋教你冰系魂技的海洋运用，海与冰的融合之力让你大开眼界。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'冻千秋讲述她与蓝轩宇在精灵星的初遇，那段跨越种族的缘分让你感动。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'蓝佛子',soul:'蓝魔龙',desc:'龙族强者，拥有蓝魔龙武魂，唐舞麟在龙谷中结识的伙伴。',color:'#4488ff',weight:5,ageRange:[20,60],locations:['deep_sea','donghai_city'],events:[
+    {name:'蓝佛子',soul:'蓝魔龙',desc:'龙族强者，拥有蓝魔龙武魂，唐舞麟在龙谷中结识的伙伴。',color:'#4488ff',weight:5,ageRange:[20,60],events:[
       {text:'蓝佛子以蓝魔龙之力为你展示龙族秘技，龙族的传承让你对力量有了新的理解。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'蓝佛子讲述龙谷的历史，龙族的辉煌与衰落让你感慨万千。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}},
       {text:'蓝佛子教你龙族语言的入门，龙语中的力量密码让你受益匪浅。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}}
     ]},
-    {name:'阿如恒',soul:'泰坦巨猿',desc:'泰坦巨猿一族的强者，继承泰坦血脉，拥有恐怖的肉身力量。',color:'#886644',weight:5,ageRange:[18,50],locations:['dragon_valley','cave','tiandou_new'],events:[
+    {name:'阿如恒',soul:'泰坦巨猿',desc:'泰坦巨猿一族的强者，继承泰坦血脉，拥有恐怖的肉身力量。',color:'#886644',weight:5,ageRange:[18,50],events:[
       {text:'阿如恒以泰坦巨猿之力与你角力，纯力量的碰撞让你热血沸腾。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'阿如恒教你泰坦一族的炼体术，你的肉身强度得到显著提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'阿如恒讲述泰坦巨猿一族的传承，那份对力量的执着让你深受启发。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'韩泽',soul:'破魂枪',desc:'史莱克学院内院弟子，拥有破魂枪武魂，强攻系魂师，性格坚毅。',color:'#8866aa',weight:5,ageRange:[14,26],locations:['luori','mountain','slime_town','donghai_city'],events:[
+    {name:'韩泽',soul:'破魂枪',desc:'史莱克学院内院弟子，拥有破魂枪武魂，强攻系魂师，性格坚毅。',color:'#8866aa',weight:5,ageRange:[14,26],events:[
       {text:'韩泽以破魂枪演示枪法，枪出如龙的气势让你对枪道有了新的认识。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'韩泽与你切磋枪法，实战中的经验教训让你的战斗技巧更加纯熟。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+4;return 'sp+1, merit+4';}},
       {text:'韩泽讲述他在史莱克学院的求学经历，那份坚持不懈的精神让你敬佩。',effect:(g)=>{g.merit=(g.merit||0)+4;return 'merit+4';}}
     ]}
   ],
   douluo4:[
-    {name:'蓝轩宇',soul:'水元素掌控 / 金银龙王双血脉',desc:'终极斗罗主角，觉醒水元素掌控，后续觉醒金银龙王双血脉，龙神血脉继承者，天龙首座之子，拥有创造与毁灭的双重力量。',color:'#4488ff',weight:12,ageRange:[6,25],locations:['douluo_star','dragon_world','deep_sea','slime_town','shrek_space'],events:[
+    {name:'蓝轩宇',soul:'水元素掌控 / 金银龙王双血脉',desc:'终极斗罗主角，觉醒水元素掌控，后续觉醒金银龙王双血脉，龙神血脉继承者，天龙首座之子，拥有创造与毁灭的双重力量。',color:'#4488ff',weight:12,ageRange:[6,25],events:[
       {text:'蓝轩宇的金银双色龙神血脉与你产生共鸣，九元素之力在你体内隐隐涌动。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return 'sp+3';}},
       {text:'蓝轩宇带你参观史莱克学院母星的战舰，星际时代的科技让你大开眼界。',effect:(g)=>{g.gold=(g.gold||0)+40;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+40, sp+1';}},
       {text:'蓝轩宇展示"元素剥离"魂技，你亲眼看到敌人的元素护罩被一层层剥离。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+2, merit+5';}}
     ]},
-    {name:'白秀秀',soul:'深渊冰魔龙',desc:'蓝轩宇的伴侣，由魔魂大白鲨化形为深渊冰魔龙，后天龙族成员。',color:'#44ddff',weight:10,ageRange:[8,25],locations:['deep_sea','dragon_world','slime_town'],events:[
+    {name:'白秀秀',soul:'深渊冰魔龙',desc:'蓝轩宇的伴侣，由魔魂大白鲨化形为深渊冰魔龙，后天龙族成员。',color:'#44ddff',weight:10,ageRange:[8,25],events:[
       {text:'白秀秀带你潜入深海的魔魂大白鲨领地，冰潮魂技在海底爆发，美丽而致命。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'白秀秀与蓝轩宇施展武魂融合技"深蓝凝视"，万年暗黑魔虎级别的强敌被瞬间冻结。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+2, merit+5';}},
       {text:'白秀秀讲述她从魔魂大白鲨化形的经历，你对魂兽化形有了更深的理解。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'唐乐',soul:'金龙王',desc:'蓝轩宇之父，实为唐舞麟失忆后的身份，星际时代的传奇歌手与强者。',color:'#ffdd44',weight:10,ageRange:[10,40],locations:['douluo_star','dragon_world','slime_town','tiandou_star'],events:[
+    {name:'唐乐',soul:'金龙王',desc:'蓝轩宇之父，实为唐舞麟失忆后的身份，星际时代的传奇歌手与强者。',color:'#ffdd44',weight:10,ageRange:[10,40],events:[
       {text:'唐乐在你面前弹奏那首"灵魂歌神"级别的曲子，金龙王的记忆碎片在旋律中涌动。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return 'sp+3';}},
       {text:'唐乐教你锻造之术，九级神匠的技法让你受益匪浅。',effect:(g)=>{g.gold=(g.gold||0)+50;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+50, sp+1';}},
       {text:'唐乐带你去星际演唱会，全场观众在他的歌声中魂力共振，你也受益匪浅。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}}
     ]},
-    {name:'娜娜',soul:'银龙王',desc:'蓝轩宇之母，实为古月娜失忆后的身份，古武系教师。',color:'#aa66ff',weight:9,ageRange:[10,40],locations:['douluo_star','longma','longma_city'],events:[
+    {name:'娜娜',soul:'银龙王',desc:'蓝轩宇之母，实为古月娜失忆后的身份，古武系教师。',color:'#aa66ff',weight:9,ageRange:[10,40],events:[
       {text:'娜娜用元素掌控力教你基础古武，她的教学方法与传统截然不同，效果却极好。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'娜娜在教导你时银色蝎子辫微微发光，银龙王残留的元素之力让你武魂产生共鸣。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'娜娜讲述了她模糊记忆中关于"重要的人"的碎片，你感受到她内心深处的牵挂。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'钱磊',soul:'召唤金钱',desc:'蓝轩宇的挚友，拥有召唤武魂，能召唤强大的魂兽作战。',color:'#ffaa22',weight:7,ageRange:[8,25],locations:['douluo_star','slime_town'],events:[
+    {name:'钱磊',soul:'召唤金钱',desc:'蓝轩宇的挚友，拥有召唤武魂，能召唤强大的魂兽作战。',color:'#ffaa22',weight:7,ageRange:[8,25],events:[
       {text:'钱磊开启召唤之门，冻千秋的冰系力量从门中涌出，你第一次见到召唤系的实战威力。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'钱磊向你展示第二魂技"复刻"，完美复制了你的一个魂技并反手释放。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'钱磊请你吃了一顿大餐，席间讲述他在天罗初等学院垫底的糗事。',effect:(g)=>{g.gold=(g.gold||0)+20;g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'gold+20, sp+1';}}
     ]},
-    {name:'冻千秋',soul:'魔魂大白鲨',desc:'蓝轩宇最初的伙伴之一，魔魂大白鲨公主，后成为白秀秀的一部分。',color:'#44aaff',weight:7,ageRange:[8,25],locations:['deep_sea','douluo_star','slime_town'],events:[
+    {name:'冻千秋',soul:'魔魂大白鲨',desc:'蓝轩宇最初的伙伴之一，魔魂大白鲨公主，后成为白秀秀的一部分。',color:'#44aaff',weight:7,ageRange:[8,25],events:[
       {text:'冻千秋带你游览天斗星的冰原，极寒环境中的冰系魂技修炼让她游刃有余。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'冻千秋讲述她失去记忆后在人类世界的孤独，你对她产生了同情。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}},
       {text:'冻千秋教你冰系魂技的基础运用，你对冰元素的控制有了初步掌握。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}}
     ]},
-    {name:'刘锋',soul:'白龙枪',desc:'蓝轩宇的挚友，拥有白龙枪武魂，敏攻系魂师，史莱克七怪之一。',color:'#4488ff',weight:7,ageRange:[8,25],locations:['douluo_star','slime_town'],events:[
+    {name:'刘锋',soul:'白龙枪',desc:'蓝轩宇的挚友，拥有白龙枪武魂，敏攻系魂师，史莱克七怪之一。',color:'#4488ff',weight:7,ageRange:[8,25],events:[
       {text:'刘锋以白龙枪展示枪法，银龙枪出如流星，速度与精准的结合让你大开眼界。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'刘锋教你白龙枪的刺击技巧，你的枪法基础得到巩固。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+4;return 'sp+1, merit+4';}},
       {text:'刘锋讲述他与蓝轩宇在天罗初等学院相识的往事，真挚的友情让你感动。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'原恩辉辉',soul:'泰坦巨猿 / 堕落天使',desc:'原恩夜辉的后代，拥有泰坦巨猿与堕落天使双武魂，天赋异禀。',color:'#662266',weight:7,ageRange:[10,28],locations:['douluo_star','dragon_world','slime_town'],events:[
+    {name:'原恩辉辉',soul:'泰坦巨猿 / 堕落天使',desc:'原恩夜辉的后代，拥有泰坦巨猿与堕落天使双武魂，天赋异禀。',color:'#662266',weight:7,ageRange:[10,28],events:[
       {text:'原恩辉辉以泰坦巨猿之拳展示力量，大地震颤中你感受到泰坦血脉的霸道。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'原恩辉辉展示堕落天使的黑暗之力，光与暗的交织让你对武魂属性有了新的理解。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'原恩辉辉讲述家族传承的故事，那份跨越万年的血脉羁绊让你感慨。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'蓝梦琴',soul:'玉凰琴',desc:'蓝轩宇的伙伴，拥有玉凰琴武魂，辅助系魂师，琴音中蕴含治愈与攻击之力。',color:'#88ddff',weight:6,ageRange:[8,25],locations:['douluo_star','spirit_star','slime_town','tiandou_star'],events:[
+    {name:'蓝梦琴',soul:'玉凰琴',desc:'蓝轩宇的伙伴，拥有玉凰琴武魂，辅助系魂师，琴音中蕴含治愈与攻击之力。',color:'#88ddff',weight:6,ageRange:[8,25],events:[
       {text:'蓝梦琴以玉凰琴弹奏一曲，优美的琴音中你的魂力得到滋养。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'蓝梦琴展示玉凰琴的治愈之力，琴音所到之处伤势尽愈。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}},
       {text:'蓝梦琴与你合奏，音律与魂力的共鸣让你对武魂的理解更加深刻。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+3;return 'sp+1, merit+3';}}
     ]},
-    {name:'唐雨格',soul:'五行龙',desc:'蓝轩宇的伙伴，拥有五行龙武魂，能掌控五行元素，天赋卓绝。',color:'#ffaa44',weight:7,ageRange:[10,25],locations:['douluo_star','slime_town'],events:[
+    {name:'唐雨格',soul:'五行龙',desc:'蓝轩宇的伙伴，拥有五行龙武魂，能掌控五行元素，天赋卓绝。',color:'#ffaa44',weight:7,ageRange:[10,25],events:[
       {text:'唐雨格以五行龙之力展示五行轮转，金木水火土的循环让你对元素法则有了新的领悟。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'唐雨格教你五行相生相克之理，你对元素的理解更加全面。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+5;return 'sp+1, merit+5';}},
       {text:'唐雨格讲述她与蓝轩宇在龙马星系的冒险，星际探险的故事让你心驰神往。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'唐震华',soul:'星际战舰',desc:'史莱克学院星际系教师，蓝轩宇的导师，顶尖的星际战术家。',color:'#4488cc',weight:6,ageRange:[20,50],locations:['douluo_star','space','shrek_space','tiandou_star'],events:[
+    {name:'唐震华',soul:'星际战舰',desc:'史莱克学院星际系教师，蓝轩宇的导师，顶尖的星际战术家。',color:'#4488cc',weight:6,ageRange:[20,50],events:[
       {text:'唐震华带你进行星际航行模拟训练，你对星际战舰的操作有了初步了解。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'唐震华讲授星际战术，太空中的战斗方式与传统魂师对决截然不同。',effect:(g)=>{g.merit=(g.merit||0)+8;return 'merit+8';}},
       {text:'唐震华讲述他在联邦军方的经历，星际时代的战争残酷让你深思。',effect:(g)=>{g.merit=(g.merit||0)+6;return 'merit+6';}}
     ]},
-    {name:'肖启',soul:'天圣裂渊',desc:'史莱克学院教师，蓝轩宇的班主任，拥有天圣裂渊武魂，深不可测。',color:'#8866aa',weight:6,ageRange:[20,45],locations:['douluo_star','slime_town'],events:[
+    {name:'肖启',soul:'天圣裂渊',desc:'史莱克学院教师，蓝轩宇的班主任，拥有天圣裂渊武魂，深不可测。',color:'#8866aa',weight:6,ageRange:[20,45],events:[
       {text:'肖启以天圣裂渊之力为你展示剑法，剑意滔天中你感受到他的强大。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'肖启指导你修炼基础，他的教学方式严谨而高效。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'肖启讲述他作为教师的理念，那份对学生的责任心让你感动。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'白凌霜',soul:'冰霜巨龙',desc:'白秀秀的族人，拥有冰霜巨龙武魂，龙族强者，性格冷傲。',color:'#88ddff',weight:5,ageRange:[18,40],locations:['longma','abyss','longma_city','abyss_city'],events:[
+    {name:'白凌霜',soul:'冰霜巨龙',desc:'白秀秀的族人，拥有冰霜巨龙武魂，龙族强者，性格冷傲。',color:'#88ddff',weight:5,ageRange:[18,40],events:[
       {text:'白凌霜以冰霜巨龙之力展示龙族冰系魂技，极寒龙息让你对冰元素有了更深的理解。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'白凌霜教你龙族冰系秘法，你的冰系魂技威力大增。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'白凌霜讲述龙族在星际时代的生存之道，种族的存续让你深思。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'李娜',soul:'银月',desc:'史莱克学院教师，古武系导师，拥有银月武魂，擅长近身格斗。',color:'#aaaaff',weight:5,ageRange:[18,40],locations:['longma','longma_city'],events:[
+    {name:'李娜',soul:'银月',desc:'史莱克学院教师，古武系导师，拥有银月武魂，擅长近身格斗。',color:'#aaaaff',weight:5,ageRange:[18,40],events:[
       {text:'李娜以银月之力展示古武技巧，月华般的拳法让你对近身战斗有了新的认识。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'李娜指导你古武基础，一招一式皆是实战精华。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);g.merit=(g.merit||0)+4;return 'sp+1, merit+4';}},
       {text:'李娜讲述她在史莱克学院的教学生涯，那份对古武传承的热爱让你敬佩。',effect:(g)=>{g.merit=(g.merit||0)+4;return 'merit+4';}}
     ]},
-    {name:'羽沐曦',soul:'神圣天使',desc:'史莱克学院内院弟子，拥有神圣天使武魂，光明系魂师，乐正宇的后裔。',color:'#ffdd88',weight:5,ageRange:[12,26],locations:['douluo_star','longma','shrek_space','tiandou_star'],events:[
+    {name:'羽沐曦',soul:'神圣天使',desc:'史莱克学院内院弟子，拥有神圣天使武魂，光明系魂师，乐正宇的后裔。',color:'#ffdd88',weight:5,ageRange:[12,26],events:[
       {text:'羽沐曦以神圣天使之光为你洗礼，光明的力量驱散了你体内的暗伤。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'羽沐曦展示神圣天使的治愈之力，圣光所至万物复苏。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}},
       {text:'羽沐曦讲述神圣家族的传承使命，那份守护光明的责任让你动容。',effect:(g)=>{g.merit=(g.merit||0)+4;return 'merit+4';}}
     ]},
-    {name:'凌梓晨',soul:'时空之龙',desc:'史莱克学院内院天才，拥有时空之龙武魂，掌控时间与空间之力。',color:'#aa66ff',weight:5,ageRange:[12,26],locations:['douluo_star','slime_town'],events:[
+    {name:'凌梓晨',soul:'时空之龙',desc:'史莱克学院内院天才，拥有时空之龙武魂，掌控时间与空间之力。',color:'#aa66ff',weight:5,ageRange:[12,26],events:[
       {text:'凌梓晨以时空之龙之力展示时间减速，时空的扭曲让你对法则之力有了初步认识。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'凌梓晨教你时空之力的基础运用，你对空间的理解更加深入。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'凌梓晨讲述她与时空之龙武魂的渊源，那份掌控时空的使命感让你敬佩。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]},
-    {name:'龙当当',soul:'龙神变',desc:'龙族后裔，拥有龙神变武魂，龙族血脉纯正，实力强大。',color:'#ffdd44',weight:5,ageRange:[14,30],locations:['dragon_world','longma','dragon_city','longma_city'],events:[
+    {name:'龙当当',soul:'龙神变',desc:'龙族后裔，拥有龙神变武魂，龙族血脉纯正，实力强大。',color:'#ffdd44',weight:5,ageRange:[14,30],events:[
       {text:'龙当当以龙神变之力展示龙族秘技，龙神血脉的威压让你感受到龙族的强大。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return 'sp+2';}},
       {text:'龙当当教你龙族炼体术，你的肉身强度得到显著提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+1,g.maxLevel);return 'sp+1';}},
       {text:'龙当当讲述龙族的历史与荣耀，那份对龙族复兴的渴望让你感动。',effect:(g)=>{g.merit=(g.merit||0)+5;return 'merit+5';}}
     ]}
   ],
   godrealm:[
-    {name:'海神唐三',soul:'海神三叉戟 / 修罗神',desc:'已飞升神界的唐三，海神与修罗神双神位拥有者，神界执法者。',color:'#4488ff',weight:12,locations:['god_realm','god_sea','god_palace','god_sea_city'],events:[
+    {name:'海神唐三',soul:'海神三叉戟 / 修罗神',desc:'已飞升神界的唐三，海神与修罗神双神位拥有者，神界执法者。',color:'#4488ff',weight:12,events:[
       {text:'海神唐三亲自指点你，神界法则的力量让你脱胎换骨。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+5,g.maxLevel);return '魂力+5级（神之指点）';}},
       {text:'唐三向你展示海神三叉戟的十大能力，每一件都足以毁天灭地。',effect:(g)=>{g.merit=(g.merit||0)+15;return '名声+15';}}
     ]},
-    {name:'小舞（神后）',soul:'修罗剑鞘',desc:'与唐三共用神位的神后，温柔而强大的存在，修罗神的剑鞘。',color:'#ff66aa',weight:10,locations:['god_realm','god_forest','god_palace','god_garden'],events:[
+    {name:'小舞（神后）',soul:'修罗剑鞘',desc:'与唐三共用神位的神后，温柔而强大的存在，修罗神的剑鞘。',color:'#ff66aa',weight:10,events:[
       {text:'神后小舞以生命之力为你治愈暗伤，你的修为更加稳固。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return '魂力+3级';}},
       {text:'小舞讲述她与唐三在神界的日常，神界也有温馨的一面。',effect:(g)=>{g.maxAge=(g.maxAge||100)+10;return '寿命+10年';}}
     ]},
-    {name:'善良之神',soul:'善良之心',desc:'神界五大神王之一，掌控善良法则的至高存在，与邪恶之神共同管理神界。',color:'#ffdd88',weight:7,locations:['god_realm','god_palace','god_market'],events:[
+    {name:'善良之神',soul:'善良之心',desc:'神界五大神王之一，掌控善良法则的至高存在，与邪恶之神共同管理神界。',color:'#ffdd88',weight:7,events:[
       {text:'善良之神赐予你一丝善良之力，你的内心变得更加纯粹。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);g.merit=(g.merit||0)+10;return '魂力+3级，名声+10';}},
       {text:'善良之神向你展示神界的美好面，万物生长、生机盎然。',effect:(g)=>{g.maxAge=(g.maxAge||100)+15;return '寿命+15年';}}
     ]},
-    {name:'邪恶之神',soul:'审判天平',desc:'神界五大神王之一，掌控邪恶与审判的至高存在，性格桀骜不驯。',color:'#664488',weight:7,locations:['god_abyss','god_realm','god_palace','god_arena'],events:[
+    {name:'邪恶之神',soul:'审判天平',desc:'神界五大神王之一，掌控邪恶与审判的至高存在，性格桀骜不驯。',color:'#664488',weight:7,events:[
       {text:'邪恶之神考验你的意志，在审判天平前你证明了自己的价值。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+4,g.maxLevel);return '魂力+4级（通过考验）';}},
       {text:'邪恶之神向你展示神界的黑暗面，弱肉强食是永恒的法则。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]},
-    {name:'毁灭之神',soul:'毁灭权杖',desc:'神界五大神王之一，掌控毁灭法则的至高存在，与生命女神为伴侣。',color:'#aa2288',weight:8,locations:['god_abyss','god_realm','god_palace','god_arena'],events:[
+    {name:'毁灭之神',soul:'毁灭权杖',desc:'神界五大神王之一，掌控毁灭法则的至高存在，与生命女神为伴侣。',color:'#aa2288',weight:8,events:[
       {text:'毁灭之神向你展示了毁灭的真谛，力量与毁灭仅在一念之间。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+4,g.maxLevel);return '魂力+4级';}},
       {text:'你卷入了毁灭之神与唐三的权力纷争，险些成为牺牲品。',effect:(g)=>{if(Math.random()<0.5){g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '侥幸脱身，魂力+2级';}else{g.soulPower=Math.max(g.soulPower-2,1);return '被波及受伤，魂力-2级';}}}
     ]},
-    {name:'生命女神',soul:'生命之树',desc:'神界五大神王之一，掌控生命法则的至高存在，毁灭之神的妻子。',color:'#44ff88',weight:8,locations:['god_forest','god_realm','god_garden','god_market'],events:[
+    {name:'生命女神',soul:'生命之树',desc:'神界五大神王之一，掌控生命法则的至高存在，毁灭之神的妻子。',color:'#44ff88',weight:8,events:[
       {text:'生命女神赐予你生命精华，你的生命力得到极大提升。',effect:(g)=>{g.maxAge=(g.maxAge||100)+20;g.soulPower=Math.min(g.soulPower+2,g.maxLevel);return '寿命+20年，魂力+2级';}},
       {text:'生命女神讲述她与毁灭之神的爱情故事，神界也有温情。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]},
-    {name:'情绪之神霍雨浩',soul:'情绪之神',desc:'已飞升神界的霍雨浩，一级神祇情绪之神，唐三的女婿。',color:'#44ddff',weight:8,locations:['god_realm','god_forest','god_palace','god_market'],events:[
+    {name:'情绪之神霍雨浩',soul:'情绪之神',desc:'已飞升神界的霍雨浩，一级神祇情绪之神，唐三的女婿。',color:'#44ddff',weight:8,events:[
       {text:'情绪之神以七种情绪之力为你洗礼，你的精神力达到新的高度。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+4,g.maxLevel);return '魂力+4级';}},
       {text:'霍雨浩讲述他在神界与舞桐的生活，以及岳父唐三的"关照"。',effect:(g)=>{g.merit=(g.merit||0)+10;return '名声+10';}}
     ]},
-    {name:'唐舞麟（金龙王）',soul:'金龙王 / 海神',desc:'已飞升神界的唐舞麟，海神与毁灭神双神位拥有者，蓝轩宇之父。',color:'#ffdd44',weight:7,locations:['god_beast','god_realm','god_palace','god_arena'],events:[
+    {name:'唐舞麟（金龙王）',soul:'金龙王 / 海神',desc:'已飞升神界的唐舞麟，海神与毁灭神双神位拥有者，蓝轩宇之父。',color:'#ffdd44',weight:7,events:[
       {text:'唐舞麟以金龙王之力为你淬炼肉身，你的身体强度堪比神兽。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+4,g.maxLevel);return '魂力+4级';}},
       {text:'唐舞麟讲述他与古月娜在神界的重逢，万年等待终有回报。',effect:(g)=>{g.maxAge=(g.maxAge||100)+15;return '寿命+15年';}}
     ]},
-    {name:'七原罪神·贪食之神',soul:'饕餮之胃',desc:'毁灭之神麾下七大原罪神之一，代表贪食的原罪。',color:'#aa6644',weight:5,locations:['god_abyss','god_arena'],events:[
+    {name:'七原罪神·贪食之神',soul:'饕餮之胃',desc:'毁灭之神麾下七大原罪神之一，代表贪食的原罪。',color:'#aa6644',weight:5,events:[
       {text:'贪食之神邀请你品尝神界珍馐，食物中蕴含的神力让你修为大涨。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+2,g.maxLevel);g.gold=(g.gold||0)+50;return '魂力+2级，金币+50';}},
       {text:'贪食之神的饕餮之胃险些将你也吞进去！',effect:(g)=>{if(Math.random()<0.7){return '侥幸逃脱';}else{g.soulPower=Math.max(g.soulPower-2,1);return '被吞噬部分神力，魂力-2级';}}}
     ]},
-    {name:'七元素神·火神',soul:'火焰神格',desc:'神界七大元素神之首，掌控火焰元素的一级神祇。',color:'#ff4422',weight:5,locations:['god_realm','god_palace','god_arena'],events:[
+    {name:'七元素神·火神',soul:'火焰神格',desc:'神界七大元素神之首，掌控火焰元素的一级神祇。',color:'#ff4422',weight:5,events:[
       {text:'火神以神火为你淬炼神格，你的火系能力大幅提升。',effect:(g)=>{g.soulPower=Math.min(g.soulPower+3,g.maxLevel);return '魂力+3级';}},
       {text:'火神与你切磋，火焰的力量让你对元素法则有了更深的理解。',effect:(g)=>{g.merit=(g.merit||0)+8;return '名声+8';}}
     ]}
@@ -2487,7 +2207,19 @@ const TIMELINE_CHARACTERS = {
 // ============================================================
 // MINI WHEEL SYSTEM (Soul Ring Hunt)
 // ============================================================
+let miniWheelData = null;
+let miniWheelSpinning = false;
+let miniWheelCallback = null;
+
 // Year event wheel globals
+let yearEventWheelData = null;
+let yearEventWheelSpinning = false;
+let yearEventWheelCallback = null;
+let yearEventResult = null;
+let timelineCharWheelData = null;
+let timelineCharWheelSpinning = false;
+let timelineCharWheelCallback = null;
+
 function buildSoulRingWheel(){
   let ringNum = G.soulRings.length;
   if(ringNum >= 9) return null;
@@ -2579,10 +2311,14 @@ function buildSpiritSoulWheel(){
   return items;
 }
 
+let spiritSoulWheelData = null;
+let spiritSoulWheelSpinning = false;
+let spiritSoulWheelCallback = null;
+
 function openSpiritSoulWheel(callback){
-  GameState.spiritSoulWheel.data = buildSpiritSoulWheel();
-  if(!GameState.spiritSoulWheel.data){callback(false);return;}
-  GameState.spiritSoulWheel.callback = callback;
+  spiritSoulWheelData = buildSpiritSoulWheel();
+  if(!spiritSoulWheelData){callback(false);return;}
+  spiritSoulWheelCallback = callback;
   let ringNum = G.soulRings.length + 1;
   let eraName = G.timeline.id === 'douluo4' ? '传灵塔/联邦' : '传灵塔';
   document.getElementById('mini-wheel-label').textContent = `第${ringNum}魂环 · ${eraName}魂灵契约`;
@@ -2592,7 +2328,7 @@ function openSpiritSoulWheel(callback){
   spinBtn.style.display = '';
   spinBtn.classList.remove('btn-disabled');
   spinBtn.onclick = spinSpiritSoulWheel;
-  drawMiniWheel(GameState.spiritSoulWheel.data);
+  drawMiniWheel(spiritSoulWheelData);
   let canvas = document.getElementById('mini-wheel-canvas');
   canvas.style.transition = 'none';
   canvas.style.transform = 'rotate(0deg)';
@@ -2601,23 +2337,23 @@ function openSpiritSoulWheel(callback){
 }
 
 function spinSpiritSoulWheel(){
-  if(GameState.spiritSoulWheel.spinning) return;
-  GameState.spiritSoulWheel.spinning = true;
+  if(spiritSoulWheelSpinning) return;
+  spiritSoulWheelSpinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let total = GameState.spiritSoulWheel.data.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(GameState.spiritSoulWheel.data);
-  let selectedIdx = GameState.spiritSoulWheel.data.indexOf(selected);
+  let total = spiritSoulWheelData.reduce((s,i) => s + i.weight, 0);
+  let selected = weightedRandom(spiritSoulWheelData);
+  let selectedIdx = spiritSoulWheelData.indexOf(selected);
   let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += GameState.spiritSoulWheel.data[i].weight;
+  for(let i = 0; i < selectedIdx; i++) cumWeight += spiritSoulWheelData[i].weight;
   let sectorAngle = (selected.weight / total) * 360;
   let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
   let finalAngle = 360 * 6 + (360 - targetCenter + 270);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
   setTimeout(() => {
-    GameState.spiritSoulWheel.spinning = false;
+    spiritSoulWheelSpinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
     let ringNum = G.soulRings.length;
@@ -2647,24 +2383,14 @@ function spinSpiritSoulWheel(){
     G._ringSuccess = true;
     document.getElementById('mini-wheel-spin-btn').style.display = 'none';
     document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
-  }, 2500);
+  }, 4800);
 }
 
 function drawMiniWheel(items){
   const canvas = document.getElementById('mini-wheel-canvas');
-  // 先重置transform，确保在干净的旋转状态下绘制
-  canvas.style.transition='none';
-  canvas.style.transform='rotate(0deg)';
-  void canvas.offsetWidth;
-  // 手机端降低canvas内部分辨率以提升性能
-  let targetSize=window.innerWidth<=480?300:(window.innerWidth<=768?400:600);
-  if(canvas.width!==targetSize){canvas.width=targetSize;canvas.height=targetSize;}
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
-  const cx = w/2, cy = h/2;
-  // 自适应半径
-  const r = Math.min(w,h)*0.47;
-  const fontSize = Math.max(12,Math.min(w,h)*0.03);
+  const cx = w/2, cy = h/2, r = 280;
   ctx.clearRect(0,0,w,h);
   let total = items.reduce((s,i) => s + i.weight, 0);
   let startAngle = 0;
@@ -2686,11 +2412,11 @@ function drawMiniWheel(items){
     ctx.rotate(startAngle + sliceAngle/2);
     ctx.textAlign = 'right';
     ctx.fillStyle = '#fff';
-    ctx.font = `bold ${fontSize}px Microsoft YaHei`;
+    ctx.font = 'bold 18px Microsoft YaHei';
     ctx.shadowColor = 'rgba(0,0,0,0.8)';
     ctx.shadowBlur = 3;
     let label = item.name.split('\n')[0];
-    ctx.fillText(label, r - r*0.05, fontSize*0.28);
+    ctx.fillText(label, r - 15, 5);
     ctx.restore();
     startAngle = endAngle;
   });
@@ -2729,7 +2455,7 @@ function openSoulRingWheel(callback){
     canvas.style.transform = 'rotate(0deg)';
     void canvas.offsetWidth;
     overlay.classList.add('active');
-    GameState.miniWheel.callback = function(){ callback(true); };
+    miniWheelCallback = function(){ callback(true); };
     return;
   }
 
@@ -2740,10 +2466,10 @@ function openSoulRingWheel(callback){
   }
 
   // Normal hunting
-  GameState.miniWheel.spinning = false; // reset stuck state
-  GameState.miniWheel.data = buildSoulRingWheel();
-  if(!GameState.miniWheel.data){callback(false);return;}
-  GameState.miniWheel.callback = function(){ callback(G._ringSuccess || false); };
+  miniWheelSpinning = false; // reset stuck state
+  miniWheelData = buildSoulRingWheel();
+  if(!miniWheelData){callback(false);return;}
+  miniWheelCallback = function(){ callback(G._ringSuccess || false); };
   let ringNum = G.soulRings.length + 1;
   let limit = getRingLimit(G.soulRings.length);
   let qualityBonus = G.martialSoul?.quality || '普通';
@@ -2754,7 +2480,7 @@ function openSoulRingWheel(callback){
   spinBtn.style.display = '';
   spinBtn.classList.remove('btn-disabled');
   spinBtn.onclick = spinMiniWheel; // explicitly bind
-  drawMiniWheel(GameState.miniWheel.data);
+  drawMiniWheel(miniWheelData);
   let canvas = document.getElementById('mini-wheel-canvas');
   canvas.style.transition = 'none';
   canvas.style.transform = 'rotate(0deg)';
@@ -2763,18 +2489,18 @@ function openSoulRingWheel(callback){
 }
 
 function spinMiniWheel(){
-  if(GameState.miniWheel.spinning) return;
-  GameState.miniWheel.spinning = true;
+  if(miniWheelSpinning) return;
+  miniWheelSpinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
   try{
-    let total = GameState.miniWheel.data.reduce((s,i) => s + i.weight, 0);
-    let selected = weightedRandom(GameState.miniWheel.data);
-    let selectedIdx = GameState.miniWheel.data.indexOf(selected);
+    let total = miniWheelData.reduce((s,i) => s + i.weight, 0);
+    let selected = weightedRandom(miniWheelData);
+    let selectedIdx = miniWheelData.indexOf(selected);
     if(selectedIdx < 0) selectedIdx = 0;
     let cumWeight = 0;
-    for(let i = 0; i < selectedIdx; i++) cumWeight += GameState.miniWheel.data[i].weight;
+    for(let i = 0; i < selectedIdx; i++) cumWeight += miniWheelData[i].weight;
     let sectorAngle = (selected.weight / total) * 360;
     let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
     let finalAngle = 360 * 6 + (360 - targetCenter + 270);
@@ -2782,7 +2508,7 @@ function spinMiniWheel(){
     canvas.style.transform = `rotate(${finalAngle}deg)`;
     setTimeout(() => {
       try{
-        GameState.miniWheel.spinning = false;
+        miniWheelSpinning = false;
         btn.classList.remove('btn-disabled');
         // Process result - all absorbs succeed, no death limit
         let ringNum = G.soulRings.length;
@@ -2839,15 +2565,15 @@ function spinMiniWheel(){
     document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
         }catch(err){
           console.error('魂环转盘结果处理出错:',err);
-          GameState.miniWheel.spinning = false;
+          miniWheelSpinning = false;
           document.getElementById('mini-wheel-result-area').innerHTML = '<div class="mini-wheel-result"><h3 style="color:var(--red)">出错</h3><p>转盘处理异常，请关闭后重试。</p></div>';
           document.getElementById('mini-wheel-spin-btn').style.display = 'none';
           document.getElementById('mini-wheel-hint').textContent = '点击任意处关闭';
         }
-      }, 2500);
+      }, 4800);
     }catch(err){
       console.error('魂环转盘旋转出错:',err);
-      GameState.miniWheel.spinning = false;
+      miniWheelSpinning = false;
       btn.classList.remove('btn-disabled');
       alert('转盘异常，请重试。');
     }
@@ -2878,9 +2604,9 @@ function buildYearEventWheel(){
 }
 
 function openYearEventWheel(callback){
-  GameState.yearEventWheel.data = buildYearEventWheel();
-  GameState.yearEventWheel.result = null;
-  GameState.yearEventWheel.callback = function(){ callback(GameState.yearEventWheel.result); };
+  yearEventWheelData = buildYearEventWheel();
+  yearEventResult = null;
+  yearEventWheelCallback = function(){ callback(yearEventResult); };
   document.getElementById('mini-wheel-label').textContent = '年度事件';
   document.getElementById('mini-wheel-hint').textContent = '命运的齿轮转动，这一年将会发生什么？';
   document.getElementById('mini-wheel-result-area').innerHTML = '';
@@ -2888,7 +2614,7 @@ function openYearEventWheel(callback){
   spinBtn.style.display = '';
   spinBtn.classList.remove('btn-disabled');
   spinBtn.onclick = spinYearEventWheel;
-  drawMiniWheel(GameState.yearEventWheel.data);
+  drawMiniWheel(yearEventWheelData);
   let canvas = document.getElementById('mini-wheel-canvas');
   canvas.style.transition = 'none';
   canvas.style.transform = 'rotate(0deg)';
@@ -2897,28 +2623,28 @@ function openYearEventWheel(callback){
 }
 
 function spinYearEventWheel(){
-  if(GameState.yearEventWheel.spinning) return;
-  GameState.yearEventWheel.spinning = true;
+  if(yearEventWheelSpinning) return;
+  yearEventWheelSpinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let total = GameState.yearEventWheel.data.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(GameState.yearEventWheel.data);
-  let selectedIdx = GameState.yearEventWheel.data.indexOf(selected);
+  let total = yearEventWheelData.reduce((s,i) => s + i.weight, 0);
+  let selected = weightedRandom(yearEventWheelData);
+  let selectedIdx = yearEventWheelData.indexOf(selected);
   let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += GameState.yearEventWheel.data[i].weight;
+  for(let i = 0; i < selectedIdx; i++) cumWeight += yearEventWheelData[i].weight;
   let sectorAngle = (selected.weight / total) * 360;
   let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
   let finalAngle = 360 * 6 + (360 - targetCenter + 270);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
   setTimeout(() => {
-    GameState.yearEventWheel.spinning = false;
+    yearEventWheelSpinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
     let result = {event: null, subWheel: null};
     switch(selected.eventType){
-      case 'normal':{let ev=processNormalEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p>${ev._hasChoices?'<p style="color:var(--gold);margin-top:8px;">请在弹窗中做出选择...</p>':'<div style="margin-top:8px;">'+ev.text+'</div>'}</div>`;break;}
+      case 'normal':{let ev=processNormalEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p><div style="margin-top:8px;">${ev.text}</div></div>`;break;}
       case 'school':{let ev=processSchoolEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p><div style="margin-top:8px;">${ev.text}</div></div>`;break;}
       case 'partner':{let ev=processPartnerEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p><div style="margin-top:8px;">${ev.text}</div></div>`;break;}
       case 'justice':{let ev=processJusticeEvent();result.event=ev;area.innerHTML=`<div class="mini-wheel-result"><h3 style="color:${selected.color}">${selected.name}</h3><p>${selected.desc}</p><div style="margin-top:8px;">${ev.text}</div></div>`;break;}
@@ -2931,43 +2657,39 @@ function spinYearEventWheel(){
         document.getElementById('mini-wheel-spin-btn').style.display='';
         document.getElementById('mini-wheel-spin-btn').classList.remove('btn-disabled');
         document.getElementById('mini-wheel-hint').textContent='点击"旋转转盘"重新抽取';
-        GameState.yearEventWheel.spinning=false;
+        yearEventWheelSpinning=false;
         // Rebuild wheel data (excluding reroll to prevent infinite loops)
-        GameState.yearEventWheel.data = buildYearEventWheel().filter(s => s.id !== 'reroll');
+        yearEventWheelData = buildYearEventWheel().filter(s => s.id !== 'reroll');
+        drawMiniWheel(yearEventWheelData);
         let canvas = document.getElementById('mini-wheel-canvas');
         canvas.style.transition='none';
         canvas.style.transform='rotate(0deg)';
         void canvas.offsetWidth;
-        drawMiniWheel(GameState.yearEventWheel.data);
         return;
       }
     }
-    GameState.yearEventWheel.result = result;
+    yearEventResult = result;
     document.getElementById('mini-wheel-spin-btn').style.display = 'none';
     document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
-  }, 2500);
+  }, 4800);
 }
 
 function buildTimelineCharacterWheel(){
   let timelineId = G.timeline?.id || 'douluo1';
   let chars = TIMELINE_CHARACTERS[timelineId] || TIMELINE_CHARACTERS.douluo1;
-  let age = G.age === undefined ? 6 : G.age;
-  let playerLocation = G.birthplace?.id;
+  let age = G.age || 6;
+  // Filter characters by age range - only show chars that could be alive at player's age
   let filtered = chars.filter(c => {
-    if(!c.ageRange) return true;
-    if(age < c.ageRange[0] || age > c.ageRange[1]) return false;
-    if(playerLocation && c.locations){
-      return c.locations.includes(playerLocation);
-    }
-    return true;
+    if(!c.ageRange) return true; // no restriction
+    return age >= c.ageRange[0] && age <= c.ageRange[1];
   });
-  if(filtered.length === 0) filtered = chars;
+  if(filtered.length === 0) filtered = chars; // fallback to all if none match
   return filtered.map(c => ({name:c.name,weight:c.weight||10,color:c.color||'#ff8800',_charData:c}));
 }
 
 function openTimelineCharacterWheel(callback){
-  GameState.timelineCharWheel.data = buildTimelineCharacterWheel();
-  GameState.timelineCharWheel.callback = callback;
+  timelineCharWheelData = buildTimelineCharacterWheel();
+  timelineCharWheelCallback = callback;
   document.getElementById('mini-wheel-label').textContent = '时间线奇缘';
   document.getElementById('mini-wheel-hint').textContent = '命运的丝线将你与某位原著角色相连...';
   document.getElementById('mini-wheel-result-area').innerHTML = '';
@@ -2975,7 +2697,7 @@ function openTimelineCharacterWheel(callback){
   spinBtn.style.display = '';
   spinBtn.classList.remove('btn-disabled');
   spinBtn.onclick = spinTimelineCharacterWheel;
-  drawMiniWheel(GameState.timelineCharWheel.data);
+  drawMiniWheel(timelineCharWheelData);
   let canvas = document.getElementById('mini-wheel-canvas');
   canvas.style.transition = 'none';
   canvas.style.transform = 'rotate(0deg)';
@@ -2984,12 +2706,12 @@ function openTimelineCharacterWheel(callback){
 }
 
 function spinTimelineCharacterWheel(){
-  if(GameState.timelineCharWheel.spinning) return;
-  GameState.timelineCharWheel.spinning = true;
+  if(timelineCharWheelSpinning) return;
+  timelineCharWheelSpinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let items = GameState.timelineCharWheel.data;
+  let items = timelineCharWheelData;
   let total = items.reduce((s,i) => s + i.weight, 0);
   let selected = weightedRandom(items);
   let selectedIdx = items.indexOf(selected);
@@ -3001,7 +2723,7 @@ function spinTimelineCharacterWheel(){
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
   setTimeout(() => {
-    GameState.timelineCharWheel.spinning = false;
+    timelineCharWheelSpinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
     let charData = selected._charData;
@@ -3055,7 +2777,7 @@ function spinTimelineCharacterWheel(){
     area.innerHTML = `<div class="mini-wheel-result"><h3 style="color:${selected.color}">${charData.name}</h3><p style="color:var(--cyan);">${charData.soul}</p><p style="font-size:12px;color:var(--gray);margin-top:4px;">${charData.desc}</p>${statusHtml}${fateText}</div>`;
     document.getElementById('mini-wheel-spin-btn').style.display = 'none';
     document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
-  }, 2500);
+  }, 4800);
 }
 
 // Close mini wheel on click after result
@@ -3063,32 +2785,32 @@ function closeMiniWheel(){
   let overlay = document.getElementById('mini-wheel-overlay');
   if(!overlay.classList.contains('active')) return;
   let resultArea = document.getElementById('mini-wheel-result-area');
-  if(resultArea.innerHTML === '' || GameState.miniWheel.spinning) return;
-  if(GameState.loverWheel.spinning || GameState.enemyWheel.spinning || GameState.oppWheel.spinning || GameState.yearEventWheel.spinning || GameState.timelineCharWheel.spinning || GameState.spiritSoulWheel.spinning) return;
+  if(resultArea.innerHTML === '' || miniWheelSpinning) return;
+  if(loverWheelSpinning || enemyWheelSpinning || oppWheelSpinning || yearEventWheelSpinning || timelineCharWheelSpinning || spiritSoulWheelSpinning) return;
 
   // Find the ONE active callback (most recently set takes priority)
   let activeCb = null;
-  if(GameState.spiritSoulWheel.callback) activeCb = GameState.spiritSoulWheel.callback;
-  else if(GameState.yearEventWheel.callback) activeCb = GameState.yearEventWheel.callback;
-  else if(GameState.timelineCharWheel.callback) activeCb = GameState.timelineCharWheel.callback;
-  else if(GameState.enemyWheel.callback) activeCb = GameState.enemyWheel.callback;
-  else if(GameState.loverWheel.callback) activeCb = GameState.loverWheel.callback;
-  else if(GameState.oppWheel.callback) activeCb = GameState.oppWheel.callback;
-  else if(GameState.miniWheel.callback) activeCb = GameState.miniWheel.callback;
+  if(spiritSoulWheelCallback) activeCb = spiritSoulWheelCallback;
+  else if(yearEventWheelCallback) activeCb = yearEventWheelCallback;
+  else if(timelineCharWheelCallback) activeCb = timelineCharWheelCallback;
+  else if(enemyWheelCallback) activeCb = enemyWheelCallback;
+  else if(loverWheelCallback) activeCb = loverWheelCallback;
+  else if(oppWheelCallback) activeCb = oppWheelCallback;
+  else if(miniWheelCallback) activeCb = miniWheelCallback;
 
   // Clear ALL state BEFORE firing callback (prevents cascade bugs)
   let cb = activeCb;
-  GameState.miniWheel.callback = null;
-  GameState.loverWheel.callback = null;
-  GameState.enemyWheel.callback = null;
-  GameState.oppWheel.callback = null;
-  GameState.yearEventWheel.callback = null;
-  GameState.timelineCharWheel.callback = null;
-  GameState.spiritSoulWheel.callback = null;
-  GameState.miniWheel.spinning = false;
-  GameState.yearEventWheel.spinning = false;
-  GameState.timelineCharWheel.spinning = false;
-  GameState.spiritSoulWheel.spinning = false;
+  miniWheelCallback = null;
+  loverWheelCallback = null;
+  enemyWheelCallback = null;
+  oppWheelCallback = null;
+  yearEventWheelCallback = null;
+  timelineCharWheelCallback = null;
+  spiritSoulWheelCallback = null;
+  miniWheelSpinning = false;
+  yearEventWheelSpinning = false;
+  timelineCharWheelSpinning = false;
+  spiritSoulWheelSpinning = false;
   overlay.classList.remove('active');
 
   // Now fire the callback - it can safely set up a new wheel
@@ -3104,6 +2826,9 @@ const RING_OPPORTUNITY = [
   {id:'custom_skill',name:'自创魂技',weight:25,color:'#aa66ff',desc:'吸收过程中灵光一现，领悟了自创魂技！'},
   {id:'nothing',name:'平稳吸收',weight:30,color:'#888888',desc:'一切顺利，没有额外收获。'}
 ];
+
+let oppWheelSpinning = false;
+let oppWheelCallback = null;
 
 // Self-created skill name generator
 const CUSTOM_SKILL_PREFIX = {
@@ -3129,7 +2854,7 @@ function generateCustomSkillName(){
 }
 
 function openOpportunityWheel(callback){
-  GameState.oppWheel.callback = callback;
+  oppWheelCallback = callback;
   document.getElementById('mini-wheel-label').textContent = '魂环吸收机遇';
   document.getElementById('mini-wheel-hint').textContent = '吸收魂环后，命运给你带来了...';
   document.getElementById('mini-wheel-result-area').innerHTML = '';
@@ -3145,8 +2870,8 @@ function openOpportunityWheel(callback){
 }
 
 function spinOpportunityWheel(){
-  if(GameState.oppWheel.spinning) return;
-  GameState.oppWheel.spinning = true;
+  if(oppWheelSpinning) return;
+  oppWheelSpinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
@@ -3162,7 +2887,7 @@ function spinOpportunityWheel(){
   canvas.style.transition = 'transform 1.75s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
   setTimeout(() => {
-    GameState.oppWheel.spinning = false;
+    oppWheelSpinning = false;
     btn.classList.remove('btn-disabled');
     let area = document.getElementById('mini-wheel-result-area');
     switch(selected.id){
@@ -3219,6 +2944,10 @@ function spinOpportunityWheel(){
 // ============================================================
 // LOVER WHEEL SYSTEM
 // ============================================================
+let loverWheelData = null;
+let loverWheelSpinning = false;
+let loverWheelCallback = null;
+
 function buildLoverWheel(){
   // Determine target pool based on player gender
   let poolKey = G.gender?.id === 'female' ? 'male_target' : 'female_target';
@@ -3260,15 +2989,15 @@ function buildLoverWheel(){
 }
 
 function openLoverWheel(callback){
-  GameState.loverWheel.data = buildLoverWheel();
-  GameState.loverWheel.callback = callback;
+  loverWheelData = buildLoverWheel();
+  loverWheelCallback = callback;
   document.getElementById('mini-wheel-label').textContent = '邂逅...';
   document.getElementById('mini-wheel-hint').textContent = '命运的转盘在转动，你会遇见谁？';
   document.getElementById('mini-wheel-result-area').innerHTML = '';
   document.getElementById('mini-wheel-spin-btn').style.display = '';
   document.getElementById('mini-wheel-spin-btn').classList.remove('btn-disabled');
   document.getElementById('mini-wheel-spin-btn').onclick = spinLoverWheel;
-  drawMiniWheel(GameState.loverWheel.data);
+  drawMiniWheel(loverWheelData);
   let canvas = document.getElementById('mini-wheel-canvas');
   canvas.style.transition = 'none';
   canvas.style.transform = 'rotate(0deg)';
@@ -3277,23 +3006,23 @@ function openLoverWheel(callback){
 }
 
 function spinLoverWheel(){
-  if(GameState.loverWheel.spinning) return;
-  GameState.loverWheel.spinning = true;
+  if(loverWheelSpinning) return;
+  loverWheelSpinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let total = GameState.loverWheel.data.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(GameState.loverWheel.data);
-  let selectedIdx = GameState.loverWheel.data.indexOf(selected);
+  let total = loverWheelData.reduce((s,i) => s + i.weight, 0);
+  let selected = weightedRandom(loverWheelData);
+  let selectedIdx = loverWheelData.indexOf(selected);
   let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += GameState.loverWheel.data[i].weight;
+  for(let i = 0; i < selectedIdx; i++) cumWeight += loverWheelData[i].weight;
   let sectorAngle = (selected.weight / total) * 360;
   let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
   let finalAngle = 360 * 6 + (360 - targetCenter + 270);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
   setTimeout(() => {
-    GameState.loverWheel.spinning = false;
+    loverWheelSpinning = false;
     btn.classList.remove('btn-disabled');
     // Determine success chance based on charm and personality
     let charm = G.appearance?.attr?.charm || 5;
@@ -3312,12 +3041,16 @@ function spinLoverWheel(){
     }
     document.getElementById('mini-wheel-spin-btn').style.display = 'none';
     document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
-  }, 2500);
+  }, 4800);
 }
 
 // ============================================================
 // ENEMY WHEEL SYSTEM
 // ============================================================
+let enemyWheelData = null;
+let enemyWheelSpinning = false;
+let enemyWheelCallback = null;
+
 // ============================================================
 // COMBAT POWER SYSTEM (战力系统)
 // ============================================================
@@ -3458,15 +3191,15 @@ function buildEnemyWheel(){
 }
 
 function openEnemyWheel(callback){
-  GameState.enemyWheel.data = buildEnemyWheel();
-  GameState.enemyWheel.callback = callback;
+  enemyWheelData = buildEnemyWheel();
+  enemyWheelCallback = callback;
   document.getElementById('mini-wheel-label').textContent = (G.timeline?.id === 'godrealm') ? '神界动乱！' : '强敌来袭！';
   document.getElementById('mini-wheel-hint').textContent = '命运的转盘在转动，你的对手是谁？';
   document.getElementById('mini-wheel-result-area').innerHTML = '';
   document.getElementById('mini-wheel-spin-btn').style.display = '';
   document.getElementById('mini-wheel-spin-btn').classList.remove('btn-disabled');
   document.getElementById('mini-wheel-spin-btn').onclick = spinEnemyWheel;
-  drawMiniWheel(GameState.enemyWheel.data);
+  drawMiniWheel(enemyWheelData);
   let canvas = document.getElementById('mini-wheel-canvas');
   canvas.style.transition = 'none';
   canvas.style.transform = 'rotate(0deg)';
@@ -3475,23 +3208,23 @@ function openEnemyWheel(callback){
 }
 
 function spinEnemyWheel(){
-  if(GameState.enemyWheel.spinning) return;
-  GameState.enemyWheel.spinning = true;
+  if(enemyWheelSpinning) return;
+  enemyWheelSpinning = true;
   let btn = document.getElementById('mini-wheel-spin-btn');
   btn.classList.add('btn-disabled');
   let canvas = document.getElementById('mini-wheel-canvas');
-  let total = GameState.enemyWheel.data.reduce((s,i) => s + i.weight, 0);
-  let selected = weightedRandom(GameState.enemyWheel.data);
-  let selectedIdx = GameState.enemyWheel.data.indexOf(selected);
+  let total = enemyWheelData.reduce((s,i) => s + i.weight, 0);
+  let selected = weightedRandom(enemyWheelData);
+  let selectedIdx = enemyWheelData.indexOf(selected);
   let cumWeight = 0;
-  for(let i = 0; i < selectedIdx; i++) cumWeight += GameState.enemyWheel.data[i].weight;
+  for(let i = 0; i < selectedIdx; i++) cumWeight += enemyWheelData[i].weight;
   let sectorAngle = (selected.weight / total) * 360;
   let targetCenter = cumWeight / total * 360 + sectorAngle / 2;
   let finalAngle = 360 * 6 + (360 - targetCenter + 270);
   canvas.style.transition = 'transform 2.25s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform = `rotate(${finalAngle}deg)`;
   setTimeout(() => {
-    GameState.enemyWheel.spinning = false;
+    enemyWheelSpinning = false;
     btn.classList.remove('btn-disabled');
     // Determine enemy power relative to player
     let enemyLevel = Math.max(1, Math.round(G.soulPower * selected.power + (Math.random()*10 - 5)));
@@ -3643,42 +3376,24 @@ function spinEnemyWheel(){
     }
     document.getElementById('mini-wheel-spin-btn').style.display = 'none';
     document.getElementById('mini-wheel-hint').textContent = '点击任意处继续';
-  }, 2500);
+  }, 4800);
 }
 
 // ============================================================
 // GAME STATE
 // ============================================================
 let G = null; // Current game state
-const GameState = {
-  wheelQueue: [],
-  wheelIndex: 0,
-  currentWheelData: null,
-  isSpinning: false,
-  globalAchievements: [],
-  miniWheel: {data:null, spinning:false, callback:null},
-  yearEventWheel: {data:null, spinning:false, callback:null, result:null},
-  timelineCharWheel: {data:null, spinning:false, callback:null},
-  spiritSoulWheel: {data:null, spinning:false, callback:null},
-  oppWheel: {spinning:false, callback:null},
-  loverWheel: {data:null, spinning:false, callback:null},
-  enemyWheel: {data:null, spinning:false, callback:null},
-  quickRandom: {human:null, beast:null},
-  autoTimer: null
-};
-
-const UI = {};
-
-function initUI(){
-  const ids = ['particles','wheel-canvas','wheel-spin-btn','wheel-next-btn','wheel-step','wheel-label','wheel-result-area','wheel-center','wheel-hint','mini-wheel-overlay','mini-wheel-label','mini-wheel-hint','mini-wheel-result-area','mini-wheel-spin-btn','mini-wheel-canvas','life-sidebar','event-log','life-controls','awakening-content','modal-event','modal-event-box','godhood-panel','godhood-result','douluo-path-panel','btn-godrealm-path','custom-title-input','review-container','ach-grid','save-slots','auto-btn','mini-auto-stop-btn','quick-random-content'];
-  ids.forEach(id => UI[id] = document.getElementById(id));
-}
+let wheelQueue = [];
+let wheelIndex = 0;
+let currentWheelData = null;
+let isSpinning = false;
+let globalAchievements = [];
 
 function loadGlobalAchievements(){
-  try{GameState.globalAchievements=JSON.parse(localStorage.getItem('dl_achievements'))||[];}catch(e){GameState.globalAchievements=[];}
+  try{globalAchievements=JSON.parse(localStorage.getItem('dl_achievements'))||[];}catch(e){globalAchievements=[];}
 }
 function saveGlobalAchievements(){
-  localStorage.setItem('dl_achievements',JSON.stringify(GameState.globalAchievements));
+  localStorage.setItem('dl_achievements',JSON.stringify(globalAchievements));
 }
 function loadSaves(){
   try{return JSON.parse(localStorage.getItem('dl_saves'))||[];}catch(e){return[];}
@@ -3728,20 +3443,9 @@ function weightedRandom(items,weightKey='weight'){
 // ============================================================
 function drawWheel(items,labelKey,colorKey){
   const canvas=document.getElementById('wheel-canvas');
-  // 先重置transform，确保在干净的旋转状态下绘制
-  canvas.style.transition='none';
-  canvas.style.transform='rotate(0deg)';
-  void canvas.offsetWidth;
-  // 手机端降低canvas内部分辨率以提升性能
-  let targetSize=window.innerWidth<=480?360:(window.innerWidth<=768?480:720);
-  if(canvas.width!==targetSize){canvas.width=targetSize;canvas.height=targetSize;}
   const ctx=canvas.getContext('2d');
   const w=canvas.width,h=canvas.height;
-  const cx=w/2,cy=h/2;
-  // 自适应半径：取canvas宽高较小值的47%，确保不超出边界
-  const r=Math.min(w,h)*0.47;
-  // 自适应字体大小
-  const fontSize=Math.max(14,Math.min(w,h)*0.03);
+  const cx=w/2,cy=h/2,r=340;
   ctx.clearRect(0,0,w,h);
 
   let total=items.reduce((s,i)=>s+i.weight,0);
@@ -3770,12 +3474,12 @@ function drawWheel(items,labelKey,colorKey){
     ctx.rotate(startAngle+sliceAngle/2);
     ctx.textAlign='right';
     ctx.fillStyle='#fff';
-    ctx.font=`bold ${fontSize}px Microsoft YaHei`;
+    ctx.font='bold 22px Microsoft YaHei';
     ctx.shadowColor='rgba(0,0,0,0.8)';
     ctx.shadowBlur=4;
     let label=item[labelKey];
     if(label.length>8)label=label.substring(0,8)+'…';
-    ctx.fillText(label,r-r*0.06,fontSize*0.3);
+    ctx.fillText(label,r-20,6);
     ctx.restore();
 
     startAngle=endAngle;
@@ -3800,35 +3504,32 @@ function drawWheel(items,labelKey,colorKey){
 }
 
 function spinWheel(){
-  if(GameState.isSpinning)return;
-  GameState.isSpinning=true;
+  if(isSpinning)return;
+  isSpinning=true;
   const btn=document.getElementById('wheel-spin-btn');
   btn.classList.add('btn-disabled');
 
   const canvas=document.getElementById('wheel-canvas');
-  let total=GameState.currentWheelData.reduce((s,i)=>s+i.weight,0);
-  let selectedItem=weightedRandom(GameState.currentWheelData);
-  let selectedIdx=GameState.currentWheelData.indexOf(selectedItem);
+  let total=currentWheelData.reduce((s,i)=>s+i.weight,0);
+  let selectedItem=weightedRandom(currentWheelData);
+  let selectedIdx=currentWheelData.indexOf(selectedItem);
 
   // Calculate target angle
   let cumWeight=0;
-  for(let i=0;i<selectedIdx;i++)cumWeight+=GameState.currentWheelData[i].weight;
+  for(let i=0;i<selectedIdx;i++)cumWeight+=currentWheelData[i].weight;
   let sectorAngle=(selectedItem.weight/total)*360;
   let targetCenter=cumWeight/total*360+sectorAngle/2;
   // Pointer is at top (270 degrees), adjust
-  let finalAngle=360*6+(360-targetCenter+270);
+  let finalAngle=360*8+(360-targetCenter+270);
 
-  // 手机端缩短动画时间，防止卡顿
-  let isMobile=window.innerWidth<=768;
-  let duration=isMobile?3.5:5;
-  canvas.style.transition=`transform ${duration}s cubic-bezier(0.17,0.67,0.12,0.99)`;
+  canvas.style.transition='transform 6s cubic-bezier(0.17,0.67,0.12,0.99)';
   canvas.style.transform=`rotate(${finalAngle}deg)`;
 
   setTimeout(()=>{
-    GameState.isSpinning=false;
+    isSpinning=false;
     btn.classList.remove('btn-disabled');
     onWheelResult(selectedItem);
-  },duration*1000+200);
+  },6200);
 }
 
 // ============================================================
@@ -3849,9 +3550,6 @@ function generateRandomCharacter(forceType){
     c.gender = weightedRandom(genderPool);
     c.personality = weightedRandom(PERSONALITIES);
     c.appearance = weightedRandom(APPEARANCES);
-    // Birthplace: human uses towns/cities
-    let townBps = getHumanBirthplaces(c.timeline.id);
-    c.birthplace = weightedRandom(townBps);
     // Generate martial soul
     let tempG = {identity:c.identity, identityType:'human'};
     let oldG = G;
@@ -3892,11 +3590,10 @@ function generateRandomCharacter(forceType){
   }else{
     // Soul beast
     c.identity = weightedRandom(BEAST_RACES);
-    // Bloodline matching identity
-    c.bloodline = weightedRandom(getRaceBloodlines(c.identity));
-    // Birthplace matching identity and timeline (via env tags)
-    let raceBps = getRaceBirthplaces(c.timeline.id, c.identity);
-    c.birthplace = weightedRandom(raceBps);
+    c.bloodline = weightedRandom(BEAST_BLOODLINES);
+    // Birthplace filtered by timeline
+    let bps = getBeastBirthplaces(c.timeline.id);
+    c.birthplace = bps.length > 0 ? weightedRandom(bps) : {name:'未知之地',desc:'一片未知的区域。'};
     c.personality = weightedRandom(PERSONALITIES);
     c.appearance = weightedRandom(APPEARANCES);
     c.beastYears = 0;
@@ -3947,9 +3644,12 @@ function renderRandomCharCard(c, idx){
   </div>`;
 }
 
+let _quickRandomHuman = null;
+let _quickRandomBeast = null;
+
 function startQuickRandom(){
-  GameState.quickRandom.human = generateRandomCharacter('human');
-  GameState.quickRandom.beast = generateRandomCharacter('soul_beast');
+  _quickRandomHuman = generateRandomCharacter('human');
+  _quickRandomBeast = generateRandomCharacter('soul_beast');
   renderQuickRandom();
 }
 
@@ -3959,8 +3659,8 @@ function renderQuickRandom(){
     <h2 style="color:var(--gold);text-align:center;margin:20px 0 5px;">⚡ 快速随机预览</h2>
     <p style="color:var(--gray);text-align:center;margin-bottom:20px;font-size:13px;">同时随机一个魂师和一个魂兽，选择你心仪的开始游戏</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-      ${renderRandomCharCard(GameState.quickRandom.human, 0)}
-      ${renderRandomCharCard(GameState.quickRandom.beast, 1)}
+      ${renderRandomCharCard(_quickRandomHuman, 0)}
+      ${renderRandomCharCard(_quickRandomBeast, 1)}
     </div>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap;">
       <button class="btn" onclick="rerollQuickRandom()">🎲 不满意，重新随机</button>
@@ -3972,13 +3672,13 @@ function renderQuickRandom(){
 }
 
 function rerollQuickRandom(){
-  GameState.quickRandom.human = generateRandomCharacter('human');
-  GameState.quickRandom.beast = generateRandomCharacter('soul_beast');
+  _quickRandomHuman = generateRandomCharacter('human');
+  _quickRandomBeast = generateRandomCharacter('soul_beast');
   renderQuickRandom();
 }
 
 function startGameFromQuick(type){
-  let c = type === 'human' ? GameState.quickRandom.human : GameState.quickRandom.beast;
+  let c = type === 'human' ? _quickRandomHuman : _quickRandomBeast;
   G = createDefaultState();
   G.timeline = c.timeline;
   G.identityType = c.identityType;
@@ -3994,6 +3694,7 @@ function startGameFromQuick(type){
   G.personality = c.personality;
   G.appearance = c.appearance;
   G.alive = true;
+  G.age = 6;
   G.events = [];
   G.keyEvents = [];
   G.yearEvents = [];
@@ -4007,12 +3708,11 @@ function startGameFromQuick(type){
     G.birthplace = c.birthplace;
     G.beastYears = 0;
     syncBeastSoulPower();
-    G.age = 0;
-  }else{
-    G.age = 6;
   }
 
-  applyTimelineLimits(G);
+  if(G.timeline.id==='douluo4'){G.maxLevel=150;G.maxAge=200;}
+  else if(G.timeline.id==='godrealm'){G.maxLevel=200;G.maxAge=999;}
+  else{G.maxLevel=99;G.maxAge=150;}
 
   showAwakening();
 }
@@ -4034,10 +3734,10 @@ function createDefaultState(){
 
 function startNewGame(){
   G=createDefaultState();
-  GameState.wheelIndex=0;
+  wheelIndex=0;
 
   // Build wheel queue - start with timeline only, others added dynamically
-  GameState.wheelQueue=[
+  wheelQueue=[
     {type:'timeline',label:'抽取时间线',centerText:'时',items:TIMELINES,labelKey:'name',colorKey:'eraColor'}
   ];
 
@@ -4047,18 +3747,17 @@ function startNewGame(){
 }
 
 function setupNextWheel(){
-  const step=GameState.wheelQueue[GameState.wheelIndex];
+  const step=wheelQueue[wheelIndex];
   const canvas=document.getElementById('wheel-canvas');
-  document.getElementById('wheel-step').textContent=`第 ${GameState.wheelIndex+1}/${GameState.wheelQueue.length} 次抽取`;
+  document.getElementById('wheel-step').textContent=`第 ${wheelIndex+1}/${wheelQueue.length} 次抽取`;
   document.getElementById('wheel-label').textContent=step.label;
   document.getElementById('wheel-result-area').innerHTML='';
   document.getElementById('wheel-center').textContent=step.centerText||'转';
-  GameState.currentWheelData=step.items;
-  // 先重置transform，再绘制，避免手机端reflow不触发
+  currentWheelData=step.items;
+  drawWheel(currentWheelData,step.labelKey||'name',step.colorKey||'eraColor');
+  void canvas.offsetWidth;
   canvas.style.transition='none';
   canvas.style.transform='rotate(0deg)';
-  void canvas.offsetWidth;
-  drawWheel(GameState.currentWheelData,step.labelKey||'name',step.colorKey||'eraColor');
 }
 
 function onWheelResult(item){
@@ -4066,7 +3765,7 @@ function onWheelResult(item){
   const hint=document.getElementById('wheel-hint');
   const canvas=document.getElementById('wheel-canvas');
 
-  switch(GameState.wheelQueue[GameState.wheelIndex].type){
+  switch(wheelQueue[wheelIndex].type){
     case 'timeline':
       G={...createDefaultState(),timeline:item};
       area.innerHTML=`<div class="wheel-result"><h3>${item.name}</h3><p>${item.era}</p><p style="margin-top:8px;color:var(--gray)">${item.desc}</p></div>`;
@@ -4076,7 +3775,7 @@ function onWheelResult(item){
       if(item.id==='godrealm'){idTypePool=[...IDENTITY_TYPES.god, ...IDENTITY_TYPES.divine_beast];}
       else{idTypePool=[...IDENTITY_TYPES.human,...IDENTITY_TYPES.soul_beast];}
       idTypePool.forEach((it,i)=>{it.eraColor=it.color||`hsl(${(i/idTypePool.length)*280+120},50%,30%)`;});
-      GameState.wheelQueue.push({type:'identity_type',label:'抽取种族',centerText:'族',items:idTypePool,labelKey:'name',colorKey:'color'});
+      wheelQueue.push({type:'identity_type',label:'抽取种族',centerText:'族',items:idTypePool,labelKey:'name',colorKey:'color'});
       break;
     case 'identity_type':
       G.identityType=item.id;
@@ -4084,49 +3783,44 @@ function onWheelResult(item){
       if(item.id==='human'){
         hint.textContent='你是人类，接下来抽取出身背景...';
         HUMAN_BACKGROUNDS.forEach((it,i)=>{it.eraColor=`hsl(${(i/HUMAN_BACKGROUNDS.length)*200+200},50%,30%)`;});
-        GameState.wheelQueue.push({type:'background',label:'抽取背景',centerText:'出',items:HUMAN_BACKGROUNDS,labelKey:'name',colorKey:null});
+        wheelQueue.push({type:'background',label:'抽取背景',centerText:'出',items:HUMAN_BACKGROUNDS,labelKey:'name',colorKey:null});
       }else if(item.id==='soul_beast'){
         hint.textContent='你是魂兽，接下来抽取种族年限...';
         BEAST_RACES.forEach((it,i)=>{it.eraColor=`hsl(${(i/BEAST_RACES.length)*60},50%,30%)`;});
-        GameState.wheelQueue.push({type:'beast_race',label:'抽取种族',centerText:'族',items:BEAST_RACES,labelKey:'name',colorKey:null});
+        wheelQueue.push({type:'beast_race',label:'抽取种族',centerText:'族',items:BEAST_RACES,labelKey:'name',colorKey:null});
       }else if(item.id==='god'){
         hint.textContent='你是神祇，接下来抽取神位...';
         GOD_TIERS.forEach((it,i)=>{it.eraColor=`hsl(${(i/GOD_TIERS.length)*60+40},50%,30%)`;});
-        GameState.wheelQueue.push({type:'god_tier',label:'抽取神位',centerText:'神',items:GOD_TIERS,labelKey:'name',colorKey:null});
+        wheelQueue.push({type:'god_tier',label:'抽取神位',centerText:'神',items:GOD_TIERS,labelKey:'name',colorKey:null});
       }else if(item.id==='divine_beast'){
         hint.textContent='你是神兽，接下来抽取神兽种族...';
         DIVINE_BEAST_RACES.forEach((it,i)=>{it.eraColor=`hsl(${(i/DIVINE_BEAST_RACES.length)*80+20},50%,35%)`;});
-        GameState.wheelQueue.push({type:'divine_beast_race',label:'抽取神兽种族',centerText:'兽',items:DIVINE_BEAST_RACES,labelKey:'name',colorKey:'color'});
+        wheelQueue.push({type:'divine_beast_race',label:'抽取神兽种族',centerText:'兽',items:DIVINE_BEAST_RACES,labelKey:'name',colorKey:'color'});
       }
       break;
     case 'background':
       G.identity=item;
-      // Assign birthplace: human uses towns/cities, not beast habitats
-      let townBps = getHumanBirthplaces(G.timeline.id);
-      G.birthplace = weightedRandom(townBps);
-      area.innerHTML=`<div class="wheel-result"><h3>${item.name}</h3><p>${item.desc}</p><p style="color:${G.birthplace.color||'var(--green)'};margin-top:6px;">降生于${G.birthplace.name}</p></div>`;
+      area.innerHTML=`<div class="wheel-result"><h3>${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='背景已定，接下来抽取性别...';
       let bgGenderItems = GENDERS.filter(g=>g.id!=='none');
-      GameState.wheelQueue.push({type:'gender',label:'抽取性别',centerText:'性',items:bgGenderItems,labelKey:'name',colorKey:null});
+      wheelQueue.push({type:'gender',label:'抽取性别',centerText:'性',items:bgGenderItems,labelKey:'name',colorKey:null});
       bgGenderItems.forEach((g,i)=>{g.eraColor=`hsl(${(i/bgGenderItems.length)*280},50%,30%)`;});
       break;
     case 'beast_race':
       G.identity=item;
-      G.gender = randomBeastGender();
+      G.gender = Math.random()<0.5 ? {id:'male',name:'雄',desc:''} : {id:'female',name:'雌',desc:''};
       area.innerHTML=`<div class="wheel-result"><h3>${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='种族已定，接下来抽取血脉系...';
-      let raceBloodlines = getRaceBloodlines(item);
-      raceBloodlines.forEach((it,i)=>{it.eraColor=it.color;});
-      GameState.wheelQueue.push({type:'beast_bloodline',label:'抽取血脉系',centerText:'脉',items:raceBloodlines,labelKey:'name',colorKey:'color'});
+      BEAST_BLOODLINES.forEach((it,i)=>{it.eraColor=it.color;});
+      wheelQueue.push({type:'beast_bloodline',label:'抽取血脉系',centerText:'脉',items:BEAST_BLOODLINES,labelKey:'name',colorKey:'color'});
       break;
     case 'divine_beast_race':
       G.identity=item;
-      G.gender = randomBeastGender();
+      G.gender = Math.random()<0.5 ? {id:'male',name:'雄',desc:''} : {id:'female',name:'雌',desc:''};
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='神兽种族已定，接下来抽取神兽血脉...';
-      let divineBloodlines = getRaceBloodlines(item);
-      divineBloodlines.forEach((it,i)=>{it.eraColor=it.color;});
-      GameState.wheelQueue.push({type:'beast_bloodline',label:'抽取神兽血脉',centerText:'脉',items:divineBloodlines,labelKey:'name',colorKey:'color'});
+      BEAST_BLOODLINES.forEach((it,i)=>{it.eraColor=it.color;});
+      wheelQueue.push({type:'beast_bloodline',label:'抽取神兽血脉',centerText:'脉',items:BEAST_BLOODLINES,labelKey:'name',colorKey:'color'});
       break;
     case 'god_tier':
       G.identity=item;
@@ -4134,7 +3828,7 @@ function onWheelResult(item){
       hint.textContent='神位等级已定，接下来抽取神位名称...';
       let posPool = GOD_POSITIONS[item.id] || GOD_POSITIONS.god_official;
       posPool = posPool.map((p,i)=>({...p, weight: 1, eraColor: p.color}));
-      GameState.wheelQueue.push({type:'god_position',label:'抽取神位名称',centerText:'神',items:posPool,labelKey:'name',colorKey:'eraColor'});
+      wheelQueue.push({type:'god_position',label:'抽取神位名称',centerText:'神',items:posPool,labelKey:'name',colorKey:'eraColor'});
       break;
     case 'god_position':
       G.godPosition = item;
@@ -4142,14 +3836,14 @@ function onWheelResult(item){
       hint.textContent='神位已定，接下来抽取神器...';
       let artPool = GOD_ARTIFACTS[G.identity?.id] || GOD_ARTIFACTS.god_official;
       artPool = artPool.map((a,i)=>({...a, weight: 1, eraColor: a.color}));
-      GameState.wheelQueue.push({type:'god_artifact',label:'抽取神器',centerText:'器',items:artPool,labelKey:'name',colorKey:'eraColor'});
+      wheelQueue.push({type:'god_artifact',label:'抽取神器',centerText:'器',items:artPool,labelKey:'name',colorKey:'eraColor'});
       break;
     case 'god_artifact':
       G.godArtifact = item;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='神器已定，接下来抽取神界势力...';
       GOD_FACTIONS_POOL.forEach((f,i)=>{f.eraColor=f.color;});
-      GameState.wheelQueue.push({type:'god_faction',label:'抽取神界势力',centerText:'势',items:GOD_FACTIONS_POOL,labelKey:'name',colorKey:'eraColor'});
+      wheelQueue.push({type:'god_faction',label:'抽取神界势力',centerText:'势',items:GOD_FACTIONS_POOL,labelKey:'name',colorKey:'eraColor'});
       break;
     case 'god_faction':
       G.faction = item.name;
@@ -4157,19 +3851,18 @@ function onWheelResult(item){
       hint.textContent='势力已定，接下来抽取性别...';
       let godGenderItems2 = GENDERS.filter(g=>g.id!=='none');
       godGenderItems2.forEach((g,i)=>{g.eraColor=`hsl(${(i/godGenderItems2.length)*280},50%,30%)`;});
-      GameState.wheelQueue.push({type:'gender',label:'抽取性别',centerText:'性',items:godGenderItems2,labelKey:'name',colorKey:null});
+      wheelQueue.push({type:'gender',label:'抽取性别',centerText:'性',items:godGenderItems2,labelKey:'name',colorKey:null});
       break;
     case 'gender':
       G.gender=item;
       area.innerHTML=`<div class="wheel-result"><h3>性别：${item.name}</h3><p>${item.desc}</p></div>`;
       if(G.identityType==='soul_beast'){
         hint.textContent='接下来抽取血脉系...';
-        let genderBloodlines = getRaceBloodlines(G.identity);
-        genderBloodlines.forEach((it,i)=>{it.eraColor=it.color;});
-        GameState.wheelQueue.push({type:'beast_bloodline',label:'抽取血脉系',centerText:'脉',items:genderBloodlines,labelKey:'name',colorKey:'color'});
+        BEAST_BLOODLINES.forEach((it,i)=>{it.eraColor=it.color;});
+        wheelQueue.push({type:'beast_bloodline',label:'抽取血脉系',centerText:'脉',items:BEAST_BLOODLINES,labelKey:'name',colorKey:'color'});
       }else if(G.identityType==='god'){
         hint.textContent='神祇无需武魂觉醒，接下来抽取性格...';
-        GameState.wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
+        wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
       }else{
         if(G.timeline.factions && (G.identity.id==='sect_disciple'||G.identity.id==='family_child'||G.identity.id==='noble')){
           G.faction=G.timeline.factions[Math.floor(Math.random()*G.timeline.factions.length)];
@@ -4180,22 +3873,22 @@ function onWheelResult(item){
         if(G.identity.id==='family_child'){awItems[1].weight=40;awItems[2].weight=18;awItems[3].weight=7;}
         if(G.identity.id==='noble'){awItems[1].weight=35;awItems[2].weight=15;awItems[3].weight=5;}
         awItems.forEach((a,i)=>{a.eraColor=a.color;});
-        GameState.wheelQueue.push({type:'awaken_count',label:'抽取觉醒个数',centerText:'觉',items:awItems,labelKey:'name',colorKey:'color'});
+        wheelQueue.push({type:'awaken_count',label:'抽取觉醒个数',centerText:'觉',items:awItems,labelKey:'name',colorKey:'color'});
       }
       break;
     case 'beast_bloodline':
       G.bloodline = item;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}血脉</h3><p>${item.desc}</p></div>`;
       hint.textContent='血脉已定，抽取降生地点...';
-      let birthplaces = getRaceBirthplaces(G.timeline.id, G.identity);
+      let birthplaces = getBeastBirthplaces(G.timeline.id);
       birthplaces.forEach((it,i)=>{it.eraColor=it.color;});
-      GameState.wheelQueue.push({type:'beast_birthplace',label:'抽取降生地点',centerText:'地',items:birthplaces,labelKey:'name',colorKey:'color'});
+      wheelQueue.push({type:'beast_birthplace',label:'抽取降生地点',centerText:'地',items:birthplaces,labelKey:'name',colorKey:'color'});
       break;
     case 'beast_birthplace':
       G.birthplace = item;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p></div>`;
       hint.textContent='降生地点已定，接下来抽取性格...';
-      GameState.wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
+      wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
       break;
     case 'awaken_count':
       G._awakenCount = item.count;
@@ -4212,7 +3905,7 @@ function onWheelResult(item){
         hint.textContent='接下来抽取武魂品质...';
       }
       let qualityItems = buildQualityWheel();
-      GameState.wheelQueue.push({type:'soul_quality',label:'抽取武魂品质',centerText:'品',items:qualityItems,labelKey:'name',colorKey:'color'});
+      wheelQueue.push({type:'soul_quality',label:'抽取武魂品质',centerText:'品',items:qualityItems,labelKey:'name',colorKey:'color'});
       break;
     case 'soul_quality':
       G._soulQualityTier = item.tier;
@@ -4224,10 +3917,10 @@ function onWheelResult(item){
       hint.textContent='品质已定，从千种武魂中觉醒...';
       let nameItems = pickNameWheelItems(item.tier, 12);
       nameItems.forEach(n => {n.weight = 1;});
-      GameState.wheelQueue.push({type:'soul_name',label:`第${soulIdx}个武魂（千中选一）`,centerText:'魂',items:nameItems,labelKey:'name',colorKey:'qColor',tier:item.tier});
+      wheelQueue.push({type:'soul_name',label:`第${soulIdx}个武魂（千中选一）`,centerText:'魂',items:nameItems,labelKey:'name',colorKey:'qColor',tier:item.tier});
       break;
     case 'soul_name':
-      let tier = GameState.wheelQueue[GameState.wheelIndex].tier;
+      let tier = wheelQueue[wheelIndex].tier;
       let actualSoul = randomSoulName(tier);
       let isDual = (tier === 'dual');
 
@@ -4254,7 +3947,7 @@ function onWheelResult(item){
       if(soulsDone < soulsTarget && !isDual){
         hint.textContent=`还有${soulsTarget - soulsDone}个武魂要觉醒...`;
         let qualityItems = buildQualityWheel();
-        GameState.wheelQueue.push({type:'soul_quality',label:'抽取武魂品质',centerText:'品',items:qualityItems,labelKey:'name',colorKey:'color'});
+        wheelQueue.push({type:'soul_quality',label:'抽取武魂品质',centerText:'品',items:qualityItems,labelKey:'name',colorKey:'color'});
       }else{
         // All done - compile final martial soul
         let hasDualEntry = G._awakenedSouls.some(s=>s.isDual);
@@ -4298,7 +3991,7 @@ function onWheelResult(item){
           area.innerHTML+=`<p style="color:var(--gold);margin-top:8px;">所有武魂觉醒完毕：${soulNames}</p>`;
         }
         hint.textContent='武魂已定，接下来抽取先天魂力...';
-        GameState.wheelQueue.push({type:'innate',label:'抽取先天魂力',centerText:'魂',items:INNATE_POWER,labelKey:'name',colorKey:'ratingColor'});
+        wheelQueue.push({type:'innate',label:'抽取先天魂力',centerText:'魂',items:INNATE_POWER,labelKey:'name',colorKey:'ratingColor'});
       }
       break;
     case 'innate':
@@ -4340,13 +4033,13 @@ function onWheelResult(item){
       if(soulBonusNote) guaranteeNote='<br><span style="color:var(--cyan)">【'+soulBonusNote+'】</span>'+guaranteeNote;
       area.innerHTML=`<div class="wheel-result"><h3>先天魂力：${G.innatePower}级</h3><p style="color:${G.innateRatingColor}">${G.innateRating}</p><p style="margin-top:4px">${actualRating?actualRating.desc:item.desc}</p>${guaranteeNote}</div>`;
       hint.textContent='天赋已定，接下来抽取性格...';
-      GameState.wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
+      wheelQueue.push({type:'personality',label:'抽取性格',centerText:'性',items:PERSONALITIES,labelKey:'name',colorKey:'color'});
       break;
     case 'personality':
       G.personality=item;
       area.innerHTML=`<div class="wheel-result"><h3 style="color:${item.color}">${item.name}</h3><p>${item.desc}</p><p style="margin-top:4px;color:var(--gray);">社交：${Math.round(item.traits.social*100)}% | 情缘：${Math.round(item.traits.romance*100)}% | 强敌：${Math.round(item.traits.enemy*100)}%</p></div>`;
       hint.textContent='性格已定，接下来抽取外貌...';
-      GameState.wheelQueue.push({type:'appearance',label:'抽取外貌',centerText:'貌',items:APPEARANCES,labelKey:'name',colorKey:'color'});
+      wheelQueue.push({type:'appearance',label:'抽取外貌',centerText:'貌',items:APPEARANCES,labelKey:'name',colorKey:'color'});
       break;
     case 'appearance':
       G.appearance=item;
@@ -4360,7 +4053,7 @@ function onWheelResult(item){
   document.getElementById('wheel-spin-btn').style.display='none';
   let nextBtn = document.getElementById('wheel-next-btn');
   nextBtn.style.display='';
-  if(GameState.wheelIndex >= GameState.wheelQueue.length - 1){
+  if(wheelIndex >= wheelQueue.length - 1){
     nextBtn.textContent = '进入斗罗大陆';
   }else{
     nextBtn.textContent = '下一步';
@@ -4372,8 +4065,8 @@ function nextWheelStep(){
   const hint=document.getElementById('wheel-hint');
   document.getElementById('wheel-next-btn').style.display='none';
 
-  GameState.wheelIndex++;
-  if(GameState.wheelIndex<GameState.wheelQueue.length){
+  wheelIndex++;
+  if(wheelIndex<wheelQueue.length){
     canvas.style.transition='none';
     canvas.style.transform='rotate(0deg)';
     void canvas.offsetWidth;
@@ -4436,21 +4129,28 @@ function switchActiveSoul(index){
 function showAwakening(){
   showScreen('screen-awakening');
 
-  // 神界传说：神与神兽出生年龄均为1岁；人类默认6岁；魂兽从0岁开始（幼年期）
+  // 神界传说：神与神兽出生年龄均为1岁；其他时间线人类/魂兽默认6岁
   if(G.timeline.id==='godrealm'){
     G.age=1;
-  }else if(G.identityType==='soul_beast'){
-    G.age=0;
   }else{
     G.age=6;
   }
 
   // Set max level and age based on timeline
-  applyTimelineLimits(G);
+  if(G.timeline.id==='douluo4'){G.maxLevel=150;G.maxAge=200;}
+  else if(G.timeline.id==='godrealm'){G.maxLevel=200;G.maxAge=999;}
+  else{G.maxLevel=99;G.maxAge=150;}
 
   // Soul beast: no innate power, no martial soul, use bloodline as starting power
   if(G.identityType==='soul_beast'){
     G.beastYears = 0;
+    // 降生地点影响初始年限
+    let birthAttr = G.birthplace?.attr || {};
+    let initYears = 0;
+    if(birthAttr.power >= 1.3) initYears += 20;
+    if(birthAttr.risk >= 1.3) initYears += 15;
+    if(birthAttr.secret >= 1.3) initYears += 10;
+    G.beastYears = initYears;
     syncBeastSoulPower();
     G.innatePower = 0;
     G.innateRating = '无';
@@ -5328,14 +5028,7 @@ function nextYear(){
   let yearsToAdvance = getYearStep();
   G._processing = true;
   let eventsThisRound = [];
-  try{
-    processYearChain(0, yearsToAdvance, eventsThisRound);
-  }catch(e){
-    console.error('Year processing error:', e);
-    addEventLog(G.age, 'crisis', `<b style="color:var(--red);">【系统错误】</b> 年度推演过程中出现异常，请刷新页面重试。`);
-    G._processing = false;
-    renderSidebar();
-  }
+  processYearChain(0, yearsToAdvance, eventsThisRound);
 }
 
 function processYearChain(idx, total, events){
@@ -5344,78 +5037,159 @@ function processYearChain(idx, total, events){
     return;
   }
   G.age++;
-  if(G.identityType === 'soul_beast' && !G.transformed){
-    G.beastYears = (G.beastYears || 0) + 1;
-    syncBeastSoulPower();
+  // Death check
+  let maxAge = G.maxAge;
+  if(G.soulPower >= 91) maxAge += 100;
+  if(G.soulPower >= 99) maxAge += 200;
+  if(G.soulPower >= 120) maxAge += 500;
+  if(G.age > maxAge){
+    G.alive = false; G.deathReason = '寿终正寝';
+    finishYearAdvance(events);
+    return;
   }
-  let triggerResult = runTriggers();
-  for(let r of triggerResult.results){
-    events.push({age:G.age, ...r});
+  // Innate 0 special
+  if(G.innatePower === 0 && G.age === 12 && Math.random() < 0.1){
+    G.innatePower = 3; G.innateRating = '普通'; G.innateRatingColor = '#aaa';
+    events.push({age:G.age, type:'fortune', text:'<b style="color:var(--gold);">【觉醒】</b> 在一次意外中，你突然感受到了魂力的存在！后天觉醒成功，先天魂力3级！'});
+    processYearChain(idx + 1, total, events);
+    return;
   }
-  if(triggerResult.action === 'openYearWheel'){
-    openYearEventWheel(function(result){
-      if(result && result.event){
-        events.push({age:G.age, ...result.event});
+  // Soul ring milestone check
+  if(G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast' && G.soulRings.length < 9){
+    let nextRingLevel = RING_MILESTONES[G.soulRings.length];
+    if(G.soulPower >= nextRingLevel){
+      events.push({age:G.age, type:'fortune', text:`<b style="color:var(--gold);">【突破】</b> 魂力达到${G.soulPower}级，突破瓶颈！需要猎杀第${G.soulRings.length+1}魂环...`, ringMilestone:true});
+      finishYearAdvance(events, true);
+      return;
+    }
+  }
+  // 神力技能解锁（神和神兽专属）
+  if((G.identityType === 'god' || G.identityType === 'divine_beast') && G.divineSkillsTotal){
+    G.divineSkillsUnlocked = G.divineSkillsUnlocked || 0;
+    G.divineSkills = G.divineSkills || [];
+    let unlockThresholds = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
+    let targetUnlocked = 0;
+    for(let lv of unlockThresholds){
+      if(G.soulPower >= lv) targetUnlocked++;
+      else break;
+    }
+    targetUnlocked = Math.min(targetUnlocked, G.divineSkillsTotal);
+    if(targetUnlocked > G.divineSkillsUnlocked){
+      let newlyUnlocked = targetUnlocked - G.divineSkillsUnlocked;
+      let divineSkillPool = [
+        {name:'神光斩',desc:'凝聚神力化作的锋锐光斩，可斩裂虚空'},
+        {name:'神域降临',desc:'展开神域，领域内自身战力倍增'},
+        {name:'法则掌控',desc:'掌控一种天地法则，随心所欲'},
+        {name:'神罚天降',desc:'召唤天罚之力，毁灭性打击'},
+        {name:'神体蜕变',desc:'神体进一步蜕变，防御与速度倍增'},
+        {name:'神识探查',desc:'神识扫过万里，洞察一切隐匿'},
+        {name:'神威压制',desc:'释放神威，弱者直接臣服'},
+        {name:'神力灌注',desc:'神力灌注全身，战力暴涨'},
+        {name:'神格凝聚',desc:'神格更加凝实，神力上限提升'},
+        {name:'神通觉醒',desc:'觉醒一项远古神通，威力无穷'},
+        {name:'神界召唤',desc:'召唤神界之力助战'},
+        {name:'神之审判',desc:'以神之名审判罪人，无可抵挡'},
+        {name:'神之庇护',desc:'获得神之庇护，免疫一次致命伤害'},
+        {name:'神之契约',desc:'可与生灵缔结神之契约'},
+        {name:'神之创造',desc:'掌握创造之力，可化虚为实'},
+        {name:'神之毁灭',desc:'掌握毁灭之力，可湮灭万物'},
+        {name:'神之时空',desc:'操控时空法则，自由穿梭'},
+        {name:'神之命运',desc:'窥探命运之线，预知未来'},
+        {name:'神之轮回',desc:'领悟轮回法则，生死转换'},
+        {name:'神之本源',desc:'触及神之本源，近乎全能'}
+      ];
+      for(let i = 0; i < newlyUnlocked; i++){
+        let availableSkills = divineSkillPool.filter(s => !G.divineSkills.some(ds => ds.name === s.name));
+        if(availableSkills.length === 0) break;
+        let newSkill = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+        G.divineSkills.push(newSkill);
+        G.divineSkillsUnlocked++;
+        events.push({age:G.age, type:'fortune', text:`<b style="color:var(--gold);">【神力觉醒】</b> 神力突破瓶颈，觉醒新技能：<b style="color:var(--cyan);">${newSkill.name}</b>！${newSkill.desc}。(${G.divineSkillsUnlocked}/${G.divineSkillsTotal})`});
       }
-      function continueNext(){
-        let postResult = runPostYearTriggers();
-        for(let r of postResult.results){
-          events.push({age:G.age, ...r});
-        }
-        renderSidebar(); checkAchievements();
-        if(!G.alive){ finishYearAdvance(events); return; }
-        if(postResult.action === 'showDouluoPath'){
-          finishYearAdvance(events);
-          setTimeout(()=>openDouluoPathChoice(), 600);
-          return;
-        }
-        if(postResult.action === 'showGodhood'){
-          finishYearAdvance(events);
-          setTimeout(()=>openGodhoodChoice(), 600);
-          return;
-        }
-        processYearChain(idx + 1, total, events);
-      }
-      if(result && result.subWheel === 'enemy'){
-        openEnemyWheel(function(){
-          if(!G.alive){ finishYearAdvance(events); return; }
-          continueNext();
-        });
-      }else if(result && result.subWheel === 'timeline'){
-        openTimelineCharacterWheel(function(){
-          if(!G.alive){ finishYearAdvance(events); return; }
-          continueNext();
-        });
-      }else{
-        continueNext();
-      }
-    });
-  }else{
+      renderSidebar();
+    }
+  }
+  // Timeline progress event check - original story events by age
+  let progressEvent = getTimelineProgressEvent();
+  if(progressEvent){
+    events.push({age:G.age, type:'fortune', text:progressEvent.text});
+    if(progressEvent.sp){
+      G.soulPower = Math.min(G.soulPower + progressEvent.sp, G.maxLevel);
+    }
+    if(progressEvent.merit){
+      G.merit = (G.merit || 0) + progressEvent.merit;
+    }
     renderSidebar(); checkAchievements();
     if(!G.alive){ finishYearAdvance(events); return; }
     processYearChain(idx + 1, total, events);
+    return;
   }
-}
-
-function runPostYearTriggers(){
-  let triggers = ['soul_evolution', 'soul_core', 'douluo_path', 'godhood'];
-  let results = [];
-  let action = null;
-  
-  for(let id of triggers){
-    let t = TRIGGER_REGISTRY[id];
-    if(!t || !t.check()) continue;
-    
-    let result = t.execute();
-    if(result){
-      if(result.action) action = result.action;
-      else results.push(result);
+  // Year event wheel
+  openYearEventWheel(function(result){
+    if(result && result.event){
+      events.push({age:G.age, ...result.event});
     }
-    
-    if(t.type === 'blocking') break;
-  }
-  
-  return {results, action};
+    function continueNext(){
+      // Soul evolution check
+      let evoResult = checkSoulEvolution();
+      if(evoResult){
+        G.martialSoul.name = evoResult.newName;
+        G.martialSoul.example = evoResult.newName;
+        G.martialSoul.evolutionStage = evoResult.stage;
+        G.soulPower = Math.min(G.soulPower + evoResult.bonusPower, G.maxLevel);
+        events.push({age:G.age, type:'fortune', text:`<b style="color:var(--gold);">【武魂进化】</b> ${evoResult.desc} 武魂进化为「${evoResult.newName}」！魂力+${evoResult.bonusPower}级！`});
+      }
+      renderSidebar(); checkAchievements();
+      if(!G.alive){ finishYearAdvance(events); return; }
+      // Soul core formation check (绝世唐门特有魂核系统)
+      if(G.identityType !== 'soul_beast' && G.identityType !== 'god' && G.identityType !== 'divine_beast' && G.martialSoul){
+        let soulCoreEvent = checkSoulCoreFormation();
+        if(soulCoreEvent){
+          events.push({age:G.age, type:'fortune', text:soulCoreEvent.text});
+          G.soulCore++;
+          if(soulCoreEvent.core){
+            if(!Array.isArray(G.soulCores)) G.soulCores = [];
+            G.soulCores.push(soulCoreEvent.core);
+          }
+          if(soulCoreEvent.sp){
+            G.soulPower = Math.min(G.soulPower + soulCoreEvent.sp, G.maxLevel);
+          }
+          renderSidebar(); checkAchievements();
+          if(!G.alive){ finishYearAdvance(events); return; }
+        }
+      }
+      // Douluo (90+) path choice check
+      if(G.soulPower >= 91 && !G.chosenPath && G.identityType !== 'soul_beast'){
+        events.push({age:G.age, type:'fortune', text:'<b style="color:var(--gold);">【封号斗罗】</b> 你的修为突破90级，成为封号斗罗！是时候选择未来的道路了...'});
+        finishYearAdvance(events);
+        setTimeout(()=>openDouluoPathChoice(), 600);
+        return;
+      }
+      // Godhood check (only for those who chose god path or haven't chosen yet)
+      if(G.soulPower >= G.maxLevel && !G.isGod && G.identityType !== 'soul_beast' && G.chosenPath !== 'family'){
+        events.push({age:G.age, type:'fortune', text:'<b style="color:var(--gold);">【成神之路】</b> 你的修为已达到当前位面的极限，感应到了神位的召唤...'});
+        finishYearAdvance(events);
+        setTimeout(()=>openGodhoodChoice(), 600);
+        return;
+      }
+      processYearChain(idx + 1, total, events);
+    }
+    if(result && result.subWheel === 'enemy'){
+      openEnemyWheel(function(){
+        renderSidebar(); checkAchievements();
+        if(!G.alive){ finishYearAdvance(events); return; }
+        continueNext();
+      });
+    }else if(result && result.subWheel === 'timeline'){
+      openTimelineCharacterWheel(function(){
+        renderSidebar(); checkAchievements();
+        if(!G.alive){ finishYearAdvance(events); return; }
+        continueNext();
+      });
+    }else{
+      continueNext();
+    }
+  });
 }
 
 function openGodhoodChoice(){
@@ -5587,43 +5361,52 @@ function finishYearAdvance(events, hasRingMilestone){
 }
 
 function showEventModal(age,type,text,choices){
+  const modal=document.getElementById('modal-event');
+  const box=document.getElementById('modal-event-box');
   const typeNames={cultivate:'修炼',social:'社交',battle:'战斗',fortune:'机缘',crisis:'危机'};
 
   let choicesHtml=choices.map((c,i)=>`<button class="choice-btn" onclick="makeChoice(${i})">${c.text}</button>`).join('');
 
-  UI.modalEventBox.innerHTML=`
+  box.innerHTML=`
     <div class="modal-title">${typeNames[type]||type}事件</div>
     <div style="font-size:12px;color:var(--gold);margin-bottom:10px;">${G.timeline.name} · ${age}岁</div>
     <div class="modal-body">${text}</div>
     <div class="modal-choices">${choicesHtml}</div>
   `;
-  UI.modalEvent.classList.add('active');
+  modal.classList.add('active');
 
-  window._currentChoiceHandler = function(idx){
-    UI.modalEvent.classList.remove('active');
-    let choice=choices[idx];
-    let result=choice.effect(G);
-    let crossHtml='';
-    if(G.crossSkills&&G.crossSkills.length>0){
-      let last=G.crossSkills[G.crossSkills.length-1];
-      crossHtml=`<div class="cross-skill-display"><h4>🌀 跨界融合！</h4><p>来源：${last.source} | 技能：${last.skill}</p><p style="font-size:12px;color:var(--gray);margin-top:4px;">${last.effect}</p></div>`;
-    }
-    addEventLog(G.age,type,`【选择：${choice.text}】<br>${result}${crossHtml}`);
-    checkAchievements();
-    renderSidebar();
-    if(!G.alive){
-      triggerDeath('遭遇不测');
-    }
-  };
+  // Store current choices for callback
+  window._currentChoices=choices;
+  window._currentEventType=type;
 }
 
 function makeChoice(idx){
-  if(window._currentChoiceHandler) window._currentChoiceHandler(idx);
+  const modal=document.getElementById('modal-event');
+  modal.classList.remove('active');
+
+  let choice=window._currentChoices[idx];
+  let result=choice.effect(G);
+
+  // Cross-skill special display
+  let crossHtml='';
+  if(G.crossSkills&&G.crossSkills.length>0){
+    let last=G.crossSkills[G.crossSkills.length-1];
+    crossHtml=`<div class="cross-skill-display"><h4>🌀 跨界融合！</h4><p>来源：${last.source} | 技能：${last.skill}</p><p style="font-size:12px;color:var(--gray);margin-top:4px;">${last.effect}</p></div>`;
+  }
+
+  addEventLog(G.age,window._currentEventType,`【选择：${choice.text}】<br>${result}${crossHtml}`);
+  checkAchievements();
+  renderSidebar();
+
+  if(!G.alive){
+    triggerDeath('遭遇不测');
+  }
 }
 
 // ============================================================
 // AUTO MODE
 // ============================================================
+let autoTimer=null;
 function toggleAuto(){
   G.autoMode=!G.autoMode;
   document.getElementById('auto-btn').textContent=G.autoMode?'⏹ 停止推演':'自动推演';
@@ -5631,8 +5414,8 @@ function toggleAuto(){
   let overlayStop = document.getElementById('mini-auto-stop-btn');
   if(overlayStop) overlayStop.style.display = G.autoMode ? '' : 'none';
   if(G.autoMode){
-    GameState.autoTimer=setInterval(()=>{
-      if(!G.alive){clearInterval(GameState.autoTimer);G.autoMode=false;document.getElementById('auto-btn').textContent='自动推演';let ob=document.getElementById('mini-auto-stop-btn');if(ob)ob.style.display='none';return;}
+    autoTimer=setInterval(()=>{
+      if(!G.alive){clearInterval(autoTimer);G.autoMode=false;document.getElementById('auto-btn').textContent='自动推演';let ob=document.getElementById('mini-auto-stop-btn');if(ob)ob.style.display='none';return;}
       // Check if modal or mini wheel is open
       if(document.getElementById('modal-event').classList.contains('active'))return;
       if(document.getElementById('mini-wheel-overlay').classList.contains('active'))return;
@@ -5640,15 +5423,15 @@ function toggleAuto(){
       nextYear();
     },1500);
   }else{
-    clearInterval(GameState.autoTimer);
+    clearInterval(autoTimer);
     // Close any open overlay when stopping auto
     let overlay = document.getElementById('mini-wheel-overlay');
     if(overlay && overlay.classList.contains('active')){
       overlay.classList.remove('active');
       G._processing = false;
-      GameState.yearEventWheel.spinning = false;
-      GameState.enemyWheel.spinning = false;
-      GameState.timelineCharWheel.spinning = false;
+      yearEventWheelSpinning = false;
+      enemyWheelSpinning = false;
+      timelineCharWheelSpinning = false;
     }
   }
 }
@@ -5660,7 +5443,7 @@ function triggerDeath(reason){
   G.alive=false;
   G.deathReason=reason;
   G.deathAge=G.age;
-  if(GameState.autoTimer)clearInterval(GameState.autoTimer);
+  if(autoTimer)clearInterval(autoTimer);
   G.autoMode=false;
 
   setTimeout(()=>showReview(),1500);
@@ -5671,7 +5454,7 @@ function endGameEarly(){
     G.alive=false;
     G.deathReason='主动结束';
     G.deathAge=G.age;
-    if(GameState.autoTimer)clearInterval(GameState.autoTimer);
+    if(autoTimer)clearInterval(autoTimer);
     G.autoMode=false;
     showReview();
   }
@@ -5922,8 +5705,8 @@ function leaveLegacy(){
 function checkAchievements(){
   if(!G)return;
   ACHIEVEMENTS.forEach(a=>{
-    if(!GameState.globalAchievements.includes(a.id)&&a.check(G)){
-      GameState.globalAchievements.push(a.id);
+    if(!globalAchievements.includes(a.id)&&a.check(G)){
+      globalAchievements.push(a.id);
       saveGlobalAchievements();
       // Show achievement notification
       showAchievementNotification(a);
@@ -5943,7 +5726,7 @@ function renderAchievements(){
   loadGlobalAchievements();
   const grid=document.getElementById('ach-grid');
   grid.innerHTML=ACHIEVEMENTS.map(a=>{
-    let unlocked=GameState.globalAchievements.includes(a.id);
+    let unlocked=globalAchievements.includes(a.id);
     return `<div class="ach-card ${unlocked?'unlocked':'locked'}">
       <div class="ach-icon">${a.icon}</div>
       <div class="ach-name">${a.name}</div>
@@ -6243,7 +6026,7 @@ async function loadSaveGame(idx){
   G.autoMode = false;
   // 记录当前存档ID，保存时复用，避免产生重复记录
   G._saveId = s.id;
-  if(GameState.autoTimer){clearInterval(GameState.autoTimer);GameState.autoTimer=null;}
+  if(autoTimer){clearInterval(autoTimer);autoTimer=null;}
   let ob=document.getElementById('mini-auto-stop-btn');if(ob)ob.style.display='none';
   // 全面修复存档数据：用 createDefaultState 补全缺失/类型错误字段
   let defaults=createDefaultState();
@@ -6258,7 +6041,9 @@ async function loadSaveGame(idx){
   if(!G.martialSoul||typeof G.martialSoul!=='object')G.martialSoul={name:'未知',quality:'普通'};
   if(!G.gender||typeof G.gender!=='object')G.gender={name:'男'};
   if(!G.identity||typeof G.identity!=='object')G.identity={name:'未知'};
-  applyTimelineLimits(G);
+  if(G.timeline.id==='douluo4'){G.maxLevel=150;G.maxAge=200;}
+  else if(G.timeline.id==='godrealm'){G.maxLevel=200;G.maxAge=999;}
+  else{G.maxLevel=99;G.maxAge=150;}
   showScreen('screen-life');
   renderSidebar();
   renderControls();
@@ -6270,7 +6055,6 @@ async function loadSaveGame(idx){
 // ============================================================
 loadGlobalAchievements();
 initParticles();
-initUI();
 // Mini wheel click-to-close
 document.getElementById('mini-wheel-overlay').addEventListener('click', function(e){
   if(e.target.id !== 'mini-wheel-spin-btn' && !e.target.closest('#mini-wheel-spin-btn')){
@@ -6280,9 +6064,6 @@ document.getElementById('mini-wheel-overlay').addEventListener('click', function
 </script>
 </body>
 </html>
-
-
-
 
 
 

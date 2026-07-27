@@ -545,6 +545,10 @@ function closeMiniWheel(){
   document.getElementById('mini-wheel-result-area').innerHTML = '';
   document.getElementById('mini-wheel-hint').textContent = '';
   document.getElementById('mini-auto-stop-btn').style.display = 'none';
+  if(GameState.miniWheel?.callback){
+    GameState.miniWheel.callback();
+    GameState.miniWheel = null;
+  }
 }
 
 const RING_OPPORTUNITY = [
@@ -795,5 +799,43 @@ function drawWheel(items,labelKey,colorKey){
     ctx.strokeStyle='rgba(255,215,0,0.8)';
     ctx.lineWidth=6;
     ctx.stroke();
+  }
+}
+
+function spinWheel(){
+  if(wheelState.spinning) return;
+  wheelState.spinning = true;
+  const btn = document.getElementById('wheel-spin-btn');
+  btn.classList.add('btn-disabled');
+  const canvas = document.getElementById('wheel-canvas');
+  try{
+    const items = currentWheelData;
+    const total = items.reduce((s,i) => s + i.weight, 0);
+    const selected = weightedRandom(items);
+    const selectedIdx = items.indexOf(selected);
+    let cumWeight = 0;
+    for(let i = 0; i < selectedIdx; i++) cumWeight += items[i].weight;
+    const sectorAngle = (selected.weight / total) * 360;
+    const targetCenter = cumWeight / total * 360 + sectorAngle / 2;
+    const spinCount = window.innerWidth <= 480 ? 4 : 6;
+    const duration = window.innerWidth <= 480 ? '3.5s' : '5s';
+    const finalAngle = 360 * spinCount + (360 - targetCenter + 270);
+    canvas.style.transition = `transform ${duration} cubic-bezier(0.17,0.67,0.12,0.99)`;
+    canvas.style.transform = `rotate(${finalAngle}deg)`;
+    managedTimeout(() => {
+      try{
+        wheelState.spinning = false;
+        btn.classList.remove('btn-disabled');
+        onWheelResult(selected);
+      }catch(e){
+        wheelState.spinning = false;
+        btn.classList.remove('btn-disabled');
+        document.getElementById('wheel-result-area').innerHTML = '<div class="wheel-result"><h3 style="color:var(--red)">出错</h3><p>转盘处理异常，请重试。</p></div>';
+      }
+    }, window.innerWidth <= 480 ? 3500 : 5000);
+  }catch(e){
+    wheelState.spinning = false;
+    btn.classList.remove('btn-disabled');
+    document.getElementById('wheel-result-area').innerHTML = '<div class="wheel-result"><h3 style="color:var(--red)">出错</h3><p>转盘初始化异常，请重试。</p></div>';
   }
 }
